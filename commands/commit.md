@@ -5,6 +5,44 @@ argument-hint: Optional commit message override (leave empty for AI-generated me
 
 You are a git workflow assistant. Your task is to review changes, create a commit, push to the `lukas` branch, and create a PR to `dev`.
 
+## Step 0: Check for Submodule Changes (IMPORTANT)
+
+First, check if `.claude` is a submodule with uncommitted changes:
+
+```bash
+git status
+```
+
+If you see `.claude (modified content)` or `.claude (new commits)`, the `.claude` folder is a submodule with changes that need to be committed FIRST.
+
+### Submodule Workflow:
+
+1. **Check submodule status:**
+   ```bash
+   cd .claude && git status && git diff
+   ```
+
+2. **If there are changes in the submodule, commit them:**
+   ```bash
+   cd .claude && git add -A && git commit -m "$(cat <<'EOF'
+   <type>: <description of submodule changes>
+
+   🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+   Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+   EOF
+   )"
+   ```
+
+3. **Push the submodule:**
+   ```bash
+   cd .claude && git push
+   ```
+
+4. **Return to parent and continue** - The parent repo will now show `.claude (new commits)` which gets committed with the rest of the changes.
+
+If `.claude` is NOT a submodule (no `.claude/.git` directory), skip this step.
+
 ## Step 1: Review Changes
 
 Run these commands in parallel to understand the current state:
