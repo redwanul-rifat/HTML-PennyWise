@@ -16,7 +16,7 @@ function getFileCategory(
     // Frontend detection
     if (
         filePath.includes('/frontend/') ||
-        filePath.includes('/frontend-dashboard/') ||
+        filePath.includes('/frontend-coach-dashboard/') ||
         filePath.includes('/client/') ||
         filePath.includes('/src/components/') ||
         filePath.includes('/src/features/')
