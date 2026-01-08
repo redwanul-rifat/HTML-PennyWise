@@ -113,10 +113,10 @@ For EACH project with changes:
    git stash push -m "temp-stash-for-commit" -- <other-project-folders>
    ```
 
-2. **Create/checkout feature branch from main:**
+2. **Create/checkout feature branch from dev:**
    ```bash
-   git checkout main
-   git pull origin main
+   git checkout dev
+   git pull origin dev
    git checkout -b $USER_PREFIX/<project-short-name>-<feature-description>
    ```
 
@@ -227,7 +227,7 @@ For EACH feature branch:
 
 2. **Create PR using gh CLI:**
    ```bash
-   gh pr create --base main --head $USER_PREFIX/<branch-name> --title "<PR title>" --body "$(cat <<'EOF'
+   gh pr create --base dev --head $USER_PREFIX/<branch-name> --title "<PR title>" --body "$(cat <<'EOF'
    ## Summary
    <1-3 bullet points describing the changes>
 
