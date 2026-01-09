@@ -4,7 +4,7 @@ applies_to_local_project_only: true
 auto_trigger_regex:
     [sentry, error tracking, performance monitoring, error handling]
 tags: [sentry, errors, monitoring, nestjs, performance]
-related_skills: [backend-dev-guidelines]
+related_skills: [best-practices, middleware-guide, async-and-errors]
 ---
 
 # Error Tracking with Sentry v8 - NestJS
@@ -754,9 +754,10 @@ async processWorkflow(workflowId: string): Promise<void> {
 
 ## Related Documentation
 
-- **Backend Dev Guidelines**: [.claude/skills/backend-dev-guidelines/SKILL.md](./../backend-dev-guidelines/SKILL.md)
-    - Exception Filters: [.claude/skills/backend-dev-guidelines/resources/middleware-guide.md](./../backend-dev-guidelines/resources/middleware-guide.md)
-    - Error Handling: [.claude/skills/backend-dev-guidelines/resources/async-and-errors.md](./../backend-dev-guidelines/resources/async-and-errors.md)
+- **Backend Skills** (NestJS):
+    - Best Practices: [.claude/nestjs/skills/best-practices.md](../../nestjs/skills/best-practices.md)
+    - Exception Filters: [.claude/nestjs/skills/middleware-guide.md](../../nestjs/skills/middleware-guide.md)
+    - Error Handling: [.claude/nestjs/skills/async-and-errors.md](../../nestjs/skills/async-and-errors.md)
 
 - **NestJS Starter Kit**:
     - Exception Filter: [src/core/filters/all-exceptions.filter.ts](./../../src/core/filters/all-exceptions.filter.ts)

@@ -111,5 +111,5 @@ test.describe('Login Page', () => {
 
 **Related Documentation**:
 
-- [Frontend Development Guidelines](../skills/frontend-dev-guidelines/SKILL.md)
+- [Frontend Development Guidelines](../skills/best-practices.md)
 - [React Best Practices](./REACT_BEST_PRACTICES.md)
