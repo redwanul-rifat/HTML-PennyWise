@@ -37,43 +37,92 @@ Store the result as `$USER_PREFIX` for use throughout this workflow (e.g., `luka
 
 ---
 
-## Step 1: Check for Submodule Changes (IMPORTANT)
+## Step 1: Handle Submodule Changes (CRITICAL - Must Be Done First)
 
-Check if `.claude` is a submodule with uncommitted changes:
+This project uses **nested submodules**. Changes must be committed from deepest to shallowest:
+
+```
+project/                    # 4. Parent repo (requires PR)
+├── .claude/                # 3. Submodule → project-claude (push to main)
+│   ├── base/               # 1. Submodule → claude-base (push to main)
+│   ├── <nestjs/react/...>  # 2. Submodule → tech-stack repos (push to main)
+```
+
+### Submodule Push Policy
+
+**Submodules are pushed directly to `main`** (no PR required):
+- `.claude/base`, `.claude/nestjs`, `.claude/react`, etc.
+- `.claude` itself
+
+**Only the parent repo requires PRs.**
+
+### 1.1 Check Parent Status
 
 ```bash
 git status
 ```
 
-If you see `.claude (modified content)` or `.claude (new commits)`, the `.claude` folder is a submodule with changes that need to be committed FIRST.
+If you see `.claude (modified content)` or `.claude (new commits)`, handle submodules first.
 
-### Submodule Workflow:
+### 1.2 Check for Nested Submodule Changes
 
-1. **Check submodule status:**
-   ```bash
-   cd .claude && git status && git diff
-   ```
+```bash
+cd .claude
+git status
+```
 
-2. **If there are changes in the submodule, commit them:**
-   ```bash
-   cd .claude && git add -A && git commit -m "$(cat <<'EOF'
-   <type>: <description of submodule changes>
+Look for any nested submodules showing changes (`base`, `react`, `nestjs`, `django`, etc.).
 
-   🤖 Generated with [Claude Code](https://claude.com/claude-code)
+### 1.3 Commit and Push Nested Submodules (Deepest First)
 
-   Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
-   EOF
-   )"
-   ```
+For EACH nested submodule with changes:
 
-3. **Push the submodule:**
-   ```bash
-   cd .claude && git push
-   ```
+```bash
+cd <submodule>  # e.g., cd base
+git status
 
-4. **Return to parent and continue** - The parent repo will now show `.claude (new commits)` which gets committed with the rest of the changes.
+# If there are changes:
+git checkout main
+git add -A
+git commit -m "$(cat <<'EOF'
+<type>: <description of changes>
 
-If `.claude` is NOT a submodule (no `.claude/.git` directory), skip this step.
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+EOF
+)"
+git push origin main
+cd ..
+```
+
+Repeat for each nested submodule with changes.
+
+### 1.4 Commit and Push .claude Submodule
+
+After all nested submodules are pushed, `.claude` will show them as "new commits":
+
+```bash
+# Still in .claude directory
+git status  # Should show base, react, etc. as "new commits"
+git add -A
+git commit -m "$(cat <<'EOF'
+chore: Update submodule references
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+EOF
+)"
+git push origin main
+cd ..
+```
+
+### 1.5 Continue with Parent Repo
+
+Now in the parent repo, `.claude` shows as "new commits". This will be included in the feature branch PR (Step 2 onwards).
+
+**If `.claude` is NOT a submodule** (no `.claude/.git` file), skip this entire step.
 
 ---
 
