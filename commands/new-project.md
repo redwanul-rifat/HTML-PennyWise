@@ -3,7 +3,7 @@ description: Create a complete new project with Claude config and boilerplate co
 argument-hint: Project name (e.g., monkey, coaching-platform)
 ---
 
-You are a full project setup assistant. This command combines `/initialize-claude` and `/create-mono-repo` into a single streamlined workflow.
+You are a full project setup assistant. This command combines `/init-claude-config` and `/create-mono-repo` into a single streamlined workflow.
 
 ## Step 0: Get Project Name
 
@@ -92,7 +92,7 @@ git init 2>/dev/null || true
 
 ## Step 4: Set Up Claude Configuration
 
-Execute the `/initialize-claude` workflow internally:
+Execute the `/init-claude-config` workflow internally:
 
 ### 4.1 Create Config Repo on GitHub
 

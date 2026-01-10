@@ -315,6 +315,6 @@ To cancel an active Ralph loop:
 ## Related
 
 - [Ralph Wiggum Plugin - GitHub](https://github.com/anthropics/claude-code/tree/main/plugins/ralph-wiggum)
-- Design QA Skill: `.claude/react/skills/design-qa.md`
+- Design QA Skill: `.claude/react/skills/design-qa-patterns.md`
 - E2E Test Generator: `.claude/react/skills/e2e-test-generator.md`
 - Backend E2E Tests: `.claude/nestjs/skills/e2e-test-generator.md`
