@@ -15,8 +15,8 @@ You are a git workflow assistant. Your task is to review changes, create per-pro
 
 ## Branch Policy
 
-- **Parent repo PRs:** Target `dev` branch (not `main`)
-- **Submodules:** Push directly to `main` (no PR required)
+- **All repos (parent + submodules):** Create feature branches, PRs target `dev`
+- **No direct pushes to `main` or `dev` anywhere**
 
 ---
 
@@ -63,15 +63,15 @@ fi
 cd .claude
 CURRENT_BRANCH=$(git branch --show-current)
 if [ -z "$CURRENT_BRANCH" ]; then
-  echo "⚠️ .claude submodule is in detached HEAD, switching to main..."
-  git checkout main
-  git pull origin main
-elif [ "$CURRENT_BRANCH" != "main" ]; then
-  echo "⚠️ .claude submodule is on '$CURRENT_BRANCH', switching to main..."
-  git checkout main
-  git pull origin main
+  echo "⚠️ .claude submodule is in detached HEAD, switching to dev..."
+  git checkout dev
+  git pull origin dev
+elif [ "$CURRENT_BRANCH" != "dev" ]; then
+  echo "⚠️ .claude submodule is on '$CURRENT_BRANCH', switching to dev..."
+  git checkout dev
+  git pull origin dev
 else
-  echo "✓ .claude is on main branch"
+  echo "✓ .claude is on dev branch"
 fi
 cd ..
 ```
@@ -85,15 +85,15 @@ for dir in base nestjs react django; do
     cd "$dir"
     NESTED_BRANCH=$(git branch --show-current)
     if [ -z "$NESTED_BRANCH" ]; then
-      echo "⚠️ .claude/$dir is in detached HEAD, switching to main..."
-      git checkout main
-      git pull origin main
-    elif [ "$NESTED_BRANCH" != "main" ]; then
-      echo "⚠️ .claude/$dir is on '$NESTED_BRANCH', switching to main..."
-      git checkout main
-      git pull origin main
+      echo "⚠️ .claude/$dir is in detached HEAD, switching to dev..."
+      git checkout dev
+      git pull origin dev
+    elif [ "$NESTED_BRANCH" != "dev" ]; then
+      echo "⚠️ .claude/$dir is on '$NESTED_BRANCH', switching to dev..."
+      git checkout dev
+      git pull origin dev
     else
-      echo "✓ .claude/$dir is on main branch"
+      echo "✓ .claude/$dir is on dev branch"
     fi
     cd ..
   fi
@@ -111,7 +111,7 @@ if git status --porcelain .claude | grep -q "^ M\|^M"; then
 fi
 ```
 
-**Why this matters:** Feature branches created from `dev` may inherit stale submodule references pointing to wrong branches. This pre-flight check ensures all submodules are on `main` before any commits are made.
+**Why this matters:** Feature branches created from `dev` may inherit stale submodule references pointing to wrong branches. This pre-flight check ensures all submodules are on `dev` before any commits are made.
 
 ---
 
@@ -120,19 +120,19 @@ fi
 This project uses **nested submodules**. Changes must be committed from deepest to shallowest:
 
 ```
-project/                    # 4. Parent repo (requires PR)
-├── .claude/                # 3. Submodule → project-claude (push to main)
-│   ├── base/               # 1. Submodule → claude-base (push to main)
-│   ├── <nestjs/react/...>  # 2. Submodule → tech-stack repos (push to main)
+project/                    # 4. Parent repo (feature branch + PR to dev)
+├── .claude/                # 3. Submodule → project-claude (feature branch + PR to dev)
+│   ├── base/               # 1. Submodule → claude-base (feature branch + PR to dev)
+│   ├── <nestjs/react/...>  # 2. Submodule → tech-stack repos (feature branch + PR to dev)
 ```
 
-### Submodule Push Policy
+### Submodule PR Policy
 
-**Submodules are pushed directly to `main`** (no PR required):
+**All submodules require PRs** (same as parent repo):
 - `.claude/base`, `.claude/nestjs`, `.claude/react`, etc.
 - `.claude` itself
 
-**Only the parent repo requires PRs.**
+**Every level follows the feature branch + PR workflow.**
 
 ### 1.1 Check Parent Status
 
@@ -151,7 +151,7 @@ git status
 
 Look for any nested submodules showing changes (`base`, `react`, `nestjs`, `django`, etc.).
 
-### 1.3 Commit and Push Nested Submodules (Deepest First)
+### 1.3 Commit and Create PR for Nested Submodules (Deepest First)
 
 For EACH nested submodule with changes:
 
@@ -160,7 +160,9 @@ cd <submodule>  # e.g., cd base
 git status
 
 # If there are changes:
-git checkout main
+git checkout dev
+git pull origin dev
+git checkout -b $USER_PREFIX/<submodule>-<feature-description>
 git add -A
 git commit -m "$(cat <<'EOF'
 <type>: <description of changes>
@@ -170,19 +172,40 @@ git commit -m "$(cat <<'EOF'
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 EOF
 )"
-git push origin main
+git push -u origin $USER_PREFIX/<submodule>-<feature-description>
+
+# Create PR targeting dev (REQUIRED)
+gh pr create --base dev --head $USER_PREFIX/<submodule>-<feature-description> --title "<type>: <description>" --body "$(cat <<'EOF'
+## Summary
+<1-3 bullet points describing the changes>
+
+## Submodule
+<submodule-name> (e.g., claude-base)
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+EOF
+)"
+
+# Verify PR was created
+gh pr view $USER_PREFIX/<submodule>-<feature-description> --json url --jq '.url'
+
 cd ..
 ```
 
+**STOP if PR creation fails for any submodule.**
+
 Repeat for each nested submodule with changes.
 
-### 1.4 Commit and Push .claude Submodule
+### 1.4 Commit and Create PR for .claude Submodule
 
-After all nested submodules are pushed, `.claude` will show them as "new commits":
+After all nested submodule PRs are created, `.claude` will show them as "new commits":
 
 ```bash
 # Still in .claude directory
 git status  # Should show base, react, etc. as "new commits"
+git checkout dev
+git pull origin dev
+git checkout -b $USER_PREFIX/claude-<feature-description>
 git add -A
 git commit -m "$(cat <<'EOF'
 chore: Update submodule references
@@ -192,9 +215,27 @@ chore: Update submodule references
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 EOF
 )"
-git push origin main
+git push -u origin $USER_PREFIX/claude-<feature-description>
+
+# Create PR targeting dev (REQUIRED)
+gh pr create --base dev --head $USER_PREFIX/claude-<feature-description> --title "chore: Update submodule references" --body "$(cat <<'EOF'
+## Summary
+- Updated submodule references for nested changes
+
+## Submodule
+.claude (project-claude)
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+EOF
+)"
+
+# Verify PR was created
+gh pr view $USER_PREFIX/claude-<feature-description> --json url --jq '.url'
+
 cd ..
 ```
+
+**STOP if PR creation fails.**
 
 ### 1.5 Continue with Parent Repo
 
@@ -493,7 +534,7 @@ Action Required: Check GitHub access with `gh auth status` and try again.
 - **Push conflict with flat branch** → Delete flat branch and retry
 
 ### NEVER do these:
-- ❌ Push directly to `dev` or `main` in parent repo
+- ❌ Push directly to `dev` or `main` in ANY repo (parent or submodules)
 - ❌ Push without creating a PR
 - ❌ Report "success" if PR was not created
 - ❌ Suggest "manual PR creation" as an alternative
