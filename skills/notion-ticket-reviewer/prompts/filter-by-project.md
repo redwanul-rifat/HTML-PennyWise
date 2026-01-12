@@ -1,0 +1,150 @@
+# Filter by Project
+
+## Prompt Template
+
+```
+Enter plan mode - Review notion tickets
+Filter: Related Project contains "[PROJECT_NAME]"
+```
+
+## Description
+
+Filter tickets by their related project to focus on work for a specific project.
+
+## Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `PROJECT_NAME` | Yes | The project name to filter by (partial match supported) |
+
+## Example Usage
+
+### Single Project
+```
+Enter plan mode - Review notion tickets for database [DATABASE_ID]
+Filter: Related Project contains "ActivityCoaching"
+```
+
+### Project + Status
+```
+Enter plan mode - Review notion tickets for database [DATABASE_ID]
+Filter: Related Project contains "ActivityCoaching", Status = "Not Started"
+```
+
+### Project + Team
+```
+Enter plan mode - Review notion tickets for database [DATABASE_ID]
+Filter: Related Project contains "ActivityCoaching", Team = "Full-Stack"
+```
+
+### Project + Priority
+```
+Enter plan mode - Review notion tickets for database [DATABASE_ID]
+Filter: Related Project contains "ActivityCoaching", Priority = "Critical" OR "Urgent"
+```
+
+## API Filter
+
+### By Related Project (Relation Property)
+
+Note: Filtering by relation requires the related page ID or a rollup property.
+
+**Option 1: Using Rollup Property** (if available)
+```json
+{
+  "filter": {
+    "property": "Project Name",
+    "rollup": {
+      "any": {
+        "rich_text": {
+          "contains": "ActivityCoaching"
+        }
+      }
+    }
+  }
+}
+```
+
+**Option 2: Post-Query Filtering**
+```python
+# Fetch all tickets then filter in code
+tickets = query_database(database_id)
+filtered = [t for t in tickets if "ActivityCoaching" in get_project_name(t)]
+```
+
+### Combined Filter
+```json
+{
+  "filter": {
+    "and": [
+      {
+        "property": "Status",
+        "status": {
+          "equals": "Not Started"
+        }
+      },
+      {
+        "property": "Team",
+        "select": {
+          "equals": "Full-Stack"
+        }
+      }
+    ]
+  }
+}
+```
+
+## Output Format
+
+```
+Found [N] tickets for project [PROJECT_NAME]:
+
+### By Category
+#### Workouts & Exercises
+1. [HIGH] Fix workout details sections - ID: xxx...
+2. [HIGH] Investigate workout schedule issue - ID: xxx...
+
+#### Plans & Coaching
+3. [HIGH] Integrate plan list API - ID: xxx...
+
+#### Chat & Communication
+4. [MEDIUM] Add voice recording feature - ID: xxx...
+```
+
+## Workflow Recommendations
+
+### For Focused Development Sessions
+1. **Start with project filter**: See all work for your project
+2. **Narrow by priority**: Focus on Critical/Urgent first
+3. **Pick a ticket**: `Fix ticket: [title]`
+4. **Complete and move**: Update status, fix next ticket
+
+### Example Session
+```
+User: Enter plan mode - Review notion tickets
+      Filter: Related Project contains "ActivityCoaching", Status = "Not Started"
+
+Claude: Found 21 ActivityCoaching tickets:
+        [Lists tickets grouped by category]
+
+User: Fix ticket: Fix workout details sections
+
+Claude: [Implements fix, updates status]
+
+User: Fix next ticket
+
+Claude: [Picks next high-priority ticket]
+```
+
+## Notes
+
+- The "Related Project" property is a **relation** type
+- Filtering relations directly requires knowing the related page ID
+- For text-based filtering, consider adding a rollup property
+- Post-query filtering works for any case
+
+## Related
+
+- [review-all.md](./review-all.md) - Review all tickets
+- [filter-by-team.md](./filter-by-team.md) - Filter by team
+- [fix-single.md](./fix-single.md) - Fix a single ticket

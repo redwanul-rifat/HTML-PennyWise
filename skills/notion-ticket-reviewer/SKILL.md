@@ -2,14 +2,14 @@
 skill_name: notion-ticket-reviewer
 applies_to_local_project_only: false
 auto_trigger_regex:
-    [notion ticket, review ticket, notion task, ticket reviewer, /notion-review, notion database]
+    [notion ticket, review ticket, notion task, ticket reviewer, /notion-review, notion database, fix ticket]
 tags: [notion, tickets, automation, review, mcp, workflow]
 related_skills: []
 ---
 
 # Notion Ticket Reviewer
 
-Automatically fetch, analyze, fix, and update tickets from Notion databases using Claude Code and Notion MCP.
+Automatically fetch, analyze, fix, and update tickets from Notion databases using Claude Code.
 
 ---
 
@@ -17,19 +17,227 @@ Automatically fetch, analyze, fix, and update tickets from Notion databases usin
 
 This skill enables Claude Code to:
 1. **Fetch tickets** from a Notion database
-2. **Analyze requirements** from ticket descriptions
-3. **Implement fixes** in the codebase automatically
-4. **Update ticket status** to "Review" when complete
-5. **Add comments** with implementation details
+2. **Filter** by status, priority, team, or project
+3. **Analyze requirements** from ticket descriptions
+4. **Implement fixes** in the codebase automatically
+5. **Update ticket status** to "In Progress" → "In Review"
+6. **Add comments** with implementation details
+
+---
+
+## Quick Start
+
+### Review All Tickets
+```
+Enter plan mode - Review notion tickets for database 247b6d88d2cf804799b9c8e84bee3771
+```
+
+### Fix a Single Ticket
+```
+Fix ticket: Fix workout details sections
+```
+or
+```
+Fix ticket: 081cebd9-f5ed-45ef-99ea-9bcb8b4695aa
+```
+
+### Filter by Team
+```
+Enter plan mode - Review notion tickets
+Filter: Team = "Full-Stack", Status = "Not Started"
+```
+
+---
+
+## Workflow: One-by-One Ticket Fixing
+
+### Step 1: List Tickets
+```
+Enter plan mode - Review notion tickets for database [DATABASE_ID]
+```
+- Shows all "Not Started" tickets
+- Grouped by category (Workouts, Plans, Chat, etc.)
+- Displays: Priority, Team, Title, ID
+
+### Step 2: Select & Start Ticket
+```
+Fix ticket: [ticket title or ID]
+```
+- Sets status to **"In Progress"**
+- Analyzes ticket requirements
+- Explores relevant codebase files
+
+### Step 3: Implement
+Claude will:
+- Read relevant files based on ticket description
+- Make necessary code changes
+- Follow project coding standards
+- Run tests if applicable
+
+### Step 4: Complete
+After implementation:
+- Sets status to **"In Review"**
+- Adds comment with:
+  - Files modified
+  - Changes made
+  - Testing notes
+- Optionally creates git commit
+
+### Step 5: Next Ticket
+```
+Fix next ticket
+```
+or select another ticket by name/ID
+
+---
+
+## Database Schema (Team Tickets)
+
+### Core Properties
+
+| Property | Type | Values |
+|----------|------|--------|
+| **Ticket Title** | title | Ticket name/summary |
+| **Status** | status | Blocked, Not Started, In Progress, In Review, Done |
+| **Priority** | select | Critical, Urgent, High, Medium, Low |
+| **Team** | select | Full-Stack, Design, Mobile, Operation |
+| **Comment** | rich_text | Additional notes/description |
+
+### Relationship Properties
+
+| Property | Type | Purpose |
+|----------|------|---------|
+| **Assignee** | relation | Person assigned to ticket |
+| **Assigner** | relation | Person who created ticket |
+| **Related Project** | relation | Link to project database |
+
+### Date Properties
+
+| Property | Type | Purpose |
+|----------|------|---------|
+| **Due Date** | date | Deadline |
+| **Start Date** | created_time | When ticket was created |
+| **End Date** | date | Completion date |
+| **Duration** | date | Time range |
+
+### Additional Properties
+
+| Property | Type | Purpose |
+|----------|------|---------|
+| **Category** | multi_select | Tags for categorization |
+| **URL** | url | Reference link |
+| **Attachments** | url | File links |
+| **Files & media** | files | Uploaded files |
+
+---
+
+## Status Values
+
+| Status | Color | Description |
+|--------|-------|-------------|
+| **Blocked** | red | Cannot proceed due to dependency |
+| **Not Started** | gray | Ready to be worked on |
+| **In Progress** | blue | Currently being worked on |
+| **In Review** | purple | Implementation complete, needs review |
+| **Done** | green | Completed and verified |
+
+---
+
+## Priority Values
+
+| Priority | Color | Description |
+|----------|-------|-------------|
+| **Critical** | orange | Must fix immediately |
+| **Urgent** | purple | Fix today |
+| **High** | red | Fix this sprint |
+| **Medium** | yellow | Fix when possible |
+| **Low** | green | Nice to have |
+
+---
+
+## Filter Examples
+
+### By Status
+```python
+filter = {
+    "property": "Status",
+    "status": {"equals": "Not Started"}
+}
+```
+
+### By Priority
+```python
+filter = {
+    "property": "Priority",
+    "select": {"equals": "High"}
+}
+```
+
+### By Team
+```python
+filter = {
+    "property": "Team",
+    "select": {"equals": "Full-Stack"}
+}
+```
+
+### Combined Filters
+```python
+filter = {
+    "and": [
+        {"property": "Status", "status": {"equals": "Not Started"}},
+        {"property": "Priority", "select": {"equals": "High"}},
+        {"property": "Team", "select": {"equals": "Full-Stack"}}
+    ]
+}
+```
+
+---
+
+## API Reference
+
+### Query Database
+```bash
+curl -X POST "https://api.notion.com/v1/databases/DATABASE_ID/query" \
+  -H "Authorization: Bearer $NOTION_API_KEY" \
+  -H "Notion-Version: 2022-06-28" \
+  -H "Content-Type: application/json" \
+  -d '{"filter": {"property": "Status", "status": {"equals": "Not Started"}}}'
+```
+
+### Update Ticket Status
+```bash
+curl -X PATCH "https://api.notion.com/v1/pages/PAGE_ID" \
+  -H "Authorization: Bearer $NOTION_API_KEY" \
+  -H "Notion-Version: 2022-06-28" \
+  -H "Content-Type: application/json" \
+  -d '{"properties": {"Status": {"status": {"name": "In Progress"}}}}'
+```
+
+### Add Comment
+```bash
+curl -X POST "https://api.notion.com/v1/comments" \
+  -H "Authorization: Bearer $NOTION_API_KEY" \
+  -H "Notion-Version: 2022-06-28" \
+  -H "Content-Type: application/json" \
+  -d '{"parent": {"page_id": "PAGE_ID"}, "rich_text": [{"text": {"content": "Implementation complete"}}]}'
+```
 
 ---
 
 ## Prerequisites
 
-### 1. Notion MCP Server
+### 1. Notion API Key
+1. Go to [notion.so/my-integrations](https://www.notion.so/my-integrations)
+2. Create new integration
+3. Copy the Internal Integration Secret (starts with `ntn_` or `secret_`)
 
-Ensure Notion MCP is configured in your Claude Code settings:
+### 2. Set Environment Variable
+```powershell
+setx NOTION_API_KEY "ntn_your_key_here"
+```
 
+### 3. Configure .mcp.json
 ```json
 {
   "mcpServers": {
@@ -37,444 +245,76 @@ Ensure Notion MCP is configured in your Claude Code settings:
       "command": "npx",
       "args": ["-y", "@notionhq/notion-mcp-server"],
       "env": {
-        "NOTION_API_KEY": "your-notion-api-key"
+        "NOTION_API_KEY": "${NOTION_API_KEY}"
       }
     }
   }
 }
 ```
 
-### 2. Notion API Key
-
-1. Go to [Notion Integrations](https://www.notion.so/my-integrations)
-2. Create a new integration
-3. Copy the API key
-4. Add it to your MCP configuration
-
-### 3. Database Access
-
-Share your Notion database with the integration:
+### 4. Share Database
 1. Open your Notion database
-2. Click "..." menu → "Add connections"
+2. Click "..." → "Add connections"
 3. Select your integration
-
----
-
-## Quick Start
-
-### Basic Usage
-
-```
-User: Review my notion tickets and fix them
-
-Claude: I'll fetch your pending tickets from Notion and work through them.
-
-[Uses Notion MCP to query database]
-[Analyzes each ticket]
-[Implements fixes]
-[Updates ticket status to "Review"]
-```
-
-### Command Syntax
-
-```
-/notion-review                              # Review all pending tickets
-/notion-review database_id=<id>             # Specific database
-/notion-review status="To Do"               # Filter by status
-/notion-review assignee="John"              # Filter by assignee
-```
-
----
-
-## Workflow
-
-### Step 1: Fetch Tickets
-
-Use Notion MCP to query the database for actionable tickets:
-
-```
-MCP Tool: notion_query_database
-Parameters:
-  database_id: "your-database-id"
-  filter: {
-    "property": "Status",
-    "status": {
-      "equals": "To Do"
-    }
-  }
-```
-
-### Step 2: Analyze Requirements
-
-For each ticket, extract:
-- **Title**: What needs to be done
-- **Description**: Detailed requirements
-- **Priority**: Order of execution
-- **Acceptance Criteria**: How to verify completion
-
-### Step 3: Implement Changes
-
-Claude Code will:
-1. Read relevant files in the codebase
-2. Make necessary changes based on ticket requirements
-3. Follow project coding standards
-4. Run tests if available
-
-### Step 4: Update Ticket Status
-
-After implementation, update the ticket:
-
-```
-MCP Tool: notion_update_page
-Parameters:
-  page_id: "ticket-page-id"
-  properties: {
-    "Status": {
-      "status": {
-        "name": "Review"
-      }
-    }
-  }
-```
-
-### Step 5: Add Implementation Notes
-
-Optionally add a comment with details:
-
-```
-MCP Tool: notion_create_comment
-Parameters:
-  page_id: "ticket-page-id"
-  rich_text: [
-    {
-      "type": "text",
-      "text": {
-        "content": "Implementation complete:\n- Files modified: ...\n- Changes made: ...\n- Ready for review"
-      }
-    }
-  ]
-```
-
----
-
-## Database Schema Requirements
-
-### Required Properties
-
-| Property | Type | Purpose |
-|----------|------|---------|
-| **Title** | Title | Ticket name/summary |
-| **Status** | Status | Current state (To Do, In Progress, Review, Done) |
-| **Description** | Rich Text | Detailed requirements |
-
-### Recommended Properties
-
-| Property | Type | Purpose |
-|----------|------|---------|
-| **Priority** | Select | High, Medium, Low |
-| **Assignee** | Person | Who's responsible |
-| **Due Date** | Date | Deadline |
-| **Tags** | Multi-select | Categorization |
-| **Project** | Relation | Link to project |
-
-### Status Values
-
-Configure these status options in your database:
-- **To Do** - Ready to be worked on
-- **In Progress** - Currently being worked on
-- **Review** - Implementation complete, needs review
-- **Done** - Completed and verified
-
----
-
-## Notion MCP Tools Reference
-
-### notion_search
-
-Find databases or pages:
-
-```json
-{
-  "query": "Project Tasks",
-  "filter": {
-    "property": "object",
-    "value": "database"
-  }
-}
-```
-
-### notion_query_database
-
-Query tickets with filters:
-
-```json
-{
-  "database_id": "abc123",
-  "filter": {
-    "and": [
-      {
-        "property": "Status",
-        "status": { "equals": "To Do" }
-      },
-      {
-        "property": "Priority",
-        "select": { "equals": "High" }
-      }
-    ]
-  },
-  "sorts": [
-    {
-      "property": "Priority",
-      "direction": "ascending"
-    }
-  ]
-}
-```
-
-### notion_retrieve_page
-
-Get full ticket details:
-
-```json
-{
-  "page_id": "ticket-page-id"
-}
-```
-
-### notion_update_page
-
-Update ticket properties:
-
-```json
-{
-  "page_id": "ticket-page-id",
-  "properties": {
-    "Status": {
-      "status": { "name": "Review" }
-    }
-  }
-}
-```
-
-### notion_create_comment
-
-Add implementation notes:
-
-```json
-{
-  "page_id": "ticket-page-id",
-  "rich_text": [
-    {
-      "type": "text",
-      "text": {
-        "content": "Changes implemented in commit abc123"
-      }
-    }
-  ]
-}
-```
-
----
-
-## Example Workflows
-
-### 1. Review All Pending Tickets
-
-```
-User: Review all my notion tickets
-
-Claude: I'll fetch and process your pending tickets.
-
-1. Querying Notion database for tickets with status "To Do"...
-   Found 3 tickets:
-   - [HIGH] Fix login redirect issue
-   - [MEDIUM] Add loading spinner to dashboard
-   - [LOW] Update footer copyright year
-
-2. Starting with highest priority: "Fix login redirect issue"
-   - Reading ticket description...
-   - Analyzing requirements...
-   - Implementing fix in auth.routes.ts...
-   - Updating ticket status to "Review"...
-
-3. Next: "Add loading spinner to dashboard"
-   [continues...]
-
-All tickets processed. Summary:
-- 3 tickets moved to "Review"
-- Files modified: auth.routes.ts, Dashboard.tsx, Footer.tsx
-```
-
-### 2. Process Specific Ticket
-
-```
-User: Fix the notion ticket about API error handling
-
-Claude: I'll find and process that specific ticket.
-
-1. Searching for ticket about "API error handling"...
-   Found: "Implement proper error handling for API calls"
-
-2. Reading requirements:
-   - Add try-catch blocks to all API calls
-   - Display user-friendly error messages
-   - Log errors to console for debugging
-
-3. Implementing changes:
-   - Modified: apiService.ts
-   - Modified: ErrorBoundary.tsx
-   - Added: errorHandler.ts
-
-4. Updating ticket status to "Review"
-5. Adding comment with implementation details
-
-Done! Ticket ready for review.
-```
-
-### 3. Filter by Priority
-
-```
-User: Only work on high priority notion tickets
-
-Claude: I'll filter for high priority tickets only.
-
-Querying with filter: Priority = "High"
-Found 1 ticket: "Critical: Fix production database connection"
-
-[Proceeds to analyze and implement...]
-```
-
----
-
-## Best Practices
-
-### 1. Clear Ticket Descriptions
-
-Write tickets with clear requirements:
-
-```markdown
-## Problem
-Users cannot login after password reset
-
-## Expected Behavior
-After resetting password, users should be able to login immediately
-
-## Acceptance Criteria
-- [ ] User can login with new password
-- [ ] No "invalid credentials" error
-- [ ] Session is created correctly
-```
-
-### 2. Use Consistent Status Names
-
-Ensure your database uses these exact status names:
-- "To Do"
-- "In Progress"
-- "Review"
-- "Done"
-
-### 3. Include File References
-
-When possible, mention relevant files in the ticket:
-
-```markdown
-Files to check:
-- src/auth/login.ts
-- src/services/authService.ts
-```
-
-### 4. Add Context
-
-Include any relevant context:
-- Related tickets
-- Previous attempts
-- Known constraints
 
 ---
 
 ## Troubleshooting
 
 ### "Notion MCP not available"
-
-Ensure MCP server is configured:
-1. Check `.claude/settings.json` for notion MCP
-2. Verify API key is set
+1. Check `.mcp.json` configuration
+2. Verify `NOTION_API_KEY` environment variable is set
 3. Restart Claude Code
 
 ### "Database not found"
-
 1. Verify database ID is correct
 2. Ensure integration has access to the database
-3. Check database is shared with integration
-
-### "Permission denied"
-
-1. Verify API key permissions
-2. Re-share database with integration
-3. Check integration capabilities in Notion settings
+3. Re-share database with integration
 
 ### "Status update failed"
-
-1. Verify "Status" property exists in database
+1. Verify "Status" property exists
 2. Check status option names match exactly
 3. Ensure property type is "Status" (not "Select")
 
 ---
 
-## Configuration Options
+## Related Files
 
-### Environment Variables
+- `databases/example-config.json` - Database configuration template
+- `prompts/review-all.md` - Review all tickets prompt
+- `prompts/fix-single.md` - Fix single ticket prompt
+- `prompts/filter-by-team.md` - Filter by team prompt
+- `prompts/filter-by-project.md` - Filter by project prompt
 
-```bash
-NOTION_API_KEY=secret_xxx          # Required: Notion API key
-NOTION_DATABASE_ID=abc123          # Optional: Default database
+---
+
+## Example Session
+
 ```
+User: Enter plan mode - Review notion tickets for database 247b6d88d2cf804799b9c8e84bee3771
 
-### Custom Status Mapping
+Claude: Found 21 ActivityCoaching-related tickets:
 
-If your database uses different status names:
+### Workouts & Exercises
+1. [HIGH] Fix workout details sections - ID: 081cebd9...
+2. [HIGH] Investigate "workout as schedule is false" - ID: 1160b40d...
 
-```json
-{
-  "statusMapping": {
-    "pending": "To Do",
-    "working": "In Progress",
-    "needs_review": "Review",
-    "completed": "Done"
-  }
-}
+### Plans & Coaching
+3. [HIGH] Integrate plan list API - ID: 0cb2f50e...
+...
+
+User: Fix ticket: Fix workout details sections
+
+Claude:
+1. Setting status to "In Progress"...
+2. Reading ticket description...
+3. Analyzing requirements:
+   - Fix workout details sections after syncing with Saiful
+4. Exploring codebase for workout-related files...
+5. Found: frontend-dashboard/app/pages/workouts/...
+6. Implementing fix...
+7. Setting status to "In Review"
+8. Adding implementation comment
+
+Done! Ticket ready for review.
 ```
-
----
-
-## Integration with Git
-
-After completing tickets, Claude can:
-
-1. **Create commits** with ticket references:
-   ```
-   fix: Resolve login redirect issue
-
-   Notion Ticket: https://notion.so/ticket-id
-   ```
-
-2. **Create PRs** linked to tickets
-
-3. **Update ticket** with PR/commit links
-
----
-
-## Security Considerations
-
-1. **API Key Protection**: Never commit API keys to version control
-2. **Minimal Permissions**: Only grant necessary permissions to integration
-3. **Database Access**: Only share required databases with integration
-4. **Sensitive Data**: Don't include secrets in ticket descriptions
-
----
-
-## Related Documentation
-
-- [Notion API Documentation](https://developers.notion.com/)
-- [Notion MCP Server](https://github.com/notionhq/notion-mcp-server)
-- [Claude Code MCP Guide](https://docs.anthropic.com/claude-code/mcp)

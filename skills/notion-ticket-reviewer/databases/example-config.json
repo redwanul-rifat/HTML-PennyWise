@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Example database configuration. Copy and customize for your database.",
+
+  "id": "YOUR_DATABASE_ID_HERE",
+  "name": "Your Database Name",
+  "description": "Description of your ticket database",
+
+  "properties": {
+    "title": "Title",
+    "status": "Status",
+    "priority": "Priority",
+    "team": "Team",
+    "assignee": "Assignee",
+    "description": "Description"
+  },
+
+  "statusValues": {
+    "todo": "Not Started",
+    "inProgress": "In Progress",
+    "review": "In Review",
+    "done": "Done",
+    "blocked": "Blocked"
+  },
+
+  "priorityValues": ["Critical", "Urgent", "High", "Medium", "Low"],
+
+  "teamValues": ["Full-Stack", "Design", "Mobile", "Operation"],
+
+  "workflowMapping": {
+    "start": "In Progress",
+    "complete": "In Review",
+    "verify": "Done",
+    "block": "Blocked"
+  },
+
+  "commentTemplate": "Implementation complete:\n- Files modified: {files}\n- Changes: {changes}\n- Ready for review"
+}
