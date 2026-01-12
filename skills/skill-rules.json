@@ -45,6 +45,19 @@
           ".claude/**/reveal*.html"
         ]
       }
+    },
+    "notion-ticket-reviewer": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "high",
+      "promptTriggers": {
+        "keywords": ["notion ticket", "review ticket", "notion task", "ticket reviewer", "notion database", "notion review"],
+        "intentPatterns": [
+          "(review|fix|complete|process).*?(notion|ticket)",
+          "(fetch|get|list|query).*?(notion|ticket|task)",
+          "notion.*?(review|update|status)"
+        ]
+      }
     }
   }
 }
