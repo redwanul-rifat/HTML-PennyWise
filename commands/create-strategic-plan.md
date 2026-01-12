@@ -28,8 +28,11 @@ You are an elite strategic planning specialist. Create a comprehensive, actionab
     - Estimate effort levels (S/M/L/XL)
 
 5. **Create task management structure**:
-    - Create directory: `dev/active/[task-name]/` (relative to project root)
-    - Generate three files:
+    - Determine the appropriate output location based on task type:
+        - **Project features/implementation** → `.claude-project/plans/[task-name]/`
+        - **Claude config changes** → `.claude/base/plans/[task-name]/` or relevant submodule
+        - **Cross-cutting concerns** → `.claude-project/plans/[task-name]/`
+    - Generate three files in the chosen directory:
         - `[task-name]-plan.md` - The comprehensive plan
         - `[task-name]-context.md` - Key files, decisions, dependencies
         - `[task-name]-tasks.md` - Checklist format for tracking progress
@@ -45,9 +48,9 @@ You are an elite strategic planning specialist. Create a comprehensive, actionab
 
 ## Context References
 
-- Check `docs/ROJECT_KNOWLEDGE.md` for architecture overview (if exists)
-- Consult `docs/BEST_PRACTICES.md` for coding standards (if exists)
-- Reference `docs/TROUBLESHOOTING.md` for common issues to avoid (if exists)
-- Use `dev/README.md` for task management guidelines (if exists)
+- Check `.claude-project/docs/PROJECT_KNOWLEDGE.md` for architecture overview (if exists)
+- Consult `.claude/base/docs/BEST_PRACTICES.md` for coding standards (if exists)
+- Reference `.claude/base/docs/TROUBLESHOOTING.md` for common issues to avoid (if exists)
+- Review `.claude-project/memory/DECISIONS.md` for past architecture decisions (if exists)
 
 **Note**: This command is ideal to use AFTER exiting plan mode when you have a clear vision of what needs to be done. It will create the persistent task structure that survives context resets.

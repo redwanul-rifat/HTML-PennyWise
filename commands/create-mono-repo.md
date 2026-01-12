@@ -15,7 +15,90 @@ which git
 
 If git is not installed, inform the user and stop.
 
-## Step 1: Gather Repository Information
+## Step 0: Choose Setup Mode
+
+Use **AskUserQuestion** to ask:
+
+**How do you want to set up the mono-repo?**
+
+| Option | Description |
+|--------|-------------|
+| **Quick Start** (Recommended) | Select from pre-configured boilerplate templates (NestJS, Django, React, React Native) |
+| **Custom Repos** | Enter your own repository URLs manually |
+
+- If user selects **Quick Start** → Go to Step 0.1
+- If user selects **Custom Repos** → Skip to Step 1
+
+---
+
+## Step 0.1: Select Backend (Quick Start)
+
+Use **AskUserQuestion** to ask:
+
+**Which backend framework?**
+
+| Option | Repository | Folder |
+|--------|------------|--------|
+| **NestJS** (Recommended) | `https://github.com/potentialInc/nestjs-starter-kit` | `backend/` |
+| **Django** | `https://github.com/potentialInc/django-starter-kit` | `backend/` |
+| **None** | - | - |
+
+Store selection. If not "None", add to repository list:
+```
+{
+  url: <selected_repo_url>,
+  branch: "main",
+  folder: "backend"
+}
+```
+
+## Step 0.2: Select Frontend(s) (Quick Start)
+
+Use **AskUserQuestion** with `multiSelect: true`:
+
+**Which frontend framework(s)?** (Select all that apply)
+
+| Option | Repository | Folder |
+|--------|------------|--------|
+| **React Web** | `https://github.com/potentialInc/react-starter-kit` | `frontend/` |
+| **React Native** | `https://github.com/potentialInc/react-native-starter-kit` | `mobile/` |
+| **None** | - | - |
+
+For each selection (except "None"), add to repository list:
+```
+{
+  url: <selected_repo_url>,
+  branch: "main",
+  folder: <default_folder>
+}
+```
+
+## Step 0.3: Dashboard (Quick Start)
+
+If React Web was selected, ask:
+
+**Do you need an admin/management dashboard?**
+
+| Option | Description |
+|--------|-------------|
+| **Yes** | Create `frontend-dashboard/` with React starter |
+| **No** | Continue with setup |
+
+If "Yes":
+- Add to repository list:
+  ```
+  {
+    url: "https://github.com/potentialInc/react-starter-kit",
+    branch: "main",
+    folder: "frontend-dashboard"
+  }
+  ```
+
+After Step 0.3, proceed to Step 2 (Display Configuration Summary).
+
+---
+
+## Step 1: Gather Repository Information (Custom Repos Mode)
 
 Interactively collect information for each repository using the AskUserQuestion tool. For each repository, ask:
 
@@ -123,10 +206,11 @@ networks:
 ```
 
 **Port assignment:**
-- First service: 3000
-- Second service: 3001
-- Backend services (if folder contains "backend"): 8000, 8001, etc.
-- Ask user to customize ports if needed
+- Backend (NestJS): 3000
+- Backend (Django): 8000
+- Frontend: 5173
+- Dashboard (frontend-dashboard): 5174
+- Mobile: (no port needed for dev)
 
 ## Step 7: Initialize Git (if needed)
 
@@ -216,3 +300,15 @@ rm -rf <folder1> <folder2> ...
 # Remove generated files
 rm -f docker-compose.yml
 ```
+
+---
+
+## Boilerplate Reference
+
+| Framework | Repository URL | Default Folder |
+|-----------|----------------|----------------|
+| NestJS | `https://github.com/potentialInc/nestjs-starter-kit` | `backend/` |
+| Django | `https://github.com/potentialInc/django-starter-kit` | `backend/` |
+| React Web | `https://github.com/potentialInc/react-starter-kit` | `frontend/` |
+| Dashboard | `https://github.com/potentialInc/react-starter-kit` | `frontend-dashboard/` |
+| React Native | `https://github.com/potentialInc/react-native-starter-kit` | `mobile/` |

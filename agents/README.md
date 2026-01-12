@@ -34,7 +34,7 @@ Agents are autonomous Claude instances that handle specific complex tasks. Unlik
 
 ---
 
-### code-refactor-master
+### refactor-executor
 
 **Purpose:** Plan and execute comprehensive refactoring
 
@@ -235,7 +235,7 @@ That's it! Agents work immediately.
 | Agent                      | Complexity | Customization       | Auth Required |
 | -------------------------- | ---------- | ------------------- | ------------- |
 | code-architecture-reviewer | Medium     | ✅ None             | No            |
-| code-refactor-master       | High       | ✅ None             | No            |
+| refactor-executor          | High       | ✅ None             | No            |
 | documentation-architect    | Medium     | ✅ None             | No            |
 | frontend-error-fixer       | Medium     | ⚠️ Screenshot paths | No            |
 | plan-reviewer              | Low        | ✅ None             | No            |

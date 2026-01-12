@@ -733,7 +733,7 @@ If you're still stuck:
 
 - [Project Knowledge](PROJECT_KNOWLEDGE.md)
 - [Best Practices](BEST_PRACTICES.md)
-- [Backend Development Guidelines](../skills/backend-dev-guidelines/SKILL.md)
-- [Frontend Development Guidelines](../skills/frontend-dev-guidelines/SKILL.md)
+- [Backend Development Guidelines](../skills/best-practices.md)
+- [Frontend Development Guidelines](../skills/best-practices.md)
 - [Error Tracking Guide](../skills/error-tracking/SKILL.md)
 - [Route Testing Guide](../skills/route-tester/SKILL.md)
