@@ -29,16 +29,16 @@ This skill enables Claude Code to:
 
 ### Review All Tickets
 ```
-Enter plan mode - Review notion tickets for database 247b6d88d2cf804799b9c8e84bee3771
+Enter plan mode - Review notion tickets for database [YOUR_DATABASE_ID]
 ```
 
 ### Fix a Single Ticket
 ```
-Fix ticket: Fix workout details sections
+Fix ticket: Fix login validation bug
 ```
 or
 ```
-Fix ticket: 081cebd9-f5ed-45ef-99ea-9bcb8b4695aa
+Fix ticket: a1b2c3d4-e5f6-7890-abcd-ef1234567890
 ```
 
 ### Filter by Team
@@ -56,7 +56,7 @@ Filter: Team = "Full-Stack", Status = "Not Started"
 Enter plan mode - Review notion tickets for database [DATABASE_ID]
 ```
 - Shows all "Not Started" tickets
-- Grouped by category (Workouts, Plans, Chat, etc.)
+- Grouped by category (Features, Bug Fixes, Improvements, etc.)
 - Displays: Priority, Team, Title, ID
 
 ### Step 2: Select & Start Ticket
@@ -291,27 +291,27 @@ setx NOTION_API_KEY "ntn_your_key_here"
 ## Example Session
 
 ```
-User: Enter plan mode - Review notion tickets for database 247b6d88d2cf804799b9c8e84bee3771
+User: Enter plan mode - Review notion tickets for database [YOUR_DATABASE_ID]
 
-Claude: Found 21 ActivityCoaching-related tickets:
+Claude: Found 15 tickets:
 
-### Workouts & Exercises
-1. [HIGH] Fix workout details sections - ID: 081cebd9...
-2. [HIGH] Investigate "workout as schedule is false" - ID: 1160b40d...
+### Features
+1. [HIGH] Fix login validation bug - ID: a1b2c3d4...
+2. [HIGH] Implement search functionality - ID: e5f67890...
 
-### Plans & Coaching
-3. [HIGH] Integrate plan list API - ID: 0cb2f50e...
+### Bug Fixes
+3. [HIGH] Resolve API timeout issue - ID: abcd1234...
 ...
 
-User: Fix ticket: Fix workout details sections
+User: Fix ticket: Fix login validation bug
 
 Claude:
 1. Setting status to "In Progress"...
 2. Reading ticket description...
 3. Analyzing requirements:
-   - Fix workout details sections after syncing with Saiful
-4. Exploring codebase for workout-related files...
-5. Found: frontend-dashboard/app/pages/workouts/...
+   - Fix form validation on empty fields
+4. Exploring codebase for relevant files...
+5. Found: src/components/LoginForm.tsx...
 6. Implementing fix...
 7. Setting status to "In Review"
 8. Adding implementation comment

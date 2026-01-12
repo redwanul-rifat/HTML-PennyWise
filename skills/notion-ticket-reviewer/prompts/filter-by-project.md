@@ -22,25 +22,25 @@ Filter tickets by their related project to focus on work for a specific project.
 ### Single Project
 ```
 Enter plan mode - Review notion tickets for database [DATABASE_ID]
-Filter: Related Project contains "ActivityCoaching"
+Filter: Related Project contains "YourProject"
 ```
 
 ### Project + Status
 ```
 Enter plan mode - Review notion tickets for database [DATABASE_ID]
-Filter: Related Project contains "ActivityCoaching", Status = "Not Started"
+Filter: Related Project contains "YourProject", Status = "Not Started"
 ```
 
 ### Project + Team
 ```
 Enter plan mode - Review notion tickets for database [DATABASE_ID]
-Filter: Related Project contains "ActivityCoaching", Team = "Full-Stack"
+Filter: Related Project contains "YourProject", Team = "Full-Stack"
 ```
 
 ### Project + Priority
 ```
 Enter plan mode - Review notion tickets for database [DATABASE_ID]
-Filter: Related Project contains "ActivityCoaching", Priority = "Critical" OR "Urgent"
+Filter: Related Project contains "YourProject", Priority = "Critical" OR "Urgent"
 ```
 
 ## API Filter
@@ -57,7 +57,7 @@ Note: Filtering by relation requires the related page ID or a rollup property.
     "rollup": {
       "any": {
         "rich_text": {
-          "contains": "ActivityCoaching"
+          "contains": "YourProject"
         }
       }
     }
@@ -69,7 +69,7 @@ Note: Filtering by relation requires the related page ID or a rollup property.
 ```python
 # Fetch all tickets then filter in code
 tickets = query_database(database_id)
-filtered = [t for t in tickets if "ActivityCoaching" in get_project_name(t)]
+filtered = [t for t in tickets if "YourProject" in get_project_name(t)]
 ```
 
 ### Combined Filter
@@ -100,15 +100,15 @@ filtered = [t for t in tickets if "ActivityCoaching" in get_project_name(t)]
 Found [N] tickets for project [PROJECT_NAME]:
 
 ### By Category
-#### Workouts & Exercises
-1. [HIGH] Fix workout details sections - ID: xxx...
-2. [HIGH] Investigate workout schedule issue - ID: xxx...
+#### Features
+1. [HIGH] Fix user authentication flow - ID: xxx...
+2. [HIGH] Implement search functionality - ID: xxx...
 
-#### Plans & Coaching
-3. [HIGH] Integrate plan list API - ID: xxx...
+#### Bug Fixes
+3. [HIGH] Resolve API timeout issue - ID: xxx...
 
-#### Chat & Communication
-4. [MEDIUM] Add voice recording feature - ID: xxx...
+#### Improvements
+4. [MEDIUM] Optimize database queries - ID: xxx...
 ```
 
 ## Workflow Recommendations
@@ -122,12 +122,12 @@ Found [N] tickets for project [PROJECT_NAME]:
 ### Example Session
 ```
 User: Enter plan mode - Review notion tickets
-      Filter: Related Project contains "ActivityCoaching", Status = "Not Started"
+      Filter: Related Project contains "YourProject", Status = "Not Started"
 
-Claude: Found 21 ActivityCoaching tickets:
+Claude: Found 15 YourProject tickets:
         [Lists tickets grouped by category]
 
-User: Fix ticket: Fix workout details sections
+User: Fix ticket: Fix user authentication flow
 
 Claude: [Implements fix, updates status]
 

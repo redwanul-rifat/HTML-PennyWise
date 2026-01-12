@@ -51,18 +51,18 @@ Analyzes a single ticket, implements the fix in the codebase, and updates the ti
 
 ### By Title
 ```
-Fix ticket: Fix workout details sections
+Fix ticket: Fix login validation bug
 ```
 
 ### By ID
 ```
-Fix ticket: 081cebd9-f5ed-45ef-99ea-9bcb8b4695aa
+Fix ticket: a1b2c3d4-e5f6-7890-abcd-ef1234567890
 ```
 
 ### With Context
 ```
-Fix ticket: Fix workout details sections
-Context: After syncing with Saiful, need to update the workout details component
+Fix ticket: Fix login validation bug
+Context: Users report validation not triggering on empty fields
 ```
 
 ## Output Format
@@ -73,16 +73,16 @@ Ticket Fixed: [Title]
 Status: Not Started → In Progress → In Review
 
 Files Modified:
-- src/components/WorkoutDetails.tsx
-- src/api/workouts.ts
+- src/components/LoginForm.tsx
+- src/utils/validation.ts
 
 Changes:
-- Fixed null check in workout details render
-- Added loading state for async operations
-- Updated API response handling
+- Fixed validation trigger on empty fields
+- Added proper error messages
+- Updated form submission handling
 
 Comment Added: Yes
-Commit Suggested: fix: resolve workout details rendering issue
+Commit Suggested: fix: resolve login form validation issue
 ```
 
 ### Blocked

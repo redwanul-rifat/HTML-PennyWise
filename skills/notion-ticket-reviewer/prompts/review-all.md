@@ -39,18 +39,18 @@ Found [N] tickets:
 
 ### Basic Review
 ```
-Enter plan mode - Review notion tickets for database 247b6d88d2cf804799b9c8e84bee3771
+Enter plan mode - Review notion tickets for database [YOUR_DATABASE_ID]
 ```
 
 ### With Status Filter
 ```
-Enter plan mode - Review notion tickets for database 247b6d88d2cf804799b9c8e84bee3771
+Enter plan mode - Review notion tickets for database [YOUR_DATABASE_ID]
 Filter: Status = "Blocked"
 ```
 
 ### With Priority Filter
 ```
-Enter plan mode - Review notion tickets for database 247b6d88d2cf804799b9c8e84bee3771
+Enter plan mode - Review notion tickets for database [YOUR_DATABASE_ID]
 Filter: Priority = "Critical" OR "Urgent"
 ```
 

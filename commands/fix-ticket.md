@@ -67,12 +67,12 @@ Notion Ticket: https://notion.so/[ticket-id]
 
 ### By Title
 ```
-Fix ticket: Fix workout details sections
+Fix ticket: Fix login validation bug
 ```
 
 ### By ID
 ```
-Fix ticket: 081cebd9-f5ed-45ef-99ea-9bcb8b4695aa
+Fix ticket: a1b2c3d4-e5f6-7890-abcd-ef1234567890
 ```
 
 ### With Plan Mode

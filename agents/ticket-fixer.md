@@ -103,7 +103,7 @@ Fix ticket: [ticket title or ID]
 ### Via Task Tool
 ```
 Task tool with subagent_type=ticket-fixer
-Prompt: "Fix ticket 081cebd9-f5ed-45ef-99ea-9bcb8b4695aa"
+Prompt: "Fix ticket a1b2c3d4-e5f6-7890-abcd-ef1234567890"
 ```
 
 ## Output Format
@@ -114,16 +114,16 @@ Ticket Fixed: [Title]
 Status: In Progress → In Review
 
 Files Modified:
-- src/components/WorkoutDetails.tsx
-- src/api/workouts.ts
+- src/components/LoginForm.tsx
+- src/utils/validation.ts
 
 Changes:
-- Fixed null check in workout details render
-- Added loading state for async operations
-- Updated API response handling
+- Fixed validation trigger on empty fields
+- Added proper error messages
+- Updated form submission handling
 
 Comment Added: Yes
-Commit Suggested: fix: resolve workout details rendering issue
+Commit Suggested: fix: resolve login form validation issue
 ```
 
 ### Blocked
