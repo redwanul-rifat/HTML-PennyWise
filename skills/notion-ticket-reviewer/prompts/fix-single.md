@@ -20,11 +20,11 @@ Analyzes a single ticket, implements the fix in the codebase, and updates the ti
 
 ```
 1. FIND TICKET
-   └── Search by title or ID
+   └── Search by title or ID via curl
    └── Fetch ticket details from Notion API
 
 2. SET IN PROGRESS
-   └── Update Status: "Not Started" → "In Progress"
+   └── Update Status via curl: "Not Started" → "In Progress"
 
 3. ANALYZE
    └── Parse ticket title for intent
@@ -42,9 +42,52 @@ Analyzes a single ticket, implements the fix in the codebase, and updates the ti
    └── Run tests if applicable
 
 6. COMPLETE
-   └── Update Status: "In Progress" → "In Review"
-   └── Add comment with implementation details
+   └── Update Status via curl: "In Progress" → "In Review"
+   └── Add comment via curl with implementation details
    └── Suggest git commit message
+```
+
+## Curl Commands
+
+### Get API Key from .env
+```bash
+NOTION_API_KEY=$(grep -E "^NOTION_API_KEY=" .env | cut -d'=' -f2)
+```
+
+### Search for Ticket by Title
+```bash
+curl -s -X POST "https://api.notion.com/v1/databases/[DATABASE_ID]/query" \
+  -H "Authorization: Bearer $NOTION_API_KEY" \
+  -H "Notion-Version: 2022-06-28" \
+  -H "Content-Type: application/json" \
+  -d '{"filter": {"property": "Ticket Title", "title": {"contains": "[SEARCH_TERM]"}}}'
+```
+
+### Set Status to In Progress
+```bash
+curl -s -X PATCH "https://api.notion.com/v1/pages/[PAGE_ID]" \
+  -H "Authorization: Bearer $NOTION_API_KEY" \
+  -H "Notion-Version: 2022-06-28" \
+  -H "Content-Type: application/json" \
+  -d '{"properties": {"Status": {"status": {"name": "In Progress"}}}}'
+```
+
+### Set Status to In Review
+```bash
+curl -s -X PATCH "https://api.notion.com/v1/pages/[PAGE_ID]" \
+  -H "Authorization: Bearer $NOTION_API_KEY" \
+  -H "Notion-Version: 2022-06-28" \
+  -H "Content-Type: application/json" \
+  -d '{"properties": {"Status": {"status": {"name": "In Review"}}}}'
+```
+
+### Add Comment
+```bash
+curl -s -X POST "https://api.notion.com/v1/comments" \
+  -H "Authorization: Bearer $NOTION_API_KEY" \
+  -H "Notion-Version: 2022-06-28" \
+  -H "Content-Type: application/json" \
+  -d '{"parent": {"page_id": "[PAGE_ID]"}, "rich_text": [{"text": {"content": "[COMMENT_TEXT]"}}]}'
 ```
 
 ## Example Usage
@@ -134,6 +177,7 @@ When completing a ticket, the following comment is added:
 
 ## Related
 
-- [review-all.md](./review-all.md) - Review all tickets first
+- [review-tickets.md](./review-tickets.md) - Review all tickets
+- [update-ticket.md](./update-ticket.md) - Update ticket status
+- [fix-all-by-status.md](./fix-all-by-status.md) - Fix all tickets by status
 - [../../../commands/fix-ticket.md](../../../commands/fix-ticket.md) - Full command documentation
-- [../../../agents/ticket-fixer.md](../../../agents/ticket-fixer.md) - Agent documentation
