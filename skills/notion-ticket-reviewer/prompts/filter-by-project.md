@@ -43,7 +43,46 @@ Enter plan mode - Review notion tickets for database [DATABASE_ID]
 Filter: Related Project contains "YourProject", Priority = "Critical" OR "Urgent"
 ```
 
-## API Filter
+## Curl Commands
+
+### Get API Key from .env
+```bash
+NOTION_API_KEY=$(grep -E "^NOTION_API_KEY=" .env | cut -d'=' -f2)
+```
+
+### Query All Tickets (then filter locally)
+```bash
+curl -s -X POST "https://api.notion.com/v1/databases/[DATABASE_ID]/query" \
+  -H "Authorization: Bearer $NOTION_API_KEY" \
+  -H "Notion-Version: 2022-06-28" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "filter": {
+      "property": "Status",
+      "status": {"equals": "Not Started"}
+    },
+    "page_size": 100
+  }'
+```
+
+### Combined Filter (Status + Team)
+```bash
+curl -s -X POST "https://api.notion.com/v1/databases/[DATABASE_ID]/query" \
+  -H "Authorization: Bearer $NOTION_API_KEY" \
+  -H "Notion-Version: 2022-06-28" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "filter": {
+      "and": [
+        {"property": "Status", "status": {"equals": "Not Started"}},
+        {"property": "Team", "select": {"equals": "Full-Stack"}}
+      ]
+    },
+    "page_size": 100
+  }'
+```
+
+## API Filter Reference
 
 ### By Related Project (Relation Property)
 

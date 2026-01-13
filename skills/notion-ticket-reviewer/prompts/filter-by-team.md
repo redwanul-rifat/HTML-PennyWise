@@ -46,7 +46,53 @@ Enter plan mode - Review notion tickets for database [DATABASE_ID]
 Filter: Team = "Full-Stack", Priority = "High"
 ```
 
-## API Filter
+## Curl Commands
+
+### Get API Key from .env
+```bash
+NOTION_API_KEY=$(grep -E "^NOTION_API_KEY=" .env | cut -d'=' -f2)
+```
+
+### Filter by Single Team
+```bash
+curl -s -X POST "https://api.notion.com/v1/databases/[DATABASE_ID]/query" \
+  -H "Authorization: Bearer $NOTION_API_KEY" \
+  -H "Notion-Version: 2022-06-28" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "filter": {
+      "and": [
+        {"property": "Team", "select": {"equals": "Full-Stack"}},
+        {"property": "Status", "status": {"equals": "Not Started"}}
+      ]
+    },
+    "page_size": 100
+  }'
+```
+
+### Filter by Multiple Teams
+```bash
+curl -s -X POST "https://api.notion.com/v1/databases/[DATABASE_ID]/query" \
+  -H "Authorization: Bearer $NOTION_API_KEY" \
+  -H "Notion-Version: 2022-06-28" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "filter": {
+      "and": [
+        {
+          "or": [
+            {"property": "Team", "select": {"equals": "Full-Stack"}},
+            {"property": "Team", "select": {"equals": "Mobile"}}
+          ]
+        },
+        {"property": "Status", "status": {"equals": "Not Started"}}
+      ]
+    },
+    "page_size": 100
+  }'
+```
+
+## API Filter Reference
 
 ### Single Team
 ```json
