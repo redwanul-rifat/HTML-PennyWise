@@ -88,56 +88,59 @@ Not Started → In Progress → In Review → Done
                Blocked
 ```
 
-## Implementation Notes
+## Curl Commands
 
-### Updating Status via API
-
-```python
-import urllib.request
-import json
-import os
-
-def update_ticket_status(page_id, status):
-    url = f'https://api.notion.com/v1/pages/{page_id}'
-    headers = {
-        'Authorization': f'Bearer {os.environ["NOTION_API_KEY"]}',
-        'Notion-Version': '2022-06-28',
-        'Content-Type': 'application/json'
-    }
-    data = json.dumps({
-        'properties': {
-            'Status': {
-                'status': {'name': status}
-            }
-        }
-    }).encode('utf-8')
-
-    req = urllib.request.Request(url, data=data, headers=headers, method='PATCH')
-    with urllib.request.urlopen(req) as response:
-        return json.loads(response.read().decode('utf-8'))
+### Get API Key from .env
+```bash
+NOTION_API_KEY=$(grep -E "^NOTION_API_KEY=" .env | cut -d'=' -f2)
 ```
 
-### Adding Comment via API
+### Search for Ticket by Title
+```bash
+curl -s -X POST "https://api.notion.com/v1/databases/[DATABASE_ID]/query" \
+  -H "Authorization: Bearer $NOTION_API_KEY" \
+  -H "Notion-Version: 2022-06-28" \
+  -H "Content-Type: application/json" \
+  -d '{"filter": {"property": "Ticket Title", "title": {"contains": "[SEARCH_TERM]"}}}'
+```
 
-```python
-def add_comment(page_id, comment_text):
-    url = 'https://api.notion.com/v1/comments'
-    headers = {
-        'Authorization': f'Bearer {os.environ["NOTION_API_KEY"]}',
-        'Notion-Version': '2022-06-28',
-        'Content-Type': 'application/json'
-    }
-    data = json.dumps({
-        'parent': {'page_id': page_id},
-        'rich_text': [{
-            'type': 'text',
-            'text': {'content': comment_text}
-        }]
-    }).encode('utf-8')
+### Set Status to In Progress
+```bash
+curl -s -X PATCH "https://api.notion.com/v1/pages/[PAGE_ID]" \
+  -H "Authorization: Bearer $NOTION_API_KEY" \
+  -H "Notion-Version: 2022-06-28" \
+  -H "Content-Type: application/json" \
+  -d '{"properties": {"Status": {"status": {"name": "In Progress"}}}}'
+```
 
-    req = urllib.request.Request(url, data=data, headers=headers, method='POST')
-    with urllib.request.urlopen(req) as response:
-        return json.loads(response.read().decode('utf-8'))
+### Set Status to In Review
+```bash
+curl -s -X PATCH "https://api.notion.com/v1/pages/[PAGE_ID]" \
+  -H "Authorization: Bearer $NOTION_API_KEY" \
+  -H "Notion-Version: 2022-06-28" \
+  -H "Content-Type: application/json" \
+  -d '{"properties": {"Status": {"status": {"name": "In Review"}}}}'
+```
+
+### Set Status to Blocked
+```bash
+curl -s -X PATCH "https://api.notion.com/v1/pages/[PAGE_ID]" \
+  -H "Authorization: Bearer $NOTION_API_KEY" \
+  -H "Notion-Version: 2022-06-28" \
+  -H "Content-Type: application/json" \
+  -d '{"properties": {"Status": {"status": {"name": "Blocked"}}}}'
+```
+
+### Add Comment
+```bash
+curl -s -X POST "https://api.notion.com/v1/comments" \
+  -H "Authorization: Bearer $NOTION_API_KEY" \
+  -H "Notion-Version: 2022-06-28" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "parent": {"page_id": "[PAGE_ID]"},
+    "rich_text": [{"text": {"content": "[COMMENT_TEXT]"}}]
+  }'
 ```
 
 ## Related

@@ -3,7 +3,7 @@ skill_name: notion-ticket-reviewer
 applies_to_local_project_only: false
 auto_trigger_regex:
     [notion ticket, review ticket, notion task, ticket reviewer, /notion-review, notion database, fix ticket]
-tags: [notion, tickets, automation, review, mcp, workflow]
+tags: [notion, tickets, automation, review, curl, workflow]
 related_skills: []
 ---
 
@@ -232,42 +232,36 @@ curl -X POST "https://api.notion.com/v1/comments" \
 2. Create new integration
 3. Copy the Internal Integration Secret (starts with `ntn_` or `secret_`)
 
-### 2. Set Environment Variable
-```powershell
-setx NOTION_API_KEY "ntn_your_key_here"
+### 2. Add to .env File
+Add your API key to the project's `.env` file:
+```
+NOTION_API_KEY=ntn_your_key_here
 ```
 
-### 3. Configure .mcp.json
-```json
-{
-  "mcpServers": {
-    "notion": {
-      "command": "npx",
-      "args": ["-y", "@notionhq/notion-mcp-server"],
-      "env": {
-        "NOTION_API_KEY": "${NOTION_API_KEY}"
-      }
-    }
-  }
-}
-```
-
-### 4. Share Database
+### 3. Share Database
 1. Open your Notion database
 2. Click "..." → "Add connections"
 3. Select your integration
+
+### 4. Test Connection
+```bash
+NOTION_API_KEY=$(grep -E "^NOTION_API_KEY=" .env | cut -d'=' -f2)
+curl -s -X GET "https://api.notion.com/v1/users/me" \
+  -H "Authorization: Bearer $NOTION_API_KEY" \
+  -H "Notion-Version: 2022-06-28"
+```
 
 ---
 
 ## Troubleshooting
 
-### "Notion MCP not available"
-1. Check `.mcp.json` configuration
-2. Verify `NOTION_API_KEY` environment variable is set
-3. Restart Claude Code
+### "API token is invalid"
+1. Check `NOTION_API_KEY` in `.env` file
+2. Verify key starts with `ntn_` or `secret_`
+3. Regenerate key at notion.so/my-integrations if needed
 
 ### "Database not found"
-1. Verify database ID is correct
+1. Verify database ID is correct (32 hex chars)
 2. Ensure integration has access to the database
 3. Re-share database with integration
 
@@ -276,13 +270,23 @@ setx NOTION_API_KEY "ntn_your_key_here"
 2. Check status option names match exactly
 3. Ensure property type is "Status" (not "Select")
 
+### Test curl connection
+```bash
+NOTION_API_KEY=$(grep -E "^NOTION_API_KEY=" .env | cut -d'=' -f2)
+curl -s -X GET "https://api.notion.com/v1/users/me" \
+  -H "Authorization: Bearer $NOTION_API_KEY" \
+  -H "Notion-Version: 2022-06-28"
+```
+
 ---
 
 ## Related Files
 
 - `databases/example-config.json` - Database configuration template
-- `prompts/review-all.md` - Review all tickets prompt
+- `prompts/review-tickets.md` - Review tickets via curl
+- `prompts/update-ticket.md` - Update ticket status via curl
 - `prompts/fix-single.md` - Fix single ticket prompt
+- `prompts/fix-all-by-status.md` - Fix all tickets by status
 - `prompts/filter-by-team.md` - Filter by team prompt
 - `prompts/filter-by-project.md` - Filter by project prompt
 

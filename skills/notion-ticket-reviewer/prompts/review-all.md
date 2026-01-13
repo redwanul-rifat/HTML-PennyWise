@@ -54,7 +54,45 @@ Enter plan mode - Review notion tickets for database [YOUR_DATABASE_ID]
 Filter: Priority = "Critical" OR "Urgent"
 ```
 
-## API Filter Used
+## Curl Commands
+
+### Get API Key from .env
+```bash
+NOTION_API_KEY=$(grep -E "^NOTION_API_KEY=" .env | cut -d'=' -f2)
+```
+
+### Query Database
+```bash
+curl -s -X POST "https://api.notion.com/v1/databases/[DATABASE_ID]/query" \
+  -H "Authorization: Bearer $NOTION_API_KEY" \
+  -H "Notion-Version: 2022-06-28" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "filter": {
+      "property": "Status",
+      "status": {"equals": "Not Started"}
+    },
+    "sorts": [{"property": "Priority", "direction": "ascending"}],
+    "page_size": 100
+  }'
+```
+
+### With Status Filter
+```bash
+curl -s -X POST "https://api.notion.com/v1/databases/[DATABASE_ID]/query" \
+  -H "Authorization: Bearer $NOTION_API_KEY" \
+  -H "Notion-Version: 2022-06-28" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "filter": {
+      "property": "Status",
+      "status": {"equals": "Blocked"}
+    },
+    "page_size": 100
+  }'
+```
+
+## API Filter Reference
 
 ```json
 {
