@@ -32,8 +32,8 @@ Processes and fixes all Bug Report tickets with a specific status, one by one se
 
 3. FOR EACH TICKET (sequential):
    │
-   ├── 3a. SET FIXING
-   │   └── Update Status: "New" → "Fixing"
+   ├── 3a. SET IN PROGRESS
+   │   └── Update Status: "New" → "In Progress"
    │
    ├── 3b. ANALYZE
    │   └── Parse ticket title for intent
@@ -52,7 +52,7 @@ Processes and fixes all Bug Report tickets with a specific status, one by one se
    │   └── Run tests if applicable
    │
    ├── 3e. COMPLETE
-   │   └── Update Status: "Fixing" → "Resolved"
+   │   └── Update Status: "In Progress" → "Ready for test"
    │   └── Add Dev's Comment with implementation details
    │
    └── 3f. LOG PROGRESS
@@ -60,7 +60,7 @@ Processes and fixes all Bug Report tickets with a specific status, one by one se
        └── Show "[X/N] completed"
 
 4. HANDLE ERRORS
-   └── If blocked: Set status to "Won't Fix", add Dev's Comment
+   └── If blocked: Set status to "Not Bug", add Dev's Comment
    └── Log error and continue to next ticket (or stop)
    └── User can resume with "Continue fixing tickets"
 
@@ -78,15 +78,15 @@ Processes and fixes all Bug Report tickets with a specific status, one by one se
 Fix all tickets with status "New" for database [DATABASE_ID]
 ```
 
-### Won't Fix Tickets (Retry)
+### Not Bug Tickets (Retry)
 ```
-Fix all tickets with status "Won't Fix" for database [DATABASE_ID]
+Fix all tickets with status "Not Bug" for database [DATABASE_ID]
 ```
 
 ### With App Filter
 ```
 Fix all tickets with status "New" for database [DATABASE_ID]
-Filter: App = "APP"
+Filter: App = "<app-name>"
 ```
 
 ### Continue After Interruption
@@ -127,7 +127,7 @@ curl -s -X POST "https://api.notion.com/v1/databases/[DATABASE_ID]/query" \
     "filter": {
       "and": [
         {"property": "Status", "status": {"equals": "New"}},
-        {"property": "App / Dashboard", "multi_select": {"contains": "APP"}}
+        {"property": "App / Dashboard", "multi_select": {"contains": "<app-name>"}}
       ]
     },
     "sorts": [{"property": "Priority", "direction": "ascending"}],
@@ -135,31 +135,31 @@ curl -s -X POST "https://api.notion.com/v1/databases/[DATABASE_ID]/query" \
   }'
 ```
 
-### Set Status to Fixing
+### Set Status to In Progress
 ```bash
 curl -s -X PATCH "https://api.notion.com/v1/pages/[PAGE_ID]" \
   -H "Authorization: Bearer $NOTION_API_KEY" \
   -H "Notion-Version: 2022-06-28" \
   -H "Content-Type: application/json" \
-  -d '{"properties": {"Status": {"status": {"name": "Fixing"}}}}'
+  -d '{"properties": {"Status": {"status": {"name": "In Progress"}}}}'
 ```
 
-### Set Status to Resolved
+### Set Status to Ready for test
 ```bash
 curl -s -X PATCH "https://api.notion.com/v1/pages/[PAGE_ID]" \
   -H "Authorization: Bearer $NOTION_API_KEY" \
   -H "Notion-Version: 2022-06-28" \
   -H "Content-Type: application/json" \
-  -d '{"properties": {"Status": {"status": {"name": "Resolved"}}}}'
+  -d '{"properties": {"Status": {"status": {"name": "Ready for test"}}}}'
 ```
 
-### Set Status to Won't Fix
+### Set Status to Not Bug
 ```bash
 curl -s -X PATCH "https://api.notion.com/v1/pages/[PAGE_ID]" \
   -H "Authorization: Bearer $NOTION_API_KEY" \
   -H "Notion-Version: 2022-06-28" \
   -H "Content-Type: application/json" \
-  -d '{"properties": {"Status": {"status": {"name": "Won'\''t Fix"}}}}'
+  -d '{"properties": {"Status": {"status": {"name": "Not Bug"}}}}'
 ```
 
 ### Add Dev's Comment
@@ -177,9 +177,9 @@ curl -s -X PATCH "https://api.notion.com/v1/pages/[PAGE_ID]" \
 ```
 Found [N] tickets with status "New":
 
-1. #2 [APP] /patient - My profile detail page
-2. #3 [APP] /patient - Calendar gap between elements
-3. #4 [APP] /patient/exercise - All component sizes
+1. #2 [<app>] /users - Login redirect issue
+2. #3 [<app>] /dashboard - Widget loading issue
+3. #4 [<app>] /settings - Form validation error
 
 Starting sequential processing...
 ```
@@ -187,16 +187,16 @@ Starting sequential processing...
 ### Progress (Per Ticket)
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[1/6] Processing: My profile detail page (#2)
+[1/6] Processing: Login redirect issue (#2)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Status: New → Fixing
-Description: It should be directed to my profile page, not a dropdown.
-Pages: /patient
+Status: New → In Progress
+Description: User should be redirected to dashboard after login.
+Pages: /users
 Analyzing...
-Found relevant files: frontend/src/pages/patient/PatientLayout.tsx
+Found relevant files: <frontend>/src/pages/auth/LoginPage.tsx
 Implementing fix...
-Status: Fixing → Resolved
+Status: In Progress → Ready for test
 Dev's Comment added.
 
 [1/6] COMPLETED
@@ -210,20 +210,20 @@ BATCH PROCESSING COMPLETE
 
 Total: 6 tickets processed
 
-Resolved (5):
-  - #2 My profile detail page
-  - #3 Calendar gap between elements
-  - #5 Padding sizes
-  - #6 Survey check effect
-  - #7 Chatroom's latest message
+Ready for test (5):
+  - #2 Login redirect issue
+  - #3 Widget loading issue
+  - #5 Theme toggle
+  - #6 Notification preferences
+  - #7 Toast position
 
-Won't Fix (1):
-  - #4 All component sizes (design spec behavior)
+Not Bug (1):
+  - #4 Form validation (expected behavior)
 
 Files Modified:
-  - frontend/src/pages/patient/PatientLayout.tsx
-  - frontend/src/components/Calendar.tsx
-  - frontend/src/styles/survey.css
+  - <frontend>/src/pages/auth/LoginPage.tsx
+  - <frontend>/src/components/Dashboard.tsx
+  - <frontend>/src/styles/theme.css
 
 Suggested commit:
   fix: resolve multiple UI bugs (#2, #3, #5, #6, #7)
@@ -233,10 +233,10 @@ Suggested commit:
 
 | From | To | Trigger |
 |------|-----|---------|
-| New | Fixing | Ticket picked for processing |
-| Won't Fix | Fixing | Ticket picked for retry |
-| Fixing | Resolved | Implementation complete |
-| Fixing | Won't Fix | Cannot or should not proceed |
+| New | In Progress | Ticket picked for processing |
+| Not Bug | In Progress | Ticket picked for retry |
+| In Progress | Ready for test | Implementation complete |
+| In Progress | Not Bug | Cannot or should not proceed |
 
 ## Options
 

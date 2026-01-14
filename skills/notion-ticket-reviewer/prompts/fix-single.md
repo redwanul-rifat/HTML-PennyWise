@@ -29,7 +29,7 @@ Analyzes a single Bug Report ticket, implements the fix in the codebase, and upd
 3. ANALYZE
    └── Parse ticket title for intent
    └── Extract requirements from Description
-   └── Identify affected Pages (e.g., /patient, /patient/chat)
+   └── Identify affected Pages (e.g., /users, /dashboard/settings)
    └── Check App / Dashboard context
    └── Review attached images/screenshots
 
@@ -105,40 +105,40 @@ curl -s -X POST "https://api.notion.com/v1/comments" \
 
 ### By Title
 ```
-Fix ticket: My profile detail page
+Fix ticket: <ticket title>
 ```
 
 ### By ID
 ```
-Fix ticket: 2e6b6d88-d2cf-8006-a54e-d420667b579f
+Fix ticket: <page-id>
 ```
 
 ### With Context
 ```
-Fix ticket: Calendar gap between elements
-Context: Gap height is too large between calendar and content
+Fix ticket: <ticket title>
+Context: <additional context for the fix>
 ```
 
 ## Output Format
 
 ### Success
 ```
-Ticket Fixed: My profile detail page (#2)
+Ticket Fixed: <ticket title> (#<number>)
 Status: New → In Progress → Ready for test
 
-App: APP
-Pages: /patient
+App: <app-name>
+Pages: /<page-path>
 
 Files Modified:
-- frontend/src/pages/patient/PatientLayout.tsx
-- frontend/src/components/ProfileButton.tsx
+- <frontend>/src/pages/<module>/Layout.tsx
+- <frontend>/src/components/<Component>.tsx
 
 Changes:
-- Fixed navigation to redirect to profile page
-- Removed dropdown behavior
+- <description of change 1>
+- <description of change 2>
 
 Dev's Comment Added: Yes
-Commit Suggested: fix: redirect to profile page instead of dropdown
+Commit Suggested: fix: <commit message>
 ```
 
 ### Not Bug
@@ -181,7 +181,7 @@ When completing a ticket, the Dev's Comment is updated:
 - [Change 1 description]
 - [Change 2 description]
 
-**Pages Affected:** [/patient, /patient/chat]
+**Pages Affected:** [/<page>, /<page>/detail]
 
 **Testing:**
 - [Test notes or N/A]

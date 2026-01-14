@@ -145,7 +145,7 @@ curl -s -X POST "https://api.notion.com/v1/databases/[DATABASE_ID]/query" \
   -d '{
     "filter": {
       "property": "App / Dashboard",
-      "multi_select": {"contains": "APP"}
+      "multi_select": {"contains": "<app-name>"}
     },
     "page_size": 100
   }'
@@ -175,19 +175,19 @@ curl -s -X POST "https://api.notion.com/v1/databases/[DATABASE_ID]/query" \
 Total tickets: 6
 
 === New (6) ===
-  #2 [APP] /patient
-       My profile detail page
-       It should be directed to my profile page, not a dropdown...
-  #3 [APP] /patient
-       Calendar gap between elements
-       It is too large...
-  #4 [APP] /patient/exercise
-       All component sizes
-       The header heights and profile size are different...
+  #2 [<app>] /users
+       Login redirect issue
+       User should be redirected to dashboard after login...
+  #3 [<app>] /dashboard
+       Widget loading issue
+       Dashboard widgets take too long to load...
+  #4 [<app>] /settings
+       Form validation error
+       Validation errors not showing correctly...
 
-=== Fixing (0) ===
+=== In Progress (0) ===
 
-=== Resolved (0) ===
+=== Ready for test (0) ===
 ```
 
 ## Troubleshooting

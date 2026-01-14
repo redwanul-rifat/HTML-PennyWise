@@ -34,7 +34,7 @@
 
   "typeValues": ["Bug", "Feature", "Improvement", "Task"],
 
-  "appValues": ["APP", "Dashboard", "Admin", "Web"],
+  "appValues": ["<customize-for-your-project>"],
 
   "workflowMapping": {
     "start": "In Progress",
