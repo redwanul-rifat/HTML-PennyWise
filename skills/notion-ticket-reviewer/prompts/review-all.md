@@ -27,11 +27,11 @@ Fetches all tickets from the Bug Report Notion database and presents them groupe
 Found [N] tickets:
 
 ### [Type: Bug]
-1. #2 [APP] /patient - Title
-2. #3 [APP] /patient - Title
+1. #2 [<app>] /users - Title
+2. #3 [<app>] /dashboard - Title
 
 ### [Type: Feature]
-1. #8 [Dashboard] /admin - Title
+1. #8 [<app-2>] /admin - Title
 ...
 ```
 
@@ -50,7 +50,7 @@ Enter plan mode - Review notion tickets for database [DATABASE_ID] with status N
 ### With App Filter
 ```
 Enter plan mode - Review notion tickets for database [YOUR_DATABASE_ID]
-Filter: App = "APP"
+Filter: App = "<app-name>"
 ```
 
 ### With Type Filter

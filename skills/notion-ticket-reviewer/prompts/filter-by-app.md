@@ -1,49 +1,50 @@
-# Filter by App / Dashboard
+# Filter by App / <app-name-2>
 
 ## Prompt Template
 
 ```
 Enter plan mode - Review notion tickets
-Filter: App = "[APP_NAME]", Status = "New"
+Filter: App = "<app-name>", Status = "New"
 ```
 
 ## Description
 
-Filter Bug Report tickets by App / Dashboard to see issues relevant to a specific application.
+Filter Bug Report tickets by App / <app-name-2> to see issues relevant to a specific application.
 
 ## Available Apps
 
 | App | Description |
 |-----|-------------|
-| **APP** | Patient mobile application |
-| **Dashboard** | Coach/Admin web dashboard |
-| **Admin** | System administration panel |
-| **Web** | Public-facing website |
+| **\<app-1\>** | Your first application (customize per project) |
+| **\<app-2\>** | Your second application (customize per project) |
+| **\<app-3\>** | Additional app (customize per project) |
+
+> **Note:** App values are project-specific. Check your Notion database "App / <app-name-2>" property for actual values.
 
 ## Example Usage
 
-### Patient App
+### Single App
 ```
 Enter plan mode - Review notion tickets for database [DATABASE_ID]
-Filter: App = "APP", Status = "New"
+Filter: App = "<app-name>", Status = "New"
 ```
 
-### Dashboard
+### Another App
 ```
 Enter plan mode - Review notion tickets for database [DATABASE_ID]
-Filter: App = "Dashboard"
+Filter: App = "<app-name-2>"
 ```
 
 ### Multiple Apps
 ```
 Enter plan mode - Review notion tickets for database [DATABASE_ID]
-Filter: App = "APP" OR App = "Dashboard"
+Filter: App = "<app-1>" OR App = "<app-2>"
 ```
 
 ### App + Type
 ```
 Enter plan mode - Review notion tickets for database [DATABASE_ID]
-Filter: App = "APP", Type = "Bug"
+Filter: App = "<app-name>", Type = "Bug"
 ```
 
 ## Curl Commands
@@ -62,7 +63,7 @@ curl -s -X POST "https://api.notion.com/v1/databases/[DATABASE_ID]/query" \
   -d '{
     "filter": {
       "and": [
-        {"property": "App / Dashboard", "multi_select": {"contains": "APP"}},
+        {"property": "App / <app-name-2>", "multi_select": {"contains": "<app-name>"}},
         {"property": "Status", "status": {"equals": "New"}}
       ]
     },
@@ -81,8 +82,8 @@ curl -s -X POST "https://api.notion.com/v1/databases/[DATABASE_ID]/query" \
       "and": [
         {
           "or": [
-            {"property": "App / Dashboard", "multi_select": {"contains": "APP"}},
-            {"property": "App / Dashboard", "multi_select": {"contains": "Dashboard"}}
+            {"property": "App / <app-name-2>", "multi_select": {"contains": "<app-name>"}},
+            {"property": "App / <app-name-2>", "multi_select": {"contains": "<app-name-2>"}}
           ]
         },
         {"property": "Status", "status": {"equals": "New"}}
@@ -100,9 +101,9 @@ curl -s -X POST "https://api.notion.com/v1/databases/[DATABASE_ID]/query" \
   "filter": {
     "and": [
       {
-        "property": "App / Dashboard",
+        "property": "App / <app-name-2>",
         "multi_select": {
-          "contains": "APP"
+          "contains": "<app-name>"
         }
       },
       {
@@ -123,8 +124,8 @@ curl -s -X POST "https://api.notion.com/v1/databases/[DATABASE_ID]/query" \
     "and": [
       {
         "or": [
-          {"property": "App / Dashboard", "multi_select": {"contains": "APP"}},
-          {"property": "App / Dashboard", "multi_select": {"contains": "Dashboard"}}
+          {"property": "App / <app-name-2>", "multi_select": {"contains": "<app-name>"}},
+          {"property": "App / <app-name-2>", "multi_select": {"contains": "<app-name-2>"}}
         ]
       },
       {
@@ -141,45 +142,45 @@ curl -s -X POST "https://api.notion.com/v1/databases/[DATABASE_ID]/query" \
 ## Output Format
 
 ```
-Found [N] tickets for app [APP_NAME]:
+Found [N] tickets for app <app-name>:
 
-### /patient (3 issues)
-1. #2 My profile detail page
-2. #3 Calendar gap between elements
-3. #4 All component sizes
+### /users (3 issues)
+1. #2 Login redirect issue
+2. #3 Profile update error
+3. #4 Form validation
 
-### /patient/chat (1 issue)
-4. #7 Chatroom's latest message
+### /dashboard (1 issue)
+4. #7 Widget loading
 
-### /patient/survey (2 issues)
-5. #5 Padding sizes
-6. #6 Survey check effect
+### /settings (2 issues)
+5. #5 Theme toggle
+6. #6 Notification preferences
 ```
 
 ## Common Use Cases
 
-### Daily Bug Triage (APP)
+### Daily Bug Triage
 ```
 Enter plan mode - Review notion tickets
-Filter: App = "APP", Status = "New", Type = "Bug"
+Filter: App = "<app-name>", Status = "New", Type = "Bug"
 ```
 
-### Dashboard Issues
+### Secondary App Issues
 ```
 Enter plan mode - Review notion tickets
-Filter: App = "Dashboard", Status = "New"
+Filter: App = "<app-name-2>", Status = "New"
 ```
 
 ### All Frontend Issues
 ```
 Enter plan mode - Review notion tickets
-Filter: App = "APP" OR App = "Dashboard" OR App = "Web"
+Filter: App = "<app-1>" OR App = "<app-2>" OR App = "<app-3>"
 ```
 
-### Resolved Issues for QA
+### Ready for Test Issues
 ```
 Enter plan mode - Review notion tickets
-Filter: App = "APP", Status = "Resolved"
+Filter: App = "<app-name>", Status = "Ready for test"
 ```
 
 ## Related
