@@ -15,7 +15,7 @@ You are a git workflow assistant. Your task is to commit changes to the **curren
 
 ## Branch Policy
 
-- **Personal branches only** (e.g., `siam`, `john`, `lukas`) - Never commit on `main` or `dev`
+- **Personal branches only** (e.g., `<your-name>`, `feature-xyz`) - Never commit on `main` or `dev`
 - **PRs target `dev`** - All PRs merge into `dev`, not `main`
 - **Use current branch** - No new branch creation during commit
 
@@ -41,8 +41,8 @@ fi
 
 **If detached HEAD:** Use **AskUserQuestion** to ask the user for their branch name:
 ```
-You are in detached HEAD state. Please provide your branch name:
-- Options: siam, john, lukas, [Other]
+You are in detached HEAD state. What branch name would you like to use?
+(e.g., your name, feature name, or ticket ID)
 ```
 
 Then checkout/create and push:
@@ -63,8 +63,8 @@ fi
 **If on main or dev:** Use **AskUserQuestion** to ask the user for their branch name:
 ```
 You are on '$CURRENT_BRANCH' which is a protected branch.
-Please provide your personal branch name:
-- Options: siam, john, lukas, [Other]
+What branch name would you like to use?
+(e.g., your name, feature name, or ticket ID)
 ```
 
 Then checkout/create and push:
@@ -101,10 +101,10 @@ echo "✓ PR will target: dev"
 This project may use **nested submodules**. Changes must be committed from deepest to shallowest:
 
 ```
-project/                    # 4. Parent repo
-├── .claude/                # 3. Submodule → project-claude
+<project>/                  # 4. Parent repo
+├── .claude/                # 3. Submodule → <project>-claude
 │   ├── base/               # 1. Submodule → claude-base
-│   ├── <nestjs/react/...>  # 2. Submodule → tech-stack repos
+│   ├── <tech-stack>/       # 2. Submodules → nestjs, react, django, etc.
 ```
 
 ### 1.1 Check Parent Status
@@ -211,7 +211,7 @@ gh pr create --base dev --head "$CLAUDE_BRANCH" --title "chore: Update submodule
 - Updated submodule references for nested changes
 
 ## Submodule
-.claude (project-claude)
+.claude (<project>-claude)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 EOF
@@ -280,11 +280,9 @@ EOF
 - `style:` - Formatting, no code change
 
 **Scope abbreviations:**
-- `admin` for frontend-admin-dashboard
-- `coach` for frontend-coach-dashboard
-- `mobile` for mobile or frontend-mobile
-- `backend` for backend
-- `docs` for .claude-project or documentation
+- Use folder name or meaningful short name
+- Examples: `frontend`, `backend`, `mobile`, `api`, `docs`
+- For multi-frontend projects: `admin`, `dashboard`, `portal`
 
 If $ARGUMENTS is provided by the user, use it as the commit message.
 
@@ -336,14 +334,14 @@ The workflow is ONLY successful if ALL of these are true:
 ✓ Workflow Complete
 
 PR Created:
-https://github.com/org/repo/pull/42
+https://github.com/<org>/<repo>/pull/<number>
   - Branch: <current-branch>
-  - Commit: abc1234 - <commit message>
+  - Commit: <hash> - <commit message>
   - Files: <count>
 
 Submodule PRs (if any):
-1. https://github.com/org/claude-base/pull/15 (base)
-2. https://github.com/org/project-claude/pull/8 (.claude)
+1. https://github.com/<org>/claude-base/pull/<number> (base)
+2. https://github.com/<org>/<project>-claude/pull/<number> (.claude)
 ```
 
 ### Failure Report Format:
