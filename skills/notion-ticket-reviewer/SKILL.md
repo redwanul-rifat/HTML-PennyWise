@@ -39,17 +39,17 @@ Enter plan mode - Review notion tickets for database [DATABASE_ID] with status N
 
 ### Fix a Single Ticket
 ```
-Fix ticket: My profile detail page
+Fix ticket: <ticket title>
 ```
 or
 ```
-Fix ticket: 2e6b6d88-d2cf-8006-a54e-d420667b579f
+Fix ticket: <page-id>
 ```
 
 ### Filter by App
 ```
 Enter plan mode - Review notion tickets
-Filter: App = "APP", Status = "New"
+Filter: App = "<app-name>", Status = "New"
 ```
 
 ---
@@ -112,8 +112,8 @@ or select another ticket by name/ID
 
 | Property | Type | Purpose |
 |----------|------|---------|
-| **App / Dashboard** | multi_select | APP, Dashboard, Admin, Web |
-| **Pages** | rich_text | Affected pages (e.g., `/patient`, `/patient/chat`) |
+| **App / Dashboard** | multi_select | Your app names (customize per project) |
+| **Pages** | rich_text | Affected pages (e.g., `/users`, `/dashboard/settings`) |
 
 ### Assignment Properties
 
@@ -202,7 +202,7 @@ filter = {
 ```python
 filter = {
     "property": "App / Dashboard",
-    "multi_select": {"contains": "APP"}
+    "multi_select": {"contains": "<app-name>"}
 }
 ```
 
@@ -212,7 +212,7 @@ filter = {
     "and": [
         {"property": "Status", "status": {"equals": "New"}},
         {"property": "Type", "multi_select": {"contains": "Bug"}},
-        {"property": "App / Dashboard", "multi_select": {"contains": "APP"}}
+        {"property": "App / Dashboard", "multi_select": {"contains": "<app-name>"}}
     ]
 }
 ```
@@ -332,24 +332,24 @@ User: Enter plan mode - Review notion tickets for database [DATABASE_ID] with st
 Claude: Found 6 tickets with "New" status:
 
 ### Bugs
-1. [APP] /patient - My profile detail page - #2
-2. [APP] /patient - Calendar gap between elements - #3
-3. [APP] /patient/exercise - All component sizes - #4
+1. [<app>] /users - Login redirect issue - #2
+2. [<app>] /dashboard - Calendar gap between elements - #3
+3. [<app>] /settings - Form validation error - #4
 
 ### UI Issues
-4. [APP] /patient/survey - Padding sizes - #5
-5. [APP] /patient/survey - Survey check effect - #6
-6. [APP] /patient/chat - Chatroom's latest message - #7
+4. [<app>] /profile - Padding sizes - #5
+5. [<app>] /notifications - Toast position - #6
+6. [<app>] /chat - Latest message display - #7
 ...
 
-User: Fix ticket: My profile detail page
+User: Fix ticket: Login redirect issue
 
 Claude:
 1. Setting status to "In Progress"...
-2. Reading ticket description: "It should be directed to my profile page, not a dropdown."
-3. Affected page: /patient
-4. Exploring codebase for patient profile routing...
-5. Found: frontend/src/pages/patient/...
+2. Reading ticket description: "After login, user should redirect to dashboard."
+3. Affected page: /users
+4. Exploring codebase for login routing...
+5. Found: <frontend>/src/pages/auth/...
 6. Implementing fix...
 7. Setting status to "Ready for test"
 8. Adding Dev's Comment with implementation details
