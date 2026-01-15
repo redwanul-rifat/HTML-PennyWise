@@ -1,9 +1,9 @@
 ---
-description: Create a new GitHub repository, push HTML files, and enable GitHub Pages for live prototype hosting
+description: Deploy Aura-generated HTML files to GitHub Pages for live prototype hosting
 argument-hint: "<project-name> --html-dir <path> [--org <organization>]"
 ---
 
-# Git Create
+# Aura to Git
 
 Create a new GitHub repository, push HTML files, and enable GitHub Pages for instant live preview.
 **Never modifies existing repositories** - only creates new repos.
@@ -22,10 +22,10 @@ Create a new GitHub repository, push HTML files, and enable GitHub Pages for ins
 ## Usage
 
 ```bash
-/git-create <project-name> --html-dir <path>
-/git-create crowd-building --html-dir ./generated-screens/crowd-building
-/git-create my-app --html-dir ./screens --org potentialInc
-/git-create my-app --html-dir ./screens --private
+/aura-to-git <project-name> --html-dir <path>
+/aura-to-git crowd-building --html-dir ./generated-screens/crowd-building
+/aura-to-git my-app --html-dir ./screens --org potentialInc
+/aura-to-git my-app --html-dir ./screens --private
 ```
 
 ## Arguments
@@ -243,7 +243,7 @@ ERROR: No access to organization '{org}'.
 Options:
 1. Check your GitHub permissions for the organization
 2. Use --org flag to specify a different organization:
-   /git-create {project-name} --html-dir {path} --org your-username
+   /aura-to-git {project-name} --html-dir {path} --org your-username
 ```
 
 ### GitHub Pages Activation Failed
@@ -261,7 +261,7 @@ You can manually enable Pages in repository settings:
 ## Example Session
 
 ```
-User: /git-create crowd-building --html-dir ./generated-screens/crowd-building
+User: /aura-to-git crowd-building --html-dir ./generated-screens/crowd-building
 
 Claude:
 1. Checking prerequisites...
@@ -323,7 +323,7 @@ Next step:
 ## Pipeline Flow
 
 ```
-/prompts-to-aura              /git-create                    /set-html-routing
+/prompts-to-aura              /aura-to-git                    /set-html-routing
      │                             │                              │
      ▼                             ▼                              ▼
 PRD prompts.md ──────► ./generated-screens/{project}/ ──────► Live URL
