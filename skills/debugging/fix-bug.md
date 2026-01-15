@@ -327,4 +327,4 @@ Cmd+Option+I (Mac) / F12 (Windows)
 - [Common Patterns](common-patterns.md) - Redux and form patterns
 - [TypeScript Standards](typescript-standards.md) - Type safety guidelines
 - [Browser Testing](browser-testing.md) - Manual testing guide
-- [Create Dev PR](create-dev-pr.md) - Submit fixes for review
+- [Create Dev PR](../git-workflow/create-dev-pr.md) - Submit fixes for review
