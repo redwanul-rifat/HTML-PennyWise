@@ -3,7 +3,7 @@ description: Create a complete new project with Claude config and boilerplate co
 argument-hint: Project name (e.g., monkey, coaching-platform)
 ---
 
-You are a full project setup assistant. This command combines `/init-claude-config` and `/create-mono-repo` into a single streamlined workflow.
+You are a full project setup assistant. This command creates a new project with the shared claude-workflow as `.claude` submodule.
 
 ## Step 0: Get Project Name
 
@@ -35,20 +35,30 @@ At least one must be selected. Both can be selected.
 Store as:
 - `$FRONTENDS` = array of ["react", "react-native"] (at least one required)
 
-### Dashboard(s) (Optional, multiSelect: true)
+### Dashboard(s) (Optional)
 
-**What dashboards do you need?**
+**How many web dashboards do you need?**
 
-| Option | Description |
-|--------|-------------|
-| **Admin Dashboard** | Create `frontend-admin-dashboard/` for system administration |
-| **Coach Dashboard** | Create `frontend-coach-dashboard/` for coach/user-specific features |
-| **None** | No dashboard needed |
+Use **AskUserQuestion** to gather dashboard requirements:
+
+Question: "How many web dashboards do you need?"
+Header: "Dashboards"
+Options:
+  1. "None" - No dashboard needed
+  2. "1 Dashboard" - Single dashboard (e.g., Admin)
+  3. "2 Dashboards" - Two dashboards (e.g., Admin + Coach)
+  4. "3+ Dashboards" - Three or more dashboards
+
+**If user selects 1+ dashboards**, ask follow-up for EACH dashboard:
+
+Question: "What is the name/purpose of dashboard #N?" (User enters custom text: "Admin", "Coach", "Partner", "Vendor", etc.)
+Header: "Dashboard #N"
 
 Note: Dashboards use React Web (Next.js). Can be selected regardless of frontend choice (e.g., React Native mobile + React dashboard).
 
 Store as:
-- `$DASHBOARDS` = array of ["admin", "coach"] (can be empty or have both)
+- `$DASHBOARDS` = array of dashboard names (e.g., ["admin", "coach", "partner"])
+- Each dashboard creates folder: `frontend-{name}-dashboard/`
 
 ## Step 2: Confirm Project Structure
 
@@ -58,15 +68,14 @@ Display the planned structure and ask for confirmation:
 === Project Setup Plan: $PROJECT_NAME ===
 
 Claude Configuration:
-  - Repo: potentialInc/$PROJECT_NAME-claude
-  - Submodules: base, $BACKEND, $FRONTENDS
+  - Uses shared claude-workflow submodule
+  - Contains: base, nestjs, django, react, react-native skills
 
 Boilerplate Code:
   - backend/                  ← nestjs-starter-kit (if NestJS)
   - backend/                  ← django-starter-kit (if Django)
   - frontend/                 ← react-starter-kit (if React Web)
-  - frontend-admin-dashboard/ ← react-starter-kit (if Admin Dashboard)
-  - frontend-coach-dashboard/ ← react-starter-kit (if Coach Dashboard)
+  - frontend-{name}-dashboard/ ← react-starter-kit (for each dashboard in $DASHBOARDS)
   - mobile/                   ← react-native-starter-kit (if React Native)
 
 Project Documentation:
@@ -90,108 +99,23 @@ fi
 git init 2>/dev/null || true
 ```
 
-## Step 4: Set Up Claude Configuration
+## Step 4: Add Claude Configuration
 
-Execute the `/init-claude-config` workflow internally:
-
-### 4.1 Create Config Repo on GitHub
+Add the shared claude-workflow as `.claude` submodule:
 
 ```bash
-gh repo create potentialInc/$PROJECT_NAME-claude --public --description "Claude Code configuration for $PROJECT_NAME"
-git clone https://github.com/potentialInc/$PROJECT_NAME-claude.git /tmp/$PROJECT_NAME-claude
-cd /tmp/$PROJECT_NAME-claude
-```
-
-### 4.2 Add Framework Submodules
-
-```bash
-# Always add base
-git submodule add https://github.com/potentialInc/claude-base.git base
-```
-
-Based on `$BACKEND`:
-- NestJS: `git submodule add https://github.com/potentialInc/claude-nestjs.git nestjs`
-- Django: `git submodule add https://github.com/potentialInc/claude-django.git django`
-
-Based on `$FRONTENDS` and `$DASHBOARD`:
-- React (if in $FRONTENDS OR $DASHBOARD is true): `git submodule add https://github.com/potentialInc/claude-react.git react`
-- React Native (if in $FRONTENDS): `git submodule add https://github.com/potentialInc/claude-react-native.git react-native`
-
-```bash
+git submodule add --branch dev https://github.com/potentialInc/claude-workflow.git .claude
 git submodule update --init --recursive
 ```
 
-### 4.3 Create Config Structure
-
-```bash
-mkdir -p agents hooks skills
-ln -s base/commands commands
-
-cat > .gitignore << 'EOF'
-settings.local.json
-*.local.*
-EOF
-
-cat > settings.json << 'EOF'
-{
-  "hooks": {
-    "UserPromptSubmit": [],
-    "PostToolUse": [],
-    "Stop": []
-  },
-  "mcpServers": {}
-}
-EOF
-
-cat > skills/skill-rules.json << 'EOF'
-{
-  "version": "1.0",
-  "skills": {
-    "backend-dev-guidelines": {
-      "type": "domain",
-      "enforcement": "suggest",
-      "priority": "high",
-      "promptTriggers": {
-        "keywords": ["api", "backend", "controller", "service", "entity", "repository"]
-      }
-    },
-    "frontend-dev-guidelines": {
-      "type": "domain",
-      "enforcement": "suggest",
-      "priority": "high",
-      "promptTriggers": {
-        "keywords": ["react", "component", "frontend", "ui", "tsx", "page"]
-      }
-    }
-  }
-}
-EOF
-```
-
-### 4.4 Push Config Repo
-
-```bash
-git add -A
-git commit -m "$(cat <<'EOF'
-feat: Initialize Claude Code config with modular submodules
-
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
-EOF
-)"
-git push -u origin main
-```
-
-### 4.5 Add .claude Submodule to Project
-
-```bash
-cd $PROJECT_DIR
-git submodule add https://github.com/potentialInc/$PROJECT_NAME-claude.git .claude
-git submodule update --init --recursive
-```
+This provides:
+- `base/` - shared commands and skills
+- `nestjs/` - NestJS backend skills
+- `django/` - Django REST Framework skills
+- `react/` - React web skills
+- `react-native/` - React Native mobile skills
 
 ## Step 5: Clone Boilerplate Repositories
-
-Execute the `/create-mono-repo` workflow internally (without interactive prompts):
 
 ### Boilerplate Mapping
 
@@ -200,8 +124,7 @@ Execute the `/create-mono-repo` workflow internally (without interactive prompts
 | NestJS | `https://github.com/potentialInc/nestjs-starter-kit` | `backend/` |
 | Django | `https://github.com/potentialInc/django-starter-kit` | `backend/` |
 | React Web | `https://github.com/potentialInc/react-starter-kit` | `frontend/` |
-| Admin Dashboard | `https://github.com/potentialInc/react-starter-kit` | `frontend-admin-dashboard/` |
-| Coach Dashboard | `https://github.com/potentialInc/react-starter-kit` | `frontend-coach-dashboard/` |
+| Dashboard (each) | `https://github.com/potentialInc/react-starter-kit` | `frontend-{name}-dashboard/` |
 | React Native | `https://github.com/potentialInc/react-native-starter-kit` | `mobile/` |
 
 ### Clone Each Selected Repo
@@ -252,27 +175,16 @@ services:
     networks:
       - $PROJECT_NAME-network
 
-  # Admin Dashboard service (if selected)
-  frontend-admin-dashboard:
+  # Dashboard services (for each dashboard in $DASHBOARDS)
+  # Port assignment: 5174 + index (e.g., admin=5174, coach=5175, partner=5176)
+  frontend-{name}-dashboard:
     build:
-      context: ./frontend-admin-dashboard
+      context: ./frontend-{name}-dashboard
       dockerfile: Dockerfile
-    container_name: $PROJECT_NAME-admin-dashboard
+    container_name: $PROJECT_NAME-{name}-dashboard
     restart: unless-stopped
     ports:
-      - '5174:5173'
-    networks:
-      - $PROJECT_NAME-network
-
-  # Coach Dashboard service (if selected)
-  frontend-coach-dashboard:
-    build:
-      context: ./frontend-coach-dashboard
-      dockerfile: Dockerfile
-    container_name: $PROJECT_NAME-coach-dashboard
-    restart: unless-stopped
-    ports:
-      - '5175:5173'
+      - '{5174 + index}:5173'
     networks:
       - $PROJECT_NAME-network
 
@@ -301,6 +213,16 @@ find .claude-project -name "*.md" -exec sed -i '' "s/\$BACKEND/$BACKEND/g" {} \;
 # Replace $FRONTENDS placeholder
 find .claude-project -name "*.md" -exec sed -i '' "s/\$FRONTENDS/$FRONTENDS/g" {} \;
 
+# Create dashboard-specific plan folders from generic template
+for dashboard in $DASHBOARDS; do
+  mkdir -p .claude-project/plans/frontend-${dashboard}-dashboard/
+  cp .claude/base/templates/claude-project/plans/frontend-dashboard/* \
+     .claude-project/plans/frontend-${dashboard}-dashboard/
+done
+
+# Remove generic template folder (already copied to specific dashboards)
+rm -rf .claude-project/plans/frontend-dashboard/
+
 # Append gitignore rules from template
 cat .claude-project/gitignore.template >> .gitignore
 rm .claude-project/gitignore.template
@@ -327,7 +249,7 @@ docker-compose up -d
 
 ```
 $PROJECT_NAME/
-├── .claude/              # Claude Code configuration
+├── .claude/              # Claude Code configuration (shared)
 ├── .claude-project/      # Project documentation
 ├── backend/              # Backend API
 ├── frontend/             # Web frontend
@@ -374,7 +296,7 @@ git add -A
 git commit -m "$(cat <<'EOF'
 feat: Initial $PROJECT_NAME project setup
 
-- .claude/ submodule for Claude Code configuration
+- .claude/ submodule using shared claude-workflow
 - Backend: $BACKEND
 - Frontend: $FRONTENDS
 - Docker orchestration configured
@@ -426,31 +348,34 @@ git checkout main
 === Project Setup Complete ===
 
 $PROJECT_NAME/
-├── .claude/                    # Claude Code config
-│   ├── base/                   → claude-base
-│   ├── $BACKEND/               → claude-$BACKEND
-│   └── ...
+├── .claude/                    # Shared claude-workflow
+│   ├── base/                   → shared commands/skills
+│   ├── nestjs/                 → NestJS backend skills
+│   ├── django/                 → Django REST Framework skills
+│   ├── react/                  → React web skills
+│   └── react-native/           → React Native mobile skills
 ├── .claude-project/            # Project docs
 │   ├── plans/
 │   │   ├── backend/
 │   │   ├── frontend/
-│   │   ├── frontend-admin-dashboard/
-│   │   ├── frontend-coach-dashboard/
+│   │   ├── frontend-{name}-dashboard/  # For each dashboard
 │   │   └── mobile/
 │   ├── memory/
 │   └── docs/
 ├── backend/                    # $BACKEND boilerplate
 ├── frontend/                   # React Web (if selected)
-├── frontend-admin-dashboard/   # Admin Dashboard (if selected)
-├── frontend-coach-dashboard/   # Coach Dashboard (if selected)
+├── frontend-{name}-dashboard/  # For each dashboard in $DASHBOARDS
 ├── mobile/                     # React Native (if selected)
 ├── docker-compose.yml
 ├── .gitignore
 └── README.md
 
-GitHub Repos Created:
-- https://github.com/potentialInc/$PROJECT_NAME (Main project - private)
-- https://github.com/potentialInc/$PROJECT_NAME-claude (Claude config - public)
+GitHub Repo Created:
+- https://github.com/potentialInc/$PROJECT_NAME (private)
+
+Claude Configuration:
+- Uses shared claude-workflow submodule
+- https://github.com/potentialInc/claude-workflow
 
 Branches Created:
 - main (production-ready code)
@@ -479,7 +404,6 @@ If setup fails midway:
 # Clean up local
 rm -rf backend frontend frontend-dashboard mobile .claude .claude-project docker-compose.yml
 
-# Clean up GitHub (if repos were created)
+# Clean up GitHub (if repo was created)
 gh repo delete potentialInc/$PROJECT_NAME --yes
-gh repo delete potentialInc/$PROJECT_NAME-claude --yes
 ```
