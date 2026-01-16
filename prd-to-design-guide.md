@@ -10,8 +10,8 @@
 | 2 | Map features to reference apps → create design pillars |
 | 3 | Define design system (colors, typography, spacing) |
 | 4 | Convert pages to design briefs |
-| 5 | Identify reusable component patterns |
-| 6 | Add design rules from PRD + universal principles |
+| 5 | Design all states, modals, dropdowns, notifications |
+| 6 | Create responsive variants (Mobile, Tablet, Desktop) |
 | 7 | Create deliverables checklist |
 
 ---
@@ -126,16 +126,170 @@
 | Keyboard nav | All interactive elements |
 | Alt text | All images |
 
-### Responsive
-| Breakpoint | Width | Columns |
-|------------|-------|---------|
-| Mobile | < 640px | 1 |
-| Tablet | 640-1024px | 2 |
-| Desktop | > 1024px | 3-4 |
+---
+
+## 2. RESPONSIVE DESIGN
+
+### Device Targets
+| Device | Width | Orientation | Priority |
+|--------|-------|-------------|----------|
+| Mobile | 320-428px | Portrait | Primary |
+| Mobile L | 428-640px | Portrait/Landscape | Secondary |
+| Tablet | 640-1024px | Both | Secondary |
+| Desktop | 1024-1440px | Landscape | Primary |
+| Large | 1440px+ | Landscape | Optional |
+
+### Layout Adaptations
+| Element | Mobile | Tablet | Desktop |
+|---------|--------|--------|---------|
+| Navigation | Bottom bar / Hamburger | Sidebar collapsed | Sidebar expanded |
+| Grid columns | 1 | 2 | 3-4 |
+| Cards | Full width, stacked | 2 per row | 3-4 per row |
+| Sidebar | Hidden (drawer) | Collapsible | Fixed 240px |
+| Modals | Full screen | Centered 90% | Centered 560px |
+| Forms | Single column | Single column | Two column optional |
+
+### Touch vs Mouse
+| Interaction | Mobile/Tablet | Desktop |
+|-------------|---------------|---------|
+| Primary action | Tap | Click |
+| Secondary | Long press | Right click / Hover |
+| Navigation | Swipe | Scroll |
+| Targets | 48px min | 36px min |
+| Hover states | None | Required |
+
+### Responsive Typography
+| Element | Mobile | Tablet | Desktop |
+|---------|--------|--------|---------|
+| H1 | 28px | 32px | 40px |
+| H2 | 22px | 26px | 32px |
+| H3 | 18px | 20px | 24px |
+| Body | 16px | 16px | 16px |
+| Small | 14px | 14px | 14px |
+
+### Responsive Spacing
+| Token | Mobile | Desktop |
+|-------|--------|---------|
+| Page padding | 16px | 24px |
+| Card padding | 16px | 20px |
+| Section gap | 24px | 32px |
+| Grid gap | 12px | 24px |
 
 ---
 
-## 2. UI SYSTEM
+## 3. FULL FLOW DESIGN
+
+### Screen Types to Design
+| Screen Type | Description | Variants |
+|-------------|-------------|----------|
+| List/Browse | Grid or list of items | Empty, Loading, Loaded, Filtered |
+| Detail | Single item view | Default, Editing, Read-only |
+| Form | Data entry | New, Edit, Review |
+| Dashboard | Overview with stats | Default, Loading |
+| Settings | Configuration options | Sections, Nested |
+
+### Screen States (Design All)
+| State | Description | Elements |
+|-------|-------------|----------|
+| Empty | No data yet | Illustration, message, CTA |
+| Loading | Fetching data | Skeleton or spinner |
+| Loaded | Data displayed | Content |
+| Error | Failed to load | Error message, retry button |
+| Offline | No connection | Offline indicator |
+| Partial | Some data loaded | Mixed skeleton + content |
+
+### Overlay Screens
+| Type | Trigger | Size | Close Method |
+|------|---------|------|--------------|
+| Modal | Button click | S/M/L/Fullscreen | X, Outside click, ESC |
+| Drawer | Menu tap | 280px / 80% | Swipe, X, Outside |
+| Bottom Sheet | Action tap | Auto height | Swipe down, X |
+| Lightbox | Image click | Full viewport | X, Outside, ESC |
+
+### Modal Templates
+
+**Confirmation Modal:**
+- Icon (warning/info)
+- Title: "Are you sure?"
+- Description: Context
+- Actions: Cancel (secondary), Confirm (primary/destructive)
+
+**Form Modal:**
+- Title + Close (X)
+- Form fields
+- Actions: Cancel, Submit
+
+**Info Modal:**
+- Title + Close (X)
+- Content (text, image, video)
+- Actions: Close / CTA
+
+**Success Modal:**
+- Checkmark animation
+- Title: "Success!"
+- Description
+- Actions: Done / Next step
+
+### Dropdown Components
+| Type | Trigger | Content | Position |
+|------|---------|---------|----------|
+| Menu dropdown | Click avatar/button | Links, actions | Below, align right |
+| Select dropdown | Click input | Options list | Below, full width |
+| Filter dropdown | Click filter pill | Checkboxes, radio | Below |
+| Autocomplete | Type in input | Suggestions | Below |
+
+### Dropdown Templates
+
+**User Menu Dropdown:**
+- Avatar + Name + Email
+- Divider
+- Profile link
+- Settings link
+- Divider
+- Logout (red)
+
+**Notification Dropdown:**
+- Header: "Notifications" + Mark all read
+- List of items (icon, text, time, unread dot)
+- Footer: "View all" link
+
+**Filter Dropdown:**
+- Header: Filter name
+- Options (checkbox/radio)
+- Footer: Clear / Apply
+
+### Notification Components
+| Type | Position | Duration | Actions |
+|------|----------|----------|---------|
+| Toast success | Top-right | 3s auto | Dismiss |
+| Toast error | Top-right | 5s auto | Dismiss, Retry |
+| Toast info | Top-right | 4s auto | Dismiss, Action |
+| Banner | Top of page | Persistent | Dismiss, CTA |
+| Badge | On icon | Persistent | — |
+| Dot indicator | Corner | Persistent | — |
+
+### Flow Connections
+
+**Page → Modal Flows:**
+| Trigger | Opens | After Close |
+|---------|-------|-------------|
+| "Delete" button | Confirmation modal | Refresh list or redirect |
+| "Edit" button | Edit form modal | Update item in place |
+| "Add new" button | Create form modal | Add to list |
+| Click image | Lightbox | Return to page |
+| "Share" button | Share modal | Show toast |
+
+**Page → Dropdown Flows:**
+| Trigger | Opens | On Select |
+|---------|-------|-----------|
+| Avatar click | User menu | Navigate or action |
+| Bell icon click | Notifications | Mark read, navigate |
+| Filter pill click | Filter options | Apply filter, refresh |
+| Sort dropdown | Sort options | Re-sort list |
+
+---
+
+## 4. UI SYSTEM
 
 ### Typography
 
@@ -162,13 +316,6 @@
 | Body | 16px | 400 | 1.5 | Content |
 | Small | 14px | 400 | 1.5 | Secondary |
 | Caption | 12px | 500 | 1.4 | Labels |
-
-#### Responsive Type
-| Level | Mobile | Desktop |
-|-------|--------|---------|
-| H1 | 28px | 32px |
-| H2 | 22px | 24px |
-| Body | 16px | 16px |
 
 ### Spacing
 | Token | Value | Use |
@@ -231,7 +378,7 @@
 
 ---
 
-## 3. BRANDING
+## 5. BRANDING
 
 ### Colors
 
@@ -274,19 +421,40 @@
 
 ---
 
-## 4. PAGE BRIEFS
+## 6. PAGE BRIEFS
 
 ### [Section] Pages ([N])
 
 **PAGE 1: [Name]**
+
 Layout: [Pattern]
+
+Responsive:
+- Mobile: [Behavior]
+- Tablet: [Behavior]
+- Desktop: [Behavior]
+
+Elements:
 - [Element 1]
 - [Element 2]
-- [Element 3]
+
+States:
+- Empty: [Description]
+- Loading: [Skeleton/Spinner]
+- Error: [Message + Retry]
+
+Modals:
+- [Modal 1]: [Trigger] → [Content] → [Result]
+
+Dropdowns:
+- [Dropdown 1]: [Position], [Content]
+
+Notifications:
+- [Action] → [Toast type]: [Message]
 
 ---
 
-## 5. PATTERNS
+## 7. PATTERNS
 
 ### Layouts
 | Pattern | Structure | Use |
@@ -315,7 +483,7 @@ Layout: [Pattern]
 
 ---
 
-## 6. CHECKLIST
+## 8. CHECKLIST
 
 ### UX Standards
 - [ ] Contrast 4.5:1+ (body), 3:1+ (large)
@@ -325,6 +493,22 @@ Layout: [Pattern]
 - [ ] Focus states visible
 - [ ] No color-only indicators
 - [ ] Keyboard nav works
+
+### Responsive
+- [ ] Mobile layout (320-428px)
+- [ ] Tablet layout (640-1024px)
+- [ ] Desktop layout (1024px+)
+- [ ] Touch targets 48px on mobile
+- [ ] Navigation adapts per device
+- [ ] Typography scales correctly
+
+### Full Flow
+- [ ] All screen states (empty, loading, error)
+- [ ] All modals designed
+- [ ] All dropdowns designed
+- [ ] All notifications/toasts
+- [ ] Transitions between states
+- [ ] Flow connections documented
 
 ### UI Consistency
 - [ ] Same button styles
@@ -342,14 +526,30 @@ Layout: [Pattern]
 
 ---
 
-## 7. DELIVERABLES
+## 9. DELIVERABLES
 
+### Per Device
+- [ ] Mobile designs (all pages)
+- [ ] Tablet designs (key pages)
+- [ ] Desktop designs (all pages)
+
+### Components
+- [ ] All modals (confirmation, form, info, success)
+- [ ] All dropdowns (user menu, notifications, filters)
+- [ ] All notifications (toast success/error/info, banner)
+- [ ] All states (empty, loading, error)
+
+### Files
 - [ ] Figma file (all pages)
 - [ ] Component library
 - [ ] Design tokens
 - [ ] Icon set (SVG)
-- [ ] Prototype
-- [ ] Handoff notes
+
+### Prototype
+- [ ] Key user flows
+- [ ] Modal open/close animations
+- [ ] Dropdown interactions
+- [ ] Page transitions
 
 **Priority:**
 1. Landing (first impression)
@@ -369,6 +569,17 @@ UX STANDARDS
 ├── Readability: 16px min | 50-75 chars | 1.5 line-height
 ├── Consistency: Same buttons | inputs | cards | icons | grid
 └── Accessibility: 44px targets | Focus visible | Icon+text+color
+
+RESPONSIVE
+├── Mobile:  320-428px | 1 col | Bottom nav | Full-screen modals
+├── Tablet:  640-1024px | 2 col | Collapsed sidebar | 90% modals
+└── Desktop: 1024px+ | 3-4 col | Fixed sidebar | Centered modals
+
+FULL FLOW (Design All)
+├── States:      Empty | Loading | Loaded | Error | Offline
+├── Modals:      Confirmation | Form | Info | Success
+├── Dropdowns:   User menu | Notifications | Filters | Select
+└── Toasts:      Success (3s) | Error (5s) | Info (4s)
 
 TYPOGRAPHY
 ├── Scale:   H1=32 | H2=24 | H3=20 | Body=16 | Small=14 | Caption=12
@@ -394,4 +605,4 @@ COLORS
 
 ---
 
-**Version:** 3.0 | **Format:** Universal
+**Version:** 4.0 | **Format:** Universal + Responsive + Full Flow
