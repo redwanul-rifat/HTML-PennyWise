@@ -123,11 +123,14 @@ Before proceeding, display a summary of all repositories:
 
 ```
 === Mono-Repo Configuration Summary ===
+
 Root Directory: <current_directory>
+
 Repositories to clone:
 1. <url> (branch: <branch>) -> ./<folder>/
 2. <url> (branch: <branch>) -> ./<folder>/
 ...
+
 Proceed with setup? (yes/no)
 ```
 
@@ -201,14 +204,18 @@ networks:
   mono-network:
     driver: bridge
 ```
+
 **Port assignment:**
 - Backend (NestJS): 3000
 - Backend (Django): 8000
 - Frontend: 5173
 - Dashboard (frontend-dashboard): 5174
 - Mobile: (no port needed for dev)
+
 ## Step 7: Initialize Git (if needed)
+
 Check if root directory is already a git repository:
+
 ```bash
 git rev-parse --is-inside-work-tree 2>/dev/null
 ```
@@ -229,14 +236,17 @@ Suggest adding common patterns to root `.gitignore` if they don't exist:
 **/node_modules/
 **/dist/
 **/build/
+
 # Python
 **/__pycache__/
 **/*.pyc
 **/.venv/
+
 # Environment
 **/.env
 **/.env.local
 **/.env.*.local
+
 # IDE
 .idea/
 .vscode/
@@ -249,15 +259,18 @@ After completion, display:
 
 ```
 === Mono-Repo Setup Complete ===
+
 Created structure:
 <root>/
 ├── <folder1>/          (from <url1>)
 ├── <folder2>/          (from <url2>)
 ├── docker-compose.yml  (generated)
 └── .gitignore          (updated)
+
 Files removed from subfolders:
 - Dockerfile, docker-compose*.yml, .dockerignore
 - .git directories
+
 Next steps:
 1. Review generated docker-compose.yml and customize as needed
 2. Create Dockerfiles in each subfolder if needed

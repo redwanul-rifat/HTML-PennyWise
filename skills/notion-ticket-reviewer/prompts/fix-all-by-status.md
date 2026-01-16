@@ -8,14 +8,14 @@ Fix all tickets with status "[STATUS]" for database [DATABASE_ID]
 
 ## Description
 
-Processes and fixes all tickets with a specific status, one by one sequentially. Each ticket goes through the full fix workflow before moving to the next.
+Processes and fixes all Bug Report tickets with a specific status, one by one sequentially. Each ticket goes through the full fix workflow before moving to the next.
 
 ## Parameters
 
 | Parameter | Required | Default | Description |
 |-----------|----------|---------|-------------|
 | `DATABASE_ID` | Yes | - | The Notion database ID (32-character hex string) |
-| `STATUS` | No | "Not Started" | The status to filter tickets by |
+| `STATUS` | No | "New" | The status to filter tickets by |
 
 ## Workflow
 
@@ -33,15 +33,16 @@ Processes and fixes all tickets with a specific status, one by one sequentially.
 3. FOR EACH TICKET (sequential):
    │
    ├── 3a. SET IN PROGRESS
-   │   └── Update Status: "[STATUS]" → "In Progress"
+   │   └── Update Status: "New" → "In Progress"
    │
    ├── 3b. ANALYZE
    │   └── Parse ticket title for intent
-   │   └── Extract requirements from Comment/Description
-   │   └── Identify mentioned files, components, features
+   │   └── Extract requirements from Description
+   │   └── Check Pages for affected routes
+   │   └── Review App / Dashboard context
    │
    ├── 3c. EXPLORE CODEBASE
-   │   └── Search for relevant files
+   │   └── Search for files matching Pages path
    │   └── Read existing implementations
    │   └── Understand context
    │
@@ -51,15 +52,15 @@ Processes and fixes all tickets with a specific status, one by one sequentially.
    │   └── Run tests if applicable
    │
    ├── 3e. COMPLETE
-   │   └── Update Status: "In Progress" → "In Review"
-   │   └── Add comment with implementation details
+   │   └── Update Status: "In Progress" → "Ready for test"
+   │   └── Add Dev's Comment with implementation details
    │
    └── 3f. LOG PROGRESS
        └── Mark ticket as done in progress tracker
        └── Show "[X/N] completed"
 
 4. HANDLE ERRORS
-   └── If blocked: Set status to "Blocked", add comment
+   └── If blocked: Set status to "Not Bug", add Dev's Comment
    └── Log error and continue to next ticket (or stop)
    └── User can resume with "Continue fixing tickets"
 
@@ -72,20 +73,20 @@ Processes and fixes all tickets with a specific status, one by one sequentially.
 
 ## Example Usage
 
-### Default (Not Started)
+### Default (New)
 ```
-Fix all tickets with status "Not Started" for database 12345678-1234-1234-1234-123456789abc
-```
-
-### Blocked Tickets
-```
-Fix all tickets with status "Blocked" for database 12345678-1234-1234-1234-123456789abc
+Fix all tickets with status "New" for database [DATABASE_ID]
 ```
 
-### With Team Filter
+### Not Bug Tickets (Retry)
 ```
-Fix all tickets with status "Not Started" for database [DATABASE_ID]
-Filter: Team = "Full-Stack"
+Fix all tickets with status "Not Bug" for database [DATABASE_ID]
+```
+
+### With App Filter
+```
+Fix all tickets with status "New" for database [DATABASE_ID]
+Filter: App = "<app-name>"
 ```
 
 ### Continue After Interruption
@@ -109,14 +110,14 @@ curl -s -X POST "https://api.notion.com/v1/databases/[DATABASE_ID]/query" \
   -d '{
     "filter": {
       "property": "Status",
-      "status": {"equals": "Not Started"}
+      "status": {"equals": "New"}
     },
     "sorts": [{"property": "Priority", "direction": "ascending"}],
     "page_size": 100
   }'
 ```
 
-### Query with Team Filter
+### Query with App Filter
 ```bash
 curl -s -X POST "https://api.notion.com/v1/databases/[DATABASE_ID]/query" \
   -H "Authorization: Bearer $NOTION_API_KEY" \
@@ -125,8 +126,8 @@ curl -s -X POST "https://api.notion.com/v1/databases/[DATABASE_ID]/query" \
   -d '{
     "filter": {
       "and": [
-        {"property": "Status", "status": {"equals": "Not Started"}},
-        {"property": "Team", "select": {"equals": "Full-Stack"}}
+        {"property": "Status", "status": {"equals": "New"}},
+        {"property": "App / Dashboard", "multi_select": {"contains": "<app-name>"}}
       ]
     },
     "sorts": [{"property": "Priority", "direction": "ascending"}],
@@ -143,93 +144,42 @@ curl -s -X PATCH "https://api.notion.com/v1/pages/[PAGE_ID]" \
   -d '{"properties": {"Status": {"status": {"name": "In Progress"}}}}'
 ```
 
-### Set Status to In Review
+### Set Status to Ready for test
 ```bash
 curl -s -X PATCH "https://api.notion.com/v1/pages/[PAGE_ID]" \
   -H "Authorization: Bearer $NOTION_API_KEY" \
   -H "Notion-Version: 2022-06-28" \
   -H "Content-Type: application/json" \
-  -d '{"properties": {"Status": {"status": {"name": "In Review"}}}}'
+  -d '{"properties": {"Status": {"status": {"name": "Ready for test"}}}}'
 ```
 
-### Set Status to Blocked
+### Set Status to Not Bug
 ```bash
 curl -s -X PATCH "https://api.notion.com/v1/pages/[PAGE_ID]" \
   -H "Authorization: Bearer $NOTION_API_KEY" \
   -H "Notion-Version: 2022-06-28" \
   -H "Content-Type: application/json" \
-  -d '{"properties": {"Status": {"status": {"name": "Blocked"}}}}'
+  -d '{"properties": {"Status": {"status": {"name": "Not Bug"}}}}'
 ```
 
-### Add Comment
+### Add Dev's Comment
 ```bash
-curl -s -X POST "https://api.notion.com/v1/comments" \
+curl -s -X PATCH "https://api.notion.com/v1/pages/[PAGE_ID]" \
   -H "Authorization: Bearer $NOTION_API_KEY" \
   -H "Notion-Version: 2022-06-28" \
   -H "Content-Type: application/json" \
-  -d '{
-    "parent": {"page_id": "[PAGE_ID]"},
-    "rich_text": [{"text": {"content": "[COMMENT_TEXT]"}}]
-  }'
-```
-
-## API Filter
-
-### Default (Not Started)
-```json
-{
-  "filter": {
-    "property": "Status",
-    "status": {
-      "equals": "Not Started"
-    }
-  },
-  "sorts": [
-    {
-      "property": "Priority",
-      "direction": "ascending"
-    }
-  ]
-}
-```
-
-### With Team Filter
-```json
-{
-  "filter": {
-    "and": [
-      {
-        "property": "Status",
-        "status": {
-          "equals": "Not Started"
-        }
-      },
-      {
-        "property": "Team",
-        "select": {
-          "equals": "Full-Stack"
-        }
-      }
-    ]
-  },
-  "sorts": [
-    {
-      "property": "Priority",
-      "direction": "ascending"
-    }
-  ]
-}
+  -d '{"properties": {"Dev'\''s Comment": {"rich_text": [{"text": {"content": "[COMMENT_TEXT]"}}]}}}'
 ```
 
 ## Output Format
 
 ### Starting
 ```
-Found [N] tickets with status "Not Started":
+Found [N] tickets with status "New":
 
-1. [CRITICAL] Fix authentication bug - ID: a1b2c3d4...
-2. [HIGH] Implement search - ID: e5f67890...
-3. [MEDIUM] Update styles - ID: abcd1234...
+1. #2 [<app>] /users - Login redirect issue
+2. #3 [<app>] /dashboard - Widget loading issue
+3. #4 [<app>] /settings - Form validation error
 
 Starting sequential processing...
 ```
@@ -237,17 +187,19 @@ Starting sequential processing...
 ### Progress (Per Ticket)
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[1/3] Processing: Fix authentication bug
+[1/6] Processing: Login redirect issue (#2)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Status: Not Started → In Progress
-Analyzing requirements...
-Found relevant files: src/auth/login.ts, src/utils/validation.ts
+Status: New → In Progress
+Description: User should be redirected to dashboard after login.
+Pages: /users
+Analyzing...
+Found relevant files: <frontend>/src/pages/auth/LoginPage.tsx
 Implementing fix...
-Status: In Progress → In Review
-Comment added.
+Status: In Progress → Ready for test
+Dev's Comment added.
 
-[1/3] COMPLETED
+[1/6] COMPLETED
 ```
 
 ### Final Summary
@@ -256,63 +208,53 @@ Comment added.
 BATCH PROCESSING COMPLETE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Total: 3 tickets processed
+Total: 6 tickets processed
 
-Completed (2):
-  - Fix authentication bug
-  - Update styles
+Ready for test (5):
+  - #2 Login redirect issue
+  - #3 Widget loading issue
+  - #5 Theme toggle
+  - #6 Notification preferences
+  - #7 Toast position
 
-Blocked (1):
-  - Implement search (missing API docs)
+Not Bug (1):
+  - #4 Form validation (expected behavior)
 
 Files Modified:
-  - src/auth/login.ts
-  - src/utils/validation.ts
-  - src/styles/main.css
+  - <frontend>/src/pages/auth/LoginPage.tsx
+  - <frontend>/src/components/Dashboard.tsx
+  - <frontend>/src/styles/theme.css
 
 Suggested commit:
-  fix: resolve multiple tickets (auth bug, styles update)
-```
-
-### Blocked/Error
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[2/3] BLOCKED: Implement search
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Reason: Missing API endpoint documentation
-Status: In Progress → Blocked
-Comment added with clarification request.
-
-Continuing to next ticket...
+  fix: resolve multiple UI bugs (#2, #3, #5, #6, #7)
 ```
 
 ## Status Transitions
 
 | From | To | Trigger |
 |------|-----|---------|
-| Not Started | In Progress | Ticket picked for processing |
-| Blocked | In Progress | Ticket picked for retry |
-| In Progress | In Review | Implementation complete |
-| In Progress | Blocked | Cannot proceed |
+| New | In Progress | Ticket picked for processing |
+| Not Bug | In Progress | Ticket picked for retry |
+| In Progress | Ready for test | Implementation complete |
+| In Progress | Not Bug | Cannot or should not proceed |
 
 ## Options
 
 ### Stop on First Error
 ```
-Fix all tickets with status "Not Started" for database [DATABASE_ID]
+Fix all tickets with status "New" for database [DATABASE_ID]
 Option: Stop on error
 ```
 
 ### Skip Confirmation
 ```
-Fix all tickets with status "Not Started" for database [DATABASE_ID]
+Fix all tickets with status "New" for database [DATABASE_ID]
 Option: Auto-confirm
 ```
 
 ### Dry Run
 ```
-Fix all tickets with status "Not Started" for database [DATABASE_ID]
+Fix all tickets with status "New" for database [DATABASE_ID]
 Option: Dry run (show plan only)
 ```
 
@@ -320,5 +262,5 @@ Option: Dry run (show plan only)
 
 - [fix-single.md](./fix-single.md) - Fix a single ticket
 - [review-all.md](./review-all.md) - Review all tickets first
-- [filter-by-team.md](./filter-by-team.md) - Filter by team
+- [filter-by-app.md](./filter-by-app.md) - Filter by app
 - [filter-by-project.md](./filter-by-project.md) - Filter by project

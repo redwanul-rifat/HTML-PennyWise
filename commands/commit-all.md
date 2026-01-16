@@ -1,11 +1,11 @@
 ---
-description: Commit changes to current branch and create PR to dev (main project only, skips submodules)
+description: Commit all changes including submodules and create PRs to dev
 argument-hint: Optional commit message override (leave empty for AI-generated message)
 ---
 
-You are a git workflow assistant. Your task is to commit changes to the **current branch** and create PRs targeting `dev`.
+You are a git workflow assistant. Your task is to commit changes to the **current branch** including all submodules and create PRs targeting `dev`.
 
-**Note:** This command commits the **main project only**. Use `/commit-all` to include submodule changes.
+**Note:** This command commits **everything** including submodules. Use `/commit` for main project only.
 
 ## CRITICAL RULES (NEVER VIOLATE)
 
@@ -14,7 +14,7 @@ You are a git workflow assistant. Your task is to commit changes to the **curren
 3. **ALWAYS create a PR targeting `dev`** - The workflow is NOT complete until a PR URL is generated
 4. **STOP if on `main` or `dev`** - Ask user to create/checkout a personal branch first
 5. **STOP if PR creation fails** - Do NOT continue, do NOT suggest manual alternatives
-6. **NEVER commit submodule changes** - This command is for main project only
+6. **Commit submodules FIRST** - Always commit from deepest to shallowest
 
 ## Branch Policy
 
@@ -99,46 +99,135 @@ echo "✓ PR will target: dev"
 
 ---
 
-## Step 1: Check for Submodule Changes (Warning Only)
+## Step 1: Handle Submodule Changes
 
-**IMPORTANT:** This command does NOT commit submodules. Check if any exist and warn the user.
+This project may use **nested submodules**. Changes must be committed from deepest to shallowest:
+
+```
+<project>/                  # 4. Parent repo
+├── .claude/                # 3. Submodule → <project>-claude
+│   ├── base/               # 1. Submodule → claude-base
+│   ├── <tech-stack>/       # 2. Submodules → nestjs, react, django, etc.
+```
+
+### 1.1 Check Parent Status
 
 ```bash
 git status
 ```
 
-### 1.1 Detect Submodule Changes
+If you see `.claude (modified content)` or `.claude (new commits)`, handle submodules first.
 
-Look for patterns like:
-- `modified:   .claude (modified content)`
-- `modified:   .claude (new commits)`
-- Any path ending with `(modified content)` or `(new commits)`
+### 1.2 Check for Nested Submodule Changes
 
-### 1.2 Warn User (Do NOT Commit Submodules)
-
-If submodule changes are detected:
-
-```
-⚠️ Submodule Changes Detected
-
-The following submodules have uncommitted changes:
-- .claude (modified content)
-
-These will NOT be committed by /commit.
-Use /commit-all to commit both submodules and main project.
-
-Proceeding with main project changes only...
+```bash
+cd .claude
+git status
 ```
 
-**Continue with main project commit - do NOT commit submodules.**
+Look for any nested submodules showing changes (`base`, `react`, `nestjs`, `django`, etc.).
+
+### 1.3 Commit Nested Submodules (Deepest First)
+
+For EACH nested submodule with changes:
+
+```bash
+cd <submodule>  # e.g., cd base
+
+# Check current branch
+SUBMODULE_BRANCH=$(git branch --show-current)
+
+# Validate branch (same rules as parent)
+if [ -z "$SUBMODULE_BRANCH" ] || [ "$SUBMODULE_BRANCH" = "main" ] || [ "$SUBMODULE_BRANCH" = "dev" ]; then
+  echo "⚠️ Submodule on invalid branch: $SUBMODULE_BRANCH"
+  # Ask user for branch name, then checkout
+fi
+
+# Ensure dev exists
+if ! git show-ref --verify --quiet refs/heads/dev; then
+  ORIG="$SUBMODULE_BRANCH"
+  git checkout main && git checkout -b dev && git push -u origin dev
+  git checkout "$ORIG"
+fi
+
+# Stage and commit
+git add -A
+git commit -m "$(cat <<'EOF'
+<type>: <description of changes>
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+EOF
+)"
+
+# Push to current branch
+git push origin "$SUBMODULE_BRANCH"
+
+# Create PR targeting dev (REQUIRED)
+gh pr create --base dev --head "$SUBMODULE_BRANCH" --title "<type>: <description>" --body "$(cat <<'EOF'
+## Summary
+<1-3 bullet points describing the changes>
+
+## Submodule
+<submodule-name> (e.g., claude-base)
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+EOF
+)"
+
+# Verify PR was created
+gh pr view "$SUBMODULE_BRANCH" --json url --jq '.url'
+
+cd ..
+```
+
+**STOP if PR creation fails for any submodule.**
+
+### 1.4 Commit .claude Submodule
+
+After nested submodules are committed:
+
+```bash
+# In .claude directory
+CLAUDE_BRANCH=$(git branch --show-current)
+
+# Validate (same rules)
+if [ -z "$CLAUDE_BRANCH" ] || [ "$CLAUDE_BRANCH" = "main" ] || [ "$CLAUDE_BRANCH" = "dev" ]; then
+  # Ask user for branch name
+fi
+
+git add -A
+git commit -m "$(cat <<'EOF'
+chore: Update submodule references
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+EOF
+)"
+
+git push origin "$CLAUDE_BRANCH"
+
+gh pr create --base dev --head "$CLAUDE_BRANCH" --title "chore: Update submodule references" --body "$(cat <<'EOF'
+## Summary
+- Updated submodule references for nested changes
+
+## Submodule
+.claude (<project>-claude)
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+EOF
+)"
+
+cd ..
+```
 
 ---
 
 ## Step 2: Detect Projects with Changes
 
 Run `git status --porcelain` and group changes by their root folder.
-
-**IMPORTANT:** Exclude submodule paths from staging.
 
 ### Project Folder Detection Rules:
 
@@ -154,18 +243,14 @@ Run `git status --porcelain` and group changes by their root folder.
 - `credentials.json` or similar sensitive files
 - `node_modules/`, `dist/`, build artifacts
 - `playwright-report/`, `test-results/` (test output)
-- **Submodules** (`.claude/`, or any path marked as submodule)
 
 ---
 
 ## Step 3: Stage and Commit
 
-### Stage files (excluding submodules):
-
+### Stage files:
 ```bash
-# Stage all changes EXCEPT submodules
 git add -A
-git reset HEAD .claude  # Unstage submodule if accidentally staged
 ```
 
 Or stage specific project folders:
@@ -257,7 +342,9 @@ https://github.com/<org>/<repo>/pull/<number>
   - Commit: <hash> - <commit message>
   - Files: <count>
 
-Note: Submodule changes were skipped. Use /commit-all to include them.
+Submodule PRs (if any):
+1. https://github.com/<org>/claude-base/pull/<number> (base)
+2. https://github.com/<org>/<project>-claude/pull/<number> (.claude)
 ```
 
 ### Failure Report Format:
@@ -287,7 +374,6 @@ Action Required: <what user should do>
 - ❌ Push without creating a PR
 - ❌ Report "success" if PR was not created
 - ❌ Suggest "manual PR creation" as an alternative
-- ❌ Commit submodule changes (use /commit-all for that)
 
 ---
 
@@ -295,5 +381,5 @@ Action Required: <what user should do>
 
 - **Use current branch** - Never create new branches during commit
 - **PR is mandatory** - The workflow does not complete without a PR URL
-- **Submodules are skipped** - Use `/commit-all` for full workflow including submodules
+- **Submodules use same rules** - Each submodule commits to its current branch
 - **After merging PR** - Delete the branch to keep repo clean

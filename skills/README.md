@@ -13,9 +13,7 @@ Skills are modular knowledge bases that Claude loads when needed. They provide:
 - Code examples
 - Anti-patterns to avoid
 
-**Problem:** Skills don't activate automatically by default.
-
-**Solution:** This showcase includes the hooks + configuration to make them activate.
+**How it works:** Skills activate automatically via hooks + `skill-rules.json` configuration.
 
 ---
 
@@ -25,7 +23,7 @@ Skills are modular knowledge bases that Claude loads when needed. They provide:
 
 **Purpose:** Creating and managing Claude Code skills
 
-**Files:** 7 resource files (426 lines total)
+**Files:** 7 resource files
 
 **Use when:**
 
@@ -34,211 +32,183 @@ Skills are modular knowledge bases that Claude loads when needed. They provide:
 - Working with skill-rules.json
 - Debugging skill activation
 
-**Customization:** ✅ None - copy as-is
-
 **[View Skill →](skill-developer/)**
 
 ---
 
-### backend-dev-guidelines
+### fullstack
 
-**Purpose:** Node.js/Express/TypeScript development patterns
+**Purpose:** Fullstack project management and deployment
 
-**Files:** 12 resource files (304 lines main + resources)
-
-**Covers:**
-
-- Layered architecture (Routes → Controllers → Services → Repositories)
-- BaseController pattern
-- Prisma database access
-- Sentry error tracking
-- Zod validation
-- UnifiedConfig pattern
-- Dependency injection
-- Testing strategies
-
-**Use when:**
-
-- Creating/modifying API routes
-- Building controllers or services
-- Database operations with Prisma
-- Setting up error tracking
-
-**Customization:** ⚠️ Update `pathPatterns` in skill-rules.json to match your backend directories
-
-**Example pathPatterns:**
-
-```json
-{
-    "pathPatterns": [
-        "src/api/**/*.ts", // Single app with src/api
-        "backend/**/*.ts", // Backend directory
-        "services/*/src/**/*.ts" // Multi-service monorepo
-    ]
-}
-```
-
-**[View Skill →](backend-dev-guidelines/)**
-
----
-
-### frontend-dev-guidelines
-
-**Purpose:** React/TypeScript/MUI v7 development patterns
-
-**Files:** 11 resource files (398 lines main + resources)
+**Files:** 3 files (deployment.md, iteration-manager.md, project-init.md)
 
 **Covers:**
 
-- Modern React patterns (Suspense, lazy loading)
-- useSuspenseQuery for data fetching
-- MUI v7 styling (Grid with `size={{}}` prop)
-- TanStack Router
-- File organization (features/ pattern)
-- Performance optimization
-- TypeScript best practices
+- Project initialization patterns
+- Deployment workflows
+- Iteration management and planning
 
 **Use when:**
 
-- Creating React components
-- Fetching data with TanStack Query
-- Styling with MUI v7
-- Setting up routing
+- Setting up new fullstack projects
+- Planning deployment strategies
+- Managing development iterations
 
-**Customization:** ⚠️ Update `pathPatterns` + verify you use React/MUI
-
-**Example pathPatterns:**
-
-```json
-{
-    "pathPatterns": [
-        "src/**/*.tsx", // Single React app
-        "frontend/src/**/*.tsx", // Frontend directory
-        "apps/web/**/*.tsx" // Monorepo web app
-    ]
-}
-```
-
-**Note:** This skill is configured as a **guardrail** (enforcement: "block") to prevent MUI v6→v7 incompatibilities.
-
-**[View Skill →](frontend-dev-guidelines/)**
+**[View Skill →](fullstack/)**
 
 ---
 
-### route-tester
+### generate-ppt
 
-**Purpose:** Testing authenticated API routes with JWT cookie auth
+**Purpose:** Creating HTML presentations with reveal.js
 
-**Files:** 1 main file (389 lines)
+**Files:** 1 main file (SKILL.md)
 
 **Covers:**
 
-- JWT cookie-based authentication testing
-- test-auth-route.js script patterns
-- cURL with cookie authentication
-- Debugging auth issues
-- Testing POST/PUT/DELETE operations
+- Reveal.js presentation structure
+- Brand-consistent slide design
+- Townhall and meeting decks
 
 **Use when:**
 
-- Testing API endpoints
-- Debugging authentication
-- Validating route functionality
+- Creating presentations
+- Building slide decks
+- Generating townhall materials
 
-**Customization:** ⚠️ Requires JWT cookie auth setup
-
-**Ask first:** "Do you use JWT cookie-based authentication?"
-
-- If YES: Copy and customize service URLs
-- If NO: Skip or adapt for your auth method
-
-**[View Skill →](route-tester/)**
+**[View Skill →](generate-ppt/)**
 
 ---
 
-### error-tracking
+### notion-ticket-reviewer
 
-**Purpose:** Sentry error tracking and monitoring patterns
+**Purpose:** Notion database integration for ticket management
 
-**Files:** 1 main file (~250 lines)
+**Files:** SKILL.md + 7 prompt files + config
 
 **Covers:**
 
-- Sentry v8 initialization
-- Error capture patterns
-- Breadcrumbs and user context
-- Performance monitoring
-- Integration with Express and React
+- Fetching tickets from Notion
+- Reviewing and updating ticket status
+- Filtering by project/app/status
+- Automated ticket processing
 
 **Use when:**
 
-- Setting up error tracking
-- Capturing exceptions
-- Adding error context
-- Debugging production issues
+- Reviewing Notion tickets
+- Fixing tickets from backlog
+- Updating ticket status
 
-**Customization:** ⚠️ Update `pathPatterns` for your backend
-
-**[View Skill →](error-tracking/)**
+**[View Skill →](notion-ticket-reviewer/)**
 
 ---
 
-## How to Add a Skill to Your Project
+### e2e-testing
 
-### Quick Integration
+**Purpose:** Playwright E2E testing patterns
 
-**For Claude Code:**
+**Files:** 2 files (e2e-fixtures.md, e2e-page-objects.md)
 
-```
-User: "Add the backend-dev-guidelines skill to my project"
+**Covers:**
 
-Claude should:
-1. Ask about project structure
-2. Copy skill directory
-3. Update skill-rules.json with their paths
-4. Verify integration
-```
+- Test fixture management
+- Page Object pattern templates
+- Authentication fixtures
+- Test data generators
+- Waiting strategies (no hardcoded timeouts)
 
-See [CLAUDE_INTEGRATION_GUIDE.md](../../CLAUDE_INTEGRATION_GUIDE.md) for complete instructions.
+**Use when:**
 
-### Manual Integration
+- Writing Playwright E2E tests
+- Creating page objects
+- Managing test fixtures
 
-**Step 1: Copy the skill directory**
+**[View Skill →](e2e-testing/)**
 
-```bash
-cp -r claude-code-infrastructure-showcase/.claude/skills/backend-dev-guidelines \\
-      your-project/.claude/skills/
-```
+---
 
-**Step 2: Update skill-rules.json**
+### git-workflow
 
-If you don't have one, create it:
+**Purpose:** Git and PR workflow automation
 
-```bash
-cp claude-code-infrastructure-showcase/.claude/skills/skill-rules.json \\
-   your-project/.claude/skills/
-```
+**Files:** 1 file (create-dev-pr.md)
 
-Then customize the `pathPatterns` for your project:
+**Covers:**
 
-```json
-{
-    "skills": {
-        "backend-dev-guidelines": {
-            "fileTriggers": {
-                "pathPatterns": [
-                    "YOUR_BACKEND_PATH/**/*.ts" // ← Update this!
-                ]
-            }
-        }
-    }
-}
-```
+- Creating PRs to dev branch
+- PR title formatting (conventional commits)
+- Pre-flight checks before PR
+- GitHub CLI usage
 
-**Step 3: Test**
+**Use when:**
 
-- Edit a file in your backend directory
-- The skill should activate automatically
+- Creating pull requests
+- Pushing to dev branch
+- Completing bug fixes or features
+
+**[View Skill →](git-workflow/)**
+
+---
+
+### debugging
+
+**Purpose:** Frontend bug fixing guide
+
+**Files:** 1 file (fix-bug.md)
+
+**Covers:**
+
+- React rendering issues
+- Redux state problems
+- React Router 7 issues
+- API/data fetching errors
+- TypeScript type errors
+- Styling/CSS issues
+
+**Use when:**
+
+- Fixing frontend bugs
+- Debugging React components
+- Troubleshooting state issues
+
+**[View Skill →](debugging/)**
+
+---
+
+### code-quality
+
+**Purpose:** TypeScript type organization
+
+**Files:** 1 file (organize-types.md)
+
+**Covers:**
+
+- Type organization structure
+- Where to place different type categories
+- Detecting duplicate types
+- Barrel exports management
+
+**Use when:**
+
+- Organizing TypeScript types
+- Cleaning up type definitions
+- Refactoring type structure
+
+**[View Skill →](code-quality/)**
+
+---
+
+## Stack-Specific Skills
+
+Additional skills are available in stack-specific submodules:
+
+| Submodule | Skills |
+|-----------|--------|
+| `nestjs/` | backend-dev-guidelines, error-tracking |
+| `react/` | frontend-dev-guidelines |
+| `react-native/` | mobile-dev-guidelines |
+
+These activate when the submodule is included in your project.
 
 ---
 
@@ -248,26 +218,24 @@ Then customize the `pathPatterns` for your project:
 
 Defines when skills should activate based on:
 
-- **Keywords** in user prompts ("backend", "API", "route")
+- **Keywords** in user prompts
 - **Intent patterns** (regex matching user intent)
-- **File path patterns** (editing backend files)
-- **Content patterns** (code contains Prisma queries)
+- **File path patterns** (editing specific files)
 
 ### Configuration Format
 
 ```json
 {
   "skill-name": {
-    "type": "domain" | "guardrail",
-    "enforcement": "suggest" | "block",
+    "type": "domain",
+    "enforcement": "suggest",
     "priority": "high" | "medium" | "low",
     "promptTriggers": {
       "keywords": ["list", "of", "keywords"],
       "intentPatterns": ["regex patterns"]
     },
     "fileTriggers": {
-      "pathPatterns": ["path/to/files/**/*.ts"],
-      "contentPatterns": ["import.*Prisma"]
+      "pathPatterns": ["path/to/files/**/*.ts"]
     }
   }
 }
@@ -275,20 +243,58 @@ Defines when skills should activate based on:
 
 ### Enforcement Levels
 
-- **suggest**: Skill appears as suggestion, doesn't block
+- **suggest**: Skill appears as suggestion
 - **block**: Must use skill before proceeding (guardrail)
 
-**Use "block" for:**
+---
 
-- Preventing breaking changes (MUI v6→v7)
-- Critical database operations
-- Security-sensitive code
+## Using as .claude Submodule
 
-**Use "suggest" for:**
+This repo is designed to be added as a `.claude` submodule to other projects:
 
-- General best practices
-- Domain guidance
-- Code organization
+```bash
+git submodule add https://github.com/potentialInc/claude-workflow.git .claude
+```
+
+Claude Code will automatically discover:
+- `commands/` - Slash commands
+- `agents/` - Agent definitions
+- `skills/` - Skill definitions
+- `hooks/` - Hook scripts (referenced in settings.json)
+
+---
+
+## Troubleshooting
+
+### Skill isn't activating
+
+**Check:**
+
+1. Is skill directory in `.claude/skills/`?
+2. Is skill listed in `skill-rules.json`?
+3. Do trigger keywords match your prompt?
+4. Are hooks installed and working?
+
+**Debug:**
+
+```bash
+# Check skill exists
+ls -la .claude/skills/
+
+# Validate skill-rules.json
+cat .claude/skills/skill-rules.json | jq .
+
+# Check hooks are executable
+ls -la .claude/hooks/*.sh
+```
+
+### Skill activates too often
+
+Update skill-rules.json:
+
+- Make keywords more specific
+- Narrow `pathPatterns`
+- Increase specificity of `intentPatterns`
 
 ---
 
@@ -296,7 +302,7 @@ Defines when skills should activate based on:
 
 See the **skill-developer** skill for complete guide on:
 
-- Skill YAML frontmatter structure
+- Skill structure and frontmatter
 - Resource file organization
 - Trigger pattern design
 - Testing skill activation
@@ -312,94 +318,11 @@ description: What this skill does
 # My Skill Title
 
 ## Purpose
-
 [Why this skill exists]
 
 ## When to Use This Skill
-
 [Auto-activation scenarios]
 
 ## Quick Reference
-
 [Key patterns and examples]
-
-## Resource Files
-
-- [topic-1.md](resources/topic-1.md)
-- [topic-2.md](resources/topic-2.md)
 ```
-
----
-
-## Troubleshooting
-
-### Skill isn't activating
-
-**Check:**
-
-1. Is skill directory in `.claude/skills/`?
-2. Is skill listed in `skill-rules.json`?
-3. Do `pathPatterns` match your files?
-4. Are hooks installed and working?
-5. Is settings.json configured correctly?
-
-**Debug:**
-
-```bash
-# Check skill exists
-ls -la .claude/skills/
-
-# Validate skill-rules.json
-cat .claude/skills/skill-rules.json | jq .
-
-# Check hooks are executable
-ls -la .claude/hooks/*.sh
-
-# Test hook manually
-./.claude/hooks/skill-activation-prompt.sh
-```
-
-### Skill activates too often
-
-Update skill-rules.json:
-
-- Make keywords more specific
-- Narrow `pathPatterns`
-- Increase specificity of `intentPatterns`
-
-### Skill never activates
-
-Update skill-rules.json:
-
-- Add more keywords
-- Broaden `pathPatterns`
-- Add more `intentPatterns`
-
----
-
-## For Claude Code
-
-**When integrating a skill for a user:**
-
-1. **Read [CLAUDE_INTEGRATION_GUIDE.md](../../CLAUDE_INTEGRATION_GUIDE.md)** first
-2. Ask about their project structure
-3. Customize `pathPatterns` in skill-rules.json
-4. Verify the skill file has no hardcoded paths
-5. Test activation after integration
-
-**Common mistakes:**
-
-- Keeping example paths (blog-api/, frontend/)
-- Not asking about monorepo vs single-app
-- Copying skill-rules.json without customization
-
----
-
-## Next Steps
-
-1. **Start simple:** Add one skill that matches your work
-2. **Verify activation:** Edit a relevant file, skill should suggest
-3. **Add more:** Once first skill works, add others
-4. **Customize:** Adjust triggers based on your workflow
-
-**Questions?** See [CLAUDE_INTEGRATION_GUIDE.md](../../CLAUDE_INTEGRATION_GUIDE.md) for comprehensive integration instructions.

@@ -95,8 +95,10 @@ Adjust the commit message based on which submodules were added:
 cd $CLAUDE_PROJECT_DIR/.claude
 git add .gitmodules <added-submodules>
 git commit -m "feat: Add framework-specific Claude Code submodules
+
 - Added submodules for framework-specific configuration
 - Structure now: base/ (shared) + framework-specific/
+
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 git push origin main
 ```

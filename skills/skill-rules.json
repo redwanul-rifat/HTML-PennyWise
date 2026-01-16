@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "description": "Base skill triggers - shared across all projects",
+  "description": "Base skill triggers - shared across all projects using this as .claude submodule",
   "skills": {
     "skill-developer": {
       "type": "domain",
@@ -11,18 +11,6 @@
         "intentPatterns": [
           "(create|build|add|develop).*skill",
           "skill.*?(template|structure|format)"
-        ]
-      }
-    },
-    "error-tracking": {
-      "type": "domain",
-      "enforcement": "suggest",
-      "priority": "medium",
-      "promptTriggers": {
-        "keywords": ["sentry", "error tracking", "error monitoring", "exception tracking", "crash reporting"],
-        "intentPatterns": [
-          "(setup|configure|add|implement).*?(sentry|error.*track)",
-          "(capture|log|report).*?(error|exception)"
         ]
       }
     },
@@ -63,6 +51,83 @@
       "commands": [
         "fix-ticket"
       ]
+    },
+    "fullstack": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "medium",
+      "promptTriggers": {
+        "keywords": ["deployment", "project setup", "project init", "iteration manager", "fullstack project"],
+        "intentPatterns": [
+          "(deploy|setup|init|initialize).*?project",
+          "(start|create).*?fullstack",
+          "iteration.*?(manager|planning)"
+        ]
+      }
+    },
+    "e2e-testing": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "medium",
+      "promptTriggers": {
+        "keywords": ["e2e test", "playwright", "test fixtures", "page objects", "end to end", "e2e fixtures"],
+        "intentPatterns": [
+          "(create|add|write|generate).*?e2e.*?test",
+          "(playwright|e2e).*?(fixture|page.*object)",
+          "test.*?(fixture|page.*object)"
+        ]
+      },
+      "fileTriggers": {
+        "pathPatterns": [
+          "**/test/**/*.spec.ts",
+          "**/e2e/**/*.ts",
+          "**/playwright/**/*.ts"
+        ]
+      }
+    },
+    "git-workflow": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "medium",
+      "promptTriggers": {
+        "keywords": ["create pr", "pull request", "dev branch", "push to dev", "pr to dev"],
+        "intentPatterns": [
+          "(create|make|open).*?pr",
+          "(push|submit).*?dev",
+          "pull.*?request.*?dev"
+        ]
+      }
+    },
+    "debugging": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "medium",
+      "promptTriggers": {
+        "keywords": ["fix bug", "debug", "react error", "frontend bug", "typescript error", "runtime error"],
+        "intentPatterns": [
+          "(fix|debug|solve|resolve).*?bug",
+          "(react|frontend|typescript).*?error",
+          "troubleshoot.*?(issue|problem|error)"
+        ]
+      }
+    },
+    "code-quality": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "low",
+      "promptTriggers": {
+        "keywords": ["organize types", "typescript types", "type organization", "refactor types", "centralize types"],
+        "intentPatterns": [
+          "(organize|clean|refactor|centralize).*?types",
+          "type.*?(organization|structure|cleanup)"
+        ]
+      },
+      "fileTriggers": {
+        "pathPatterns": [
+          "**/types/**/*.ts",
+          "**/types/**/*.d.ts"
+        ]
+      }
     }
   }
 }

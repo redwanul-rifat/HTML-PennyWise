@@ -153,24 +153,31 @@ Generate a health report:
 
 ```
 === Submodule Health Check ===
+
 Initialization:
   ✓ All submodules initialized
+
 URLs:
   ✓ .claude URL matches remote
   ✓ .claude/base URL matches remote
+
 Branches:
   ✓ .claude/base on main
   ✓ .claude on main
+
 Uncommitted Changes:
   ✓ No uncommitted changes in submodules
   OR
   ⚠ .claude/base has uncommitted changes
+
 Sync Status:
   ✓ All submodules up to date
   OR
   ⚠ .claude/base is 3 commits behind origin/main
+
 Commands:
   ✓ Symlink OK: commands -> base/commands
+
 Overall: ✓ Healthy / ⚠ Issues Found
 ```
 

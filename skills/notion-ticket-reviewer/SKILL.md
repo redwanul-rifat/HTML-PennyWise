@@ -2,25 +2,25 @@
 skill_name: notion-ticket-reviewer
 applies_to_local_project_only: false
 auto_trigger_regex:
-    [notion ticket, review ticket, notion task, ticket reviewer, /notion-review, notion database, fix ticket]
-tags: [notion, tickets, automation, review, curl, workflow]
+    [notion ticket, review ticket, notion task, ticket reviewer, /notion-review, notion database, fix ticket, bug report]
+tags: [notion, tickets, automation, review, curl, workflow, bugs]
 related_skills: []
 ---
 
 # Notion Ticket Reviewer
 
-Automatically fetch, analyze, fix, and update tickets from Notion databases using Claude Code.
+Automatically fetch, analyze, fix, and update tickets from Notion Bug Report database using Claude Code.
 
 ---
 
 ## Overview
 
 This skill enables Claude Code to:
-1. **Fetch tickets** from a Notion database
-2. **Filter** by status, priority, team, or project
+1. **Fetch tickets** from the Bug Report Notion database
+2. **Filter** by status, priority, type, or app
 3. **Analyze requirements** from ticket descriptions
 4. **Implement fixes** in the codebase automatically
-5. **Update ticket status** to "In Progress" → "In Review"
+5. **Update ticket status** to "In Progress" → "Ready for test"
 6. **Add comments** with implementation details
 
 ---
@@ -29,22 +29,27 @@ This skill enables Claude Code to:
 
 ### Review All Tickets
 ```
-Enter plan mode - Review notion tickets for database [YOUR_DATABASE_ID]
+Enter plan mode - Review notion tickets for database [DATABASE_ID]
+```
+
+### Review New Bugs Only
+```
+Enter plan mode - Review notion tickets for database [DATABASE_ID] with status New
 ```
 
 ### Fix a Single Ticket
 ```
-Fix ticket: Fix login validation bug
+Fix ticket: <ticket title>
 ```
 or
 ```
-Fix ticket: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+Fix ticket: <page-id>
 ```
 
-### Filter by Team
+### Filter by App
 ```
 Enter plan mode - Review notion tickets
-Filter: Team = "Full-Stack", Status = "Not Started"
+Filter: App = "<app-name>", Status = "New"
 ```
 
 ---
@@ -55,9 +60,9 @@ Filter: Team = "Full-Stack", Status = "Not Started"
 ```
 Enter plan mode - Review notion tickets for database [DATABASE_ID]
 ```
-- Shows all "Not Started" tickets
-- Grouped by category (Features, Bug Fixes, Improvements, etc.)
-- Displays: Priority, Team, Title, ID
+- Shows all "New" tickets
+- Grouped by type (Bug, Feature, etc.)
+- Displays: Priority, App, Pages, Title, ID
 
 ### Step 2: Select & Start Ticket
 ```
@@ -69,15 +74,15 @@ Fix ticket: [ticket title or ID]
 
 ### Step 3: Implement
 Claude will:
-- Read relevant files based on ticket description
+- Read relevant files based on ticket description and pages
 - Make necessary code changes
 - Follow project coding standards
 - Run tests if applicable
 
 ### Step 4: Complete
 After implementation:
-- Sets status to **"In Review"**
-- Adds comment with:
+- Sets status to **"Ready for test"**
+- Adds Dev's Comment with:
   - Files modified
   - Changes made
   - Testing notes
@@ -91,55 +96,68 @@ or select another ticket by name/ID
 
 ---
 
-## Database Schema (Team Tickets)
+## Database Schema (Bug Report)
 
 ### Core Properties
 
 | Property | Type | Values |
 |----------|------|--------|
-| **Ticket Title** | title | Ticket name/summary |
-| **Status** | status | Blocked, Not Started, In Progress, In Review, Done |
-| **Priority** | select | Critical, Urgent, High, Medium, Low |
-| **Team** | select | Full-Stack, Design, Mobile, Operation |
-| **Comment** | rich_text | Additional notes/description |
+| **Title** | title | Bug/issue name |
+| **Status** | status | Need Urgent Fix, New, Checked, In Progress, Need to discuss, Client Rejected, Test Failed, Not Bug, Ready for test, Test Done |
+| **Priority** | select | 0. Highest, 1. High, 2. Medium, 3. Low |
+| **Type** | multi_select | Bug, Feature, Improvement, Task |
+| **Description** | rich_text | Detailed bug description |
 
-### Relationship Properties
-
-| Property | Type | Purpose |
-|----------|------|---------|
-| **Assignee** | relation | Person assigned to ticket |
-| **Assigner** | relation | Person who created ticket |
-| **Related Project** | relation | Link to project database |
-
-### Date Properties
+### Location Properties
 
 | Property | Type | Purpose |
 |----------|------|---------|
-| **Due Date** | date | Deadline |
-| **Start Date** | created_time | When ticket was created |
-| **End Date** | date | Completion date |
-| **Duration** | date | Time range |
+| **App / Dashboard** | multi_select | Your app names (customize per project) |
+| **Pages** | rich_text | Affected pages (e.g., `/users`, `/dashboard/settings`) |
+
+### Assignment Properties
+
+| Property | Type | Purpose |
+|----------|------|---------|
+| **Reported by** | relation | Person who reported the issue |
+| **Responsible for** | relation | Person assigned to fix |
+| **Done by** | relation | Person who completed the fix |
 
 ### Additional Properties
 
 | Property | Type | Purpose |
 |----------|------|---------|
-| **Category** | multi_select | Tags for categorization |
-| **URL** | url | Reference link |
-| **Attachments** | url | File links |
-| **Files & media** | files | Uploaded files |
+| **Dev's Comment** | rich_text | Developer implementation notes |
+| **Difficulty** | select | Estimated complexity |
+| **Image, Video** | files | Screenshots/attachments |
+| **Due Date** | date | Deadline |
+| **Created time** | created_time | When ticket was created |
 
 ---
 
 ## Status Values
 
+### To-do Group (red)
 | Status | Color | Description |
 |--------|-------|-------------|
-| **Blocked** | red | Cannot proceed due to dependency |
-| **Not Started** | gray | Ready to be worked on |
+| **Need Urgent Fix** | red | Critical bug, must fix immediately |
+| **New** | red | Newly reported, ready to be fixed |
+
+### In Progress Group
+| Status | Color | Description |
+|--------|-------|-------------|
+| **Checked** | gray | Reviewed by developer |
 | **In Progress** | blue | Currently being worked on |
-| **In Review** | purple | Implementation complete, needs review |
-| **Done** | green | Completed and verified |
+| **Need to discuss** | orange | Requires team discussion |
+| **Client Rejected** | red | Client did not accept the fix |
+| **Test Failed** | red | QA testing failed |
+
+### Complete Group (green)
+| Status | Color | Description |
+|--------|-------|-------------|
+| **Not Bug** | blue | Not a bug, expected behavior |
+| **Ready for test** | green | Fix complete, ready for QA |
+| **Test Done** | green | QA verified and passed |
 
 ---
 
@@ -147,11 +165,10 @@ or select another ticket by name/ID
 
 | Priority | Color | Description |
 |----------|-------|-------------|
-| **Critical** | orange | Must fix immediately |
-| **Urgent** | purple | Fix today |
-| **High** | red | Fix this sprint |
-| **Medium** | yellow | Fix when possible |
-| **Low** | green | Nice to have |
+| **0. Highest** | red | Critical, fix immediately |
+| **1. High** | brown | Fix this sprint |
+| **2. Medium** | yellow | Fix when possible |
+| **3. Low** | pink | Nice to have |
 
 ---
 
@@ -161,7 +178,7 @@ or select another ticket by name/ID
 ```python
 filter = {
     "property": "Status",
-    "status": {"equals": "Not Started"}
+    "status": {"equals": "New"}
 }
 ```
 
@@ -173,11 +190,19 @@ filter = {
 }
 ```
 
-### By Team
+### By Type
 ```python
 filter = {
-    "property": "Team",
-    "select": {"equals": "Full-Stack"}
+    "property": "Type",
+    "multi_select": {"contains": "Bug"}
+}
+```
+
+### By App
+```python
+filter = {
+    "property": "App / Dashboard",
+    "multi_select": {"contains": "<app-name>"}
 }
 ```
 
@@ -185,9 +210,9 @@ filter = {
 ```python
 filter = {
     "and": [
-        {"property": "Status", "status": {"equals": "Not Started"}},
-        {"property": "Priority", "select": {"equals": "High"}},
-        {"property": "Team", "select": {"equals": "Full-Stack"}}
+        {"property": "Status", "status": {"equals": "New"}},
+        {"property": "Type", "multi_select": {"contains": "Bug"}},
+        {"property": "App / Dashboard", "multi_select": {"contains": "<app-name>"}}
     ]
 }
 ```
@@ -198,25 +223,34 @@ filter = {
 
 ### Query Database
 ```bash
-curl -X POST "https://api.notion.com/v1/databases/DATABASE_ID/query" \
+curl -s -X POST "https://api.notion.com/v1/databases/DATABASE_ID/query" \
   -H "Authorization: Bearer $NOTION_API_KEY" \
   -H "Notion-Version: 2022-06-28" \
   -H "Content-Type: application/json" \
-  -d '{"filter": {"property": "Status", "status": {"equals": "Not Started"}}}'
+  -d '{"filter": {"property": "Status", "status": {"equals": "New"}}}'
 ```
 
 ### Update Ticket Status
 ```bash
-curl -X PATCH "https://api.notion.com/v1/pages/PAGE_ID" \
+curl -s -X PATCH "https://api.notion.com/v1/pages/PAGE_ID" \
   -H "Authorization: Bearer $NOTION_API_KEY" \
   -H "Notion-Version: 2022-06-28" \
   -H "Content-Type: application/json" \
   -d '{"properties": {"Status": {"status": {"name": "In Progress"}}}}'
 ```
 
-### Add Comment
+### Add Dev's Comment
 ```bash
-curl -X POST "https://api.notion.com/v1/comments" \
+curl -s -X PATCH "https://api.notion.com/v1/pages/PAGE_ID" \
+  -H "Authorization: Bearer $NOTION_API_KEY" \
+  -H "Notion-Version: 2022-06-28" \
+  -H "Content-Type: application/json" \
+  -d '{"properties": {"Dev'\''s Comment": {"rich_text": [{"text": {"content": "Fix implemented"}}]}}}'
+```
+
+### Add Page Comment
+```bash
+curl -s -X POST "https://api.notion.com/v1/comments" \
   -H "Authorization: Bearer $NOTION_API_KEY" \
   -H "Notion-Version: 2022-06-28" \
   -H "Content-Type: application/json" \
@@ -245,7 +279,6 @@ NOTION_API_KEY=ntn_your_key_here
 
 ### 4. Test Connection
 ```bash
-NOTION_API_KEY=$(grep -E "^NOTION_API_KEY=" .env | cut -d'=' -f2)
 curl -s -X GET "https://api.notion.com/v1/users/me" \
   -H "Authorization: Bearer $NOTION_API_KEY" \
   -H "Notion-Version: 2022-06-28"
@@ -267,12 +300,11 @@ curl -s -X GET "https://api.notion.com/v1/users/me" \
 
 ### "Status update failed"
 1. Verify "Status" property exists
-2. Check status option names match exactly
+2. Check status option names match exactly: Need Urgent Fix, New, Checked, In Progress, Need to discuss, Client Rejected, Test Failed, Not Bug, Ready for test, Test Done
 3. Ensure property type is "Status" (not "Select")
 
 ### Test curl connection
 ```bash
-NOTION_API_KEY=$(grep -E "^NOTION_API_KEY=" .env | cut -d'=' -f2)
 curl -s -X GET "https://api.notion.com/v1/users/me" \
   -H "Authorization: Bearer $NOTION_API_KEY" \
   -H "Notion-Version: 2022-06-28"
@@ -282,12 +314,12 @@ curl -s -X GET "https://api.notion.com/v1/users/me" \
 
 ## Related Files
 
-- `databases/example-config.json` - Database configuration template
+- `databases/example-config.json` - Database configuration
 - `prompts/review-tickets.md` - Review tickets via curl
 - `prompts/update-ticket.md` - Update ticket status via curl
 - `prompts/fix-single.md` - Fix single ticket prompt
 - `prompts/fix-all-by-status.md` - Fix all tickets by status
-- `prompts/filter-by-team.md` - Filter by team prompt
+- `prompts/filter-by-app.md` - Filter by app prompt
 - `prompts/filter-by-project.md` - Filter by project prompt
 
 ---
@@ -295,30 +327,32 @@ curl -s -X GET "https://api.notion.com/v1/users/me" \
 ## Example Session
 
 ```
-User: Enter plan mode - Review notion tickets for database [YOUR_DATABASE_ID]
+User: Enter plan mode - Review notion tickets for database [DATABASE_ID] with status New
 
-Claude: Found 15 tickets:
+Claude: Found 6 tickets with "New" status:
 
-### Features
-1. [HIGH] Fix login validation bug - ID: a1b2c3d4...
-2. [HIGH] Implement search functionality - ID: e5f67890...
+### Bugs
+1. [<app>] /users - Login redirect issue - #2
+2. [<app>] /dashboard - Calendar gap between elements - #3
+3. [<app>] /settings - Form validation error - #4
 
-### Bug Fixes
-3. [HIGH] Resolve API timeout issue - ID: abcd1234...
+### UI Issues
+4. [<app>] /profile - Padding sizes - #5
+5. [<app>] /notifications - Toast position - #6
+6. [<app>] /chat - Latest message display - #7
 ...
 
-User: Fix ticket: Fix login validation bug
+User: Fix ticket: Login redirect issue
 
 Claude:
 1. Setting status to "In Progress"...
-2. Reading ticket description...
-3. Analyzing requirements:
-   - Fix form validation on empty fields
-4. Exploring codebase for relevant files...
-5. Found: src/components/LoginForm.tsx...
+2. Reading ticket description: "After login, user should redirect to dashboard."
+3. Affected page: /users
+4. Exploring codebase for login routing...
+5. Found: <frontend>/src/pages/auth/...
 6. Implementing fix...
-7. Setting status to "In Review"
-8. Adding implementation comment
+7. Setting status to "Ready for test"
+8. Adding Dev's Comment with implementation details
 
-Done! Ticket ready for review.
+Done! Ticket ready for QA verification.
 ```
