@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ticket #TKT-2891 - PennyWise Admin</title>
+<!-- Fonts: Inter -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Iconify (Lucide Icons) -->
+<script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+fontFamily: {
+sans: ['Inter', 'sans-serif'],
+},
+colors: {
+emerald: {
+50: '#ECFDF5',
+100: '#D1FAE5',
+200: '#A7F3D0',
+300: '#6EE7B7',
+400: '#34D399',
+500: '#10B981',
+600: '#059669',
+700: '#047857',
+800: '#065F46',
+900: '#064E3B',
+},
+amber: {
+50: '#FFFBEB',
+500: '#F59E0B',
+600: '#D97706',
+700: '#B45309',
+},
+red: {
+50: '#FEF2F2',
+500: '#EF4444',
+600: '#DC2626',
+700: '#B91C1C',
+},
+gray: {
+50: '#F9FAFB',
+100: '#F3F4F6',
+200: '#E5E7EB',
+300: '#D1D5DB',
+400: '#9CA3AF',
+500: '#6B7280',
+600: '#4B5563',
+700: '#374151',
+800: '#1F2937',
+900: '#111827',
+},
+},
+borderRadius: {
+'card': '12px',
+'btn': '8px',
+},
+boxShadow: {
+'card': '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05)',
+'hover': '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025)',
+}
+}
+}
+}
+</script>
+<style>
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.form-select {
+background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+background-position: right 0.5rem center;
+background-repeat: no-repeat;
+background-size: 1.5em 1.5em;
+padding-right: 2.5rem;
+-webkit-appearance: none;
+appearance: none;
+}
+/* Status Badge Colors */
+.badge-open { background-color: #EFF6FF; color: #1D4ED8; border: 1px solid #DBEAFE; }
+.badge-progress { background-color: #FFFBEB; color: #B45309; border: 1px solid #FEF3C7; }
+.badge-resolved { background-color: #ECFDF5; color: #047857; border: 1px solid #D1FAE5; }
+.badge-closed { background-color: #F3F4F6; color: #374151; border: 1px solid #E5E7EB; }
+/* Priority Badge Colors */
+.priority-high { color: #EF4444; background-color: #FEF2F2; border: 1px solid #FEE2E2; }
+.priority-medium { color: #D97706; background-color: #FFFBEB; border: 1px solid #FEF3C7; }
+.priority-low { color: #4B5563; background-color: #F3F4F6; border: 1px solid #E5E7EB; }
+</style></head>
+<body class="bg-gray-50 min-h-screen w-full font-sans antialiased text-gray-900 flex overflow-hidden">
+
+    <!-- Mobile Overlay -->
+    <div id="mobileOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-gray-900/50 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity"></div>
+
+    <!-- Admin Sidebar -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-[260px] bg-white border-r border-gray-200 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col h-full shadow-card lg:shadow-none">
+        <!-- Header -->
+        <div class="h-16 flex items-center px-6 border-b border-gray-100">
+            <div class="flex items-center gap-2 text-emerald-600">
+                <span class="iconify" data-icon="lucide:leaf" data-width="24" style="stroke-width: 1.5;"></span>
+                <span class="text-lg font-bold tracking-tight text-gray-900">PennyWise</span>
+                <span class="px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 text-[10px] font-bold uppercase tracking-wider border border-gray-200 ml-1">Admin</span>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 overflow-y-auto py-6 px-3 space-y-1">
+            <a href="./15-admin-dashboard.html" class="flex items-center gap-3 px-3 py-2.5 rounded-btn text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium group transition-colors">
+                <span class="iconify text-gray-400 group-hover:text-gray-600" data-icon="lucide:layout-dashboard" data-width="20" style="stroke-width: 1.5;"></span>
+                Dashboard
+            </a>
+
+            <div class="px-3 pt-4 pb-2">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Platform</p>
+            </div>
+
+            <a href="./16-user-management.html" class="flex items-center gap-3 px-3 py-2.5 rounded-btn text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium group transition-colors">
+                <span class="iconify text-gray-400 group-hover:text-gray-600" data-icon="lucide:users" data-width="20" style="stroke-width: 1.5;"></span>
+                User Management
+            </a>
+            <a href="./17-category-management.html" class="flex items-center gap-3 px-3 py-2.5 rounded-btn text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium group transition-colors">
+                <span class="iconify text-gray-400 group-hover:text-gray-600" data-icon="lucide:tags" data-width="20" style="stroke-width: 1.5;"></span>
+                Categories
+            </a>
+            <a href="./18-platform-analytics.html" class="flex items-center gap-3 px-3 py-2.5 rounded-btn text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium group transition-colors">
+                <span class="iconify text-gray-400 group-hover:text-gray-600" data-icon="lucide:bar-chart-3" data-width="20" style="stroke-width: 1.5;"></span>
+                Platform Analytics
+            </a>
+
+            <div class="px-3 pt-4 pb-2">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">System</p>
+            </div>
+
+            <a href="./19-support-tickets.html" class="flex items-center gap-3 px-3 py-2.5 rounded-btn bg-emerald-50 text-emerald-700 font-medium group transition-colors">
+                <div class="relative">
+                    <span class="iconify" data-icon="lucide:ticket" data-width="20" style="stroke-width: 1.5;"></span>
+                </div>
+                Support Tickets
+            </a>
+            <a href="./20-admin-settings.html" class="flex items-center gap-3 px-3 py-2.5 rounded-btn text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium group transition-colors">
+                <span class="iconify text-gray-400 group-hover:text-gray-600" data-icon="lucide:settings-2" data-width="20" style="stroke-width: 1.5;"></span>
+                Admin Settings
+            </a>
+        </nav>
+
+        <!-- Admin Profile -->
+        <div class="p-4 border-t border-gray-100">
+            <div class="flex items-center gap-3 p-2 rounded-btn hover:bg-gray-50 cursor-pointer transition-colors border border-transparent hover:border-gray-200">
+                <div class="relative">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" alt="Admin" class="w-9 h-9 rounded-full bg-gray-100 border border-gray-200">
+                    <div class="absolute -bottom-0.5 -right-0.5 bg-emerald-500 rounded-full p-0.5 border-2 border-white">
+                        <span class="iconify text-white" data-icon="lucide:shield-check" data-width="10"></span>
+                    </div>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-semibold text-gray-900 truncate">System Admin</p>
+                    <p class="text-xs text-gray-500 truncate">admin@pennywise.app</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 h-screen overflow-y-auto lg:pl-[260px] relative w-full scroll-smooth bg-gray-50">
+        <div class="max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+
+            <!-- Breadcrumb & Back -->
+            <div class="flex items-center gap-2 text-sm">
+                <a href="./19-support-tickets.html" class="flex items-center gap-1.5 text-gray-500 hover:text-emerald-600 transition-colors">
+                    <span class="iconify" data-icon="lucide:arrow-left" data-width="16"></span>
+                    Back to Tickets
+                </a>
+                <span class="text-gray-300">/</span>
+                <span class="text-gray-700 font-medium">#TKT-2891</span>
+            </div>
+
+            <!-- Page Header -->
+            <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
+                <div class="flex items-start gap-4">
+                    <button onclick="toggleSidebar()" class="lg:hidden p-2 -ml-2 rounded-btn text-gray-600 hover:bg-gray-100 mt-1">
+                        <span class="iconify" data-icon="lucide:menu" data-width="24"></span>
+                    </button>
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <h1 class="text-2xl font-bold tracking-tight text-gray-900">Can't link my bank account</h1>
+                            <span class="badge-open inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium">
+                                Open
+                            </span>
+                            <span class="priority-high inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium">
+                                <span class="iconify" data-icon="lucide:alert-circle" data-width="12"></span>
+                                High Priority
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-4 text-sm text-gray-500">
+                            <span class="flex items-center gap-1.5">
+                                <span class="iconify" data-icon="lucide:hash" data-width="14"></span>
+                                TKT-2891
+                            </span>
+                            <span class="flex items-center gap-1.5">
+                                <span class="iconify" data-icon="lucide:calendar" data-width="14"></span>
+                                Created Jan 18, 2024 at 2:34 PM
+                            </span>
+                            <span class="flex items-center gap-1.5">
+                                <span class="iconify" data-icon="lucide:folder" data-width="14"></span>
+                                Technical Issue
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    <select class="form-select text-sm border-gray-200 rounded-btn focus:ring-emerald-500 focus:border-emerald-500 py-2 pl-3 pr-8 bg-white">
+                        <option>Change Status</option>
+                        <option>Open</option>
+                        <option>In Progress</option>
+                        <option>Resolved</option>
+                        <option>Closed</option>
+                    </select>
+                    <button class="flex items-center gap-2 px-4 py-2 bg-white text-gray-700 border border-gray-200 rounded-btn hover:bg-gray-50 font-medium text-sm transition-all">
+                        <span class="iconify" data-icon="lucide:user-plus" data-width="16"></span>
+                        Assign
+                    </button>
+                    <button class="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 border border-red-200 rounded-btn hover:bg-red-100 font-medium text-sm transition-all">
+                        <span class="iconify" data-icon="lucide:trash-2" data-width="16"></span>
+                        Delete
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                <!-- Left Column - Conversation -->
+                <div class="lg:col-span-2 space-y-6">
+
+                    <!-- Original Message -->
+                    <div class="bg-white border border-gray-200 rounded-card shadow-sm">
+                        <div class="p-5 border-b border-gray-100">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm border border-blue-200">
+                                        JC
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-sm font-semibold text-gray-900">John Cooper</span>
+                                            <span class="px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] font-medium rounded-full">User</span>
+                                        </div>
+                                        <p class="text-xs text-gray-500">john.c@example.com</p>
+                                    </div>
+                                </div>
+                                <span class="text-xs text-gray-400">Jan 18, 2024 at 2:34 PM</span>
+                            </div>
+                        </div>
+                        <div class="p-5">
+                            <div class="prose prose-sm max-w-none text-gray-700">
+                                <p>Hi,</p>
+                                <p>I've been trying to link my Chase bank account to PennyWise for the past 2 days, but I keep getting an error message that says "Connection failed. Please try again later."</p>
+                                <p>I've tried the following:</p>
+                                <ul>
+                                    <li>Logging out and back in</li>
+                                    <li>Clearing my browser cache</li>
+                                    <li>Trying on a different browser (Chrome and Firefox)</li>
+                                    <li>Using the mobile app instead</li>
+                                </ul>
+                                <p>Nothing seems to work. This is really frustrating as I need to track my expenses for tax purposes.</p>
+                                <p>Can someone please help me resolve this issue?</p>
+                                <p>Thanks,<br>John</p>
+                            </div>
+                        </div>
+                        <!-- Attachments -->
+                        <div class="px-5 pb-5">
+                            <p class="text-xs font-medium text-gray-500 mb-2">Attachments (2)</p>
+                            <div class="flex flex-wrap gap-2">
+                                <a href="#" class="flex items-center gap-2 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors group">
+                                    <span class="iconify text-gray-400 group-hover:text-emerald-600" data-icon="lucide:image" data-width="16"></span>
+                                    <span class="text-xs font-medium text-gray-600">screenshot-error.png</span>
+                                    <span class="text-xs text-gray-400">124 KB</span>
+                                </a>
+                                <a href="#" class="flex items-center gap-2 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors group">
+                                    <span class="iconify text-gray-400 group-hover:text-emerald-600" data-icon="lucide:image" data-width="16"></span>
+                                    <span class="text-xs font-medium text-gray-600">mobile-error.png</span>
+                                    <span class="text-xs text-gray-400">98 KB</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Admin Response -->
+                    <div class="bg-white border border-emerald-200 rounded-card shadow-sm">
+                        <div class="p-5 border-b border-emerald-100 bg-emerald-50/50">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-center gap-3">
+                                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" alt="Admin" class="w-10 h-10 rounded-full bg-gray-100 border border-gray-200">
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-sm font-semibold text-gray-900">System Admin</span>
+                                            <span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-medium rounded-full border border-emerald-200">Admin</span>
+                                        </div>
+                                        <p class="text-xs text-gray-500">admin@pennywise.app</p>
+                                    </div>
+                                </div>
+                                <span class="text-xs text-gray-400">Jan 18, 2024 at 3:15 PM</span>
+                            </div>
+                        </div>
+                        <div class="p-5">
+                            <div class="prose prose-sm max-w-none text-gray-700">
+                                <p>Hi John,</p>
+                                <p>Thank you for reaching out and for the detailed information about the steps you've already tried.</p>
+                                <p>I've looked into your account and can see the connection attempts. It appears there's a known issue with Chase's Plaid integration that our engineering team is currently working on.</p>
+                                <p>In the meantime, could you please try the following:</p>
+                                <ol>
+                                    <li>Go to Settings > Connected Accounts</li>
+                                    <li>Click "Add Account" and select "Manual Entry"</li>
+                                    <li>Choose Chase from the list and follow the OAuth flow</li>
+                                </ol>
+                                <p>This alternative method bypasses Plaid and connects directly through Chase's API.</p>
+                                <p>Let me know if this works for you!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reply Box -->
+                    <div class="bg-white border border-gray-200 rounded-card shadow-sm p-5">
+                        <h3 class="text-sm font-semibold text-gray-900 mb-3">Add Reply</h3>
+                        <textarea rows="4" class="block w-full rounded-lg border border-gray-200 py-3 px-4 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 sm:text-sm resize-none transition-all" placeholder="Type your reply here..."></textarea>
+                        <div class="flex items-center justify-between mt-4">
+                            <div class="flex items-center gap-2">
+                                <button class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                                    <span class="iconify" data-icon="lucide:paperclip" data-width="18"></span>
+                                </button>
+                                <button class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                                    <span class="iconify" data-icon="lucide:image" data-width="18"></span>
+                                </button>
+                                <button class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                                    <span class="iconify" data-icon="lucide:link" data-width="18"></span>
+                                </button>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500">
+                                    <span>Internal note</span>
+                                </label>
+                                <button class="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-btn hover:bg-emerald-700 font-medium text-sm transition-all shadow-sm shadow-emerald-200">
+                                    <span class="iconify" data-icon="lucide:send" data-width="16"></span>
+                                    Send Reply
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right Column - Details & Activity -->
+                <div class="space-y-6">
+
+                    <!-- Ticket Details -->
+                    <div class="bg-white border border-gray-200 rounded-card shadow-sm">
+                        <div class="px-5 py-4 border-b border-gray-100">
+                            <h3 class="text-sm font-semibold text-gray-900">Ticket Details</h3>
+                        </div>
+                        <div class="p-5 space-y-4">
+                            <!-- Status -->
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500">Status</span>
+                                <span class="badge-open inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">
+                                    Open
+                                </span>
+                            </div>
+                            <!-- Priority -->
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500">Priority</span>
+                                <span class="priority-high inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium">
+                                    <span class="iconify" data-icon="lucide:alert-circle" data-width="12"></span>
+                                    High
+                                </span>
+                            </div>
+                            <!-- Category -->
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500">Category</span>
+                                <span class="text-sm font-medium text-gray-900">Technical Issue</span>
+                            </div>
+                            <!-- Assignee -->
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500">Assigned To</span>
+                                <div class="flex items-center gap-2">
+                                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" alt="Admin" class="w-5 h-5 rounded-full border border-gray-200">
+                                    <span class="text-sm font-medium text-gray-900">System Admin</span>
+                                </div>
+                            </div>
+                            <!-- Created -->
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500">Created</span>
+                                <span class="text-sm text-gray-700">Jan 18, 2024</span>
+                            </div>
+                            <!-- Last Updated -->
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500">Last Updated</span>
+                                <span class="text-sm text-gray-700">2 hours ago</span>
+                            </div>
+                            <!-- Response Time -->
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500">First Response</span>
+                                <span class="text-sm text-emerald-600 font-medium">41 min</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Info -->
+                    <div class="bg-white border border-gray-200 rounded-card shadow-sm">
+                        <div class="px-5 py-4 border-b border-gray-100">
+                            <h3 class="text-sm font-semibold text-gray-900">User Information</h3>
+                        </div>
+                        <div class="p-5">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-lg border border-blue-200">
+                                    JC
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-900">John Cooper</p>
+                                    <p class="text-xs text-gray-500">john.c@example.com</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3 pt-3 border-t border-gray-100">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-gray-500">Account Type</span>
+                                    <span class="px-2 py-0.5 bg-amber-50 text-amber-700 text-xs font-medium rounded-full border border-amber-200">Premium</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-gray-500">Member Since</span>
+                                    <span class="text-xs text-gray-700">Oct 2023</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-gray-500">Total Tickets</span>
+                                    <span class="text-xs text-gray-700">3</span>
+                                </div>
+                            </div>
+                            <a href="#" class="flex items-center justify-center gap-2 mt-4 px-3 py-2 bg-gray-50 text-gray-700 border border-gray-200 rounded-btn hover:bg-gray-100 text-sm font-medium transition-colors">
+                                <span class="iconify" data-icon="lucide:external-link" data-width="14"></span>
+                                View User Profile
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Activity Timeline -->
+                    <div class="bg-white border border-gray-200 rounded-card shadow-sm">
+                        <div class="px-5 py-4 border-b border-gray-100">
+                            <h3 class="text-sm font-semibold text-gray-900">Activity Timeline</h3>
+                        </div>
+                        <div class="p-5">
+                            <div class="space-y-4">
+                                <!-- Activity 1 -->
+                                <div class="flex gap-3">
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center border border-emerald-200">
+                                            <span class="iconify" data-icon="lucide:message-square" data-width="14"></span>
+                                        </div>
+                                        <div class="w-px h-full bg-gray-200 mt-2"></div>
+                                    </div>
+                                    <div class="flex-1 pb-4">
+                                        <p class="text-sm text-gray-900"><span class="font-medium">System Admin</span> replied</p>
+                                        <p class="text-xs text-gray-500 mt-0.5">Jan 18, 2024 at 3:15 PM</p>
+                                    </div>
+                                </div>
+                                <!-- Activity 2 -->
+                                <div class="flex gap-3">
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center border border-blue-200">
+                                            <span class="iconify" data-icon="lucide:user-check" data-width="14"></span>
+                                        </div>
+                                        <div class="w-px h-full bg-gray-200 mt-2"></div>
+                                    </div>
+                                    <div class="flex-1 pb-4">
+                                        <p class="text-sm text-gray-900">Ticket assigned to <span class="font-medium">System Admin</span></p>
+                                        <p class="text-xs text-gray-500 mt-0.5">Jan 18, 2024 at 2:45 PM</p>
+                                    </div>
+                                </div>
+                                <!-- Activity 3 -->
+                                <div class="flex gap-3">
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center border border-amber-200">
+                                            <span class="iconify" data-icon="lucide:alert-triangle" data-width="14"></span>
+                                        </div>
+                                        <div class="w-px h-full bg-gray-200 mt-2"></div>
+                                    </div>
+                                    <div class="flex-1 pb-4">
+                                        <p class="text-sm text-gray-900">Priority changed to <span class="font-medium text-red-600">High</span></p>
+                                        <p class="text-xs text-gray-500 mt-0.5">Jan 18, 2024 at 2:40 PM</p>
+                                    </div>
+                                </div>
+                                <!-- Activity 4 -->
+                                <div class="flex gap-3">
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-8 h-8 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center border border-gray-200">
+                                            <span class="iconify" data-icon="lucide:plus-circle" data-width="14"></span>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-sm text-gray-900">Ticket created by <span class="font-medium">John Cooper</span></p>
+                                        <p class="text-xs text-gray-500 mt-0.5">Jan 18, 2024 at 2:34 PM</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Related Tickets -->
+                    <div class="bg-white border border-gray-200 rounded-card shadow-sm">
+                        <div class="px-5 py-4 border-b border-gray-100">
+                            <h3 class="text-sm font-semibold text-gray-900">Related Tickets</h3>
+                        </div>
+                        <div class="p-3">
+                            <a href="#" class="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors group">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900 group-hover:text-emerald-600">#TKT-2756</p>
+                                    <p class="text-xs text-gray-500 truncate max-w-[180px]">Bank connection timeout issue</p>
+                                </div>
+                                <span class="badge-resolved inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium">
+                                    Resolved
+                                </span>
+                            </a>
+                            <a href="#" class="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors group">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900 group-hover:text-emerald-600">#TKT-2801</p>
+                                    <p class="text-xs text-gray-500 truncate max-w-[180px]">Plaid integration error</p>
+                                </div>
+                                <span class="badge-progress inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium">
+                                    In Progress
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="h-6"></div> <!-- Bottom Spacer -->
+
+        </div>
+    </main>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+
+        function toggleSidebar() {
+            const isClosed = sidebar.classList.contains('-translate-x-full');
+            if (isClosed) {
+                sidebar.classList.remove('-translate-x-full');
+                mobileOverlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                mobileOverlay.classList.add('hidden');
+            }
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                if(!sidebar.classList.contains('-translate-x-full')) toggleSidebar();
+            }
+        });
+    </script>
+
+</body></html>

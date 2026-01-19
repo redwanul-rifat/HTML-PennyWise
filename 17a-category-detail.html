@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Food & Dining - Category Details - PennyWise Admin</title>
+<!-- Fonts: Inter -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Iconify (Lucide Icons) -->
+<script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+fontFamily: {
+sans: ['Inter', 'sans-serif'],
+},
+colors: {
+emerald: {
+50: '#ECFDF5',
+100: '#D1FAE5',
+200: '#A7F3D0',
+300: '#6EE7B7',
+400: '#34D399',
+500: '#10B981',
+600: '#059669',
+700: '#047857',
+800: '#065F46',
+900: '#064E3B',
+},
+gray: {
+50: '#F9FAFB',
+100: '#F3F4F6',
+200: '#E5E7EB',
+300: '#D1D5DB',
+400: '#9CA3AF',
+500: '#6B7280',
+600: '#4B5563',
+700: '#374151',
+800: '#1F2937',
+900: '#111827',
+},
+danger: {
+DEFAULT: '#EF4444',
+50: '#FEF2F2',
+700: '#B91C1C',
+},
+warning: {
+DEFAULT: '#F59E0B',
+50: '#FFFBEB',
+700: '#B45309',
+}
+},
+borderRadius: {
+'card': '12px',
+'btn': '8px',
+},
+boxShadow: {
+'card': '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05)',
+'subtle': '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
+'hover': '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025)',
+}
+}
+}
+}
+</script>
+<style>
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.form-select {
+background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+background-position: right 0.5rem center;
+background-repeat: no-repeat;
+background-size: 1.5em 1.5em;
+padding-right: 2.5rem;
+-webkit-appearance: none;
+appearance: none;
+}
+/* Color Radio */
+.color-radio:checked + div {
+transform: scale(1.1);
+box-shadow: 0 0 0 2px white, 0 0 0 4px currentColor;
+}
+/* Icon Radio */
+.icon-radio:checked + div {
+background-color: #ECFDF5;
+border-color: #10B981;
+color: #059669;
+}
+</style></head>
+<body class="bg-gray-50 min-h-screen w-full font-sans antialiased text-gray-900 flex overflow-hidden">
+
+    <!-- Mobile Overlay -->
+    <div id="mobileOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-gray-900/50 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity"></div>
+
+    <!-- Admin Sidebar -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-[260px] bg-white border-r border-gray-200 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col h-full shadow-card lg:shadow-none">
+        <!-- Header -->
+        <div class="h-16 flex items-center px-6 border-b border-gray-100">
+            <div class="flex items-center gap-2 text-emerald-600">
+                <span class="iconify" data-icon="lucide:leaf" data-width="24" style="stroke-width: 1.5;"></span>
+                <span class="text-lg font-bold tracking-tight text-gray-900">PennyWise</span>
+                <span class="px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 text-[10px] font-bold uppercase tracking-wider border border-gray-200 ml-1">Admin</span>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 overflow-y-auto py-6 px-3 space-y-1">
+            <a href="./15-admin-dashboard.html" class="flex items-center gap-3 px-3 py-2.5 rounded-btn text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium group transition-colors">
+                <span class="iconify text-gray-400 group-hover:text-gray-600" data-icon="lucide:layout-dashboard" data-width="20" style="stroke-width: 1.5;"></span>
+                Dashboard
+            </a>
+
+            <div class="px-3 pt-4 pb-2">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Platform</p>
+            </div>
+
+            <a href="./16-user-management.html" class="flex items-center gap-3 px-3 py-2.5 rounded-btn text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium group transition-colors">
+                <span class="iconify text-gray-400 group-hover:text-gray-600" data-icon="lucide:users" data-width="20" style="stroke-width: 1.5;"></span>
+                User Management
+            </a>
+            <a href="./17-category-management.html" class="flex items-center gap-3 px-3 py-2.5 rounded-btn bg-emerald-50 text-emerald-700 font-medium group transition-colors">
+                <span class="iconify" data-icon="lucide:tags" data-width="20" style="stroke-width: 1.5;"></span>
+                Categories
+            </a>
+            <a href="./18-platform-analytics.html" class="flex items-center gap-3 px-3 py-2.5 rounded-btn text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium group transition-colors">
+                <span class="iconify text-gray-400 group-hover:text-gray-600" data-icon="lucide:bar-chart-3" data-width="20" style="stroke-width: 1.5;"></span>
+                Platform Analytics
+            </a>
+
+            <div class="px-3 pt-4 pb-2">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">System</p>
+            </div>
+
+            <a href="./19-support-tickets.html" class="flex items-center gap-3 px-3 py-2.5 rounded-btn text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium group transition-colors">
+                <div class="relative">
+                    <span class="iconify text-gray-400 group-hover:text-gray-600" data-icon="lucide:ticket" data-width="20" style="stroke-width: 1.5;"></span>
+                    <span class="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-danger opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-danger"></span>
+                    </span>
+                </div>
+                Support Tickets
+            </a>
+            <a href="./20-admin-settings.html" class="flex items-center gap-3 px-3 py-2.5 rounded-btn text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium group transition-colors">
+                <span class="iconify text-gray-400 group-hover:text-gray-600" data-icon="lucide:settings-2" data-width="20" style="stroke-width: 1.5;"></span>
+                Admin Settings
+            </a>
+        </nav>
+
+        <!-- Admin Profile -->
+        <div class="p-4 border-t border-gray-100">
+            <div class="flex items-center gap-3 p-2 rounded-btn hover:bg-gray-50 cursor-pointer transition-colors border border-transparent hover:border-gray-200">
+                <div class="relative">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" alt="Admin" class="w-9 h-9 rounded-full bg-gray-100 border border-gray-200">
+                    <div class="absolute -bottom-0.5 -right-0.5 bg-emerald-500 rounded-full p-0.5 border-2 border-white">
+                        <span class="iconify text-white" data-icon="lucide:shield-check" data-width="10"></span>
+                    </div>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-semibold text-gray-900 truncate">System Admin</p>
+                    <p class="text-xs text-gray-500 truncate">admin@pennywise.app</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 h-screen overflow-y-auto lg:pl-[260px] relative w-full scroll-smooth bg-gray-50">
+        <div class="max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+
+            <!-- Breadcrumb & Header -->
+            <div class="space-y-4">
+                <!-- Breadcrumb -->
+                <div class="flex items-center gap-2 text-sm">
+                    <a href="./17-category-management.html" class="text-gray-500 hover:text-emerald-600 transition-colors flex items-center gap-1">
+                        <span class="iconify" data-icon="lucide:arrow-left" data-width="16"></span>
+                        Back to Categories
+                    </a>
+                </div>
+
+                <!-- Header -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <button onclick="toggleSidebar()" class="lg:hidden p-2 -ml-2 rounded-btn text-gray-600 hover:bg-gray-100">
+                            <span class="iconify" data-icon="lucide:menu" data-width="24"></span>
+                        </button>
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center border border-orange-100">
+                                <span class="iconify" data-icon="lucide:utensils" data-width="28"></span>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-3">
+                                    <h1 class="text-2xl font-bold tracking-tight text-gray-900">Food & Dining</h1>
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100">Active</span>
+                                </div>
+                                <p class="text-sm text-gray-500 mt-0.5">Restaurants, groceries, food delivery, and dining expenses.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <button onclick="toggleEditDrawer()" class="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-btn hover:bg-gray-50 hover:border-gray-300 font-medium text-sm transition-all shadow-sm">
+                            <span class="iconify" data-icon="lucide:pencil" data-width="16"></span>
+                            Edit
+                        </button>
+                        <button class="flex items-center gap-2 px-4 py-2.5 bg-red-50 border border-red-200 text-red-600 rounded-btn hover:bg-red-100 hover:border-red-300 font-medium text-sm transition-all">
+                            <span class="iconify" data-icon="lucide:trash-2" data-width="16"></span>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Row -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-4 rounded-card border border-gray-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Total Transactions</p>
+                        <div class="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center text-orange-600">
+                            <span class="iconify" data-icon="lucide:receipt" data-width="16"></span>
+                        </div>
+                    </div>
+                    <p class="text-2xl font-bold text-gray-900 tracking-tight">45,230</p>
+                    <p class="text-xs text-emerald-600 mt-1 font-medium">+12.5% from last month</p>
+                </div>
+
+                <div class="bg-white p-4 rounded-card border border-gray-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Total Volume</p>
+                        <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+                            <span class="iconify" data-icon="lucide:dollar-sign" data-width="16"></span>
+                        </div>
+                    </div>
+                    <p class="text-2xl font-bold text-gray-900 tracking-tight">$1,245,890</p>
+                    <p class="text-xs text-emerald-600 mt-1 font-medium">+8.3% from last month</p>
+                </div>
+
+                <div class="bg-white p-4 rounded-card border border-gray-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Avg Transaction</p>
+                        <div class="w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center text-purple-600">
+                            <span class="iconify" data-icon="lucide:calculator" data-width="16"></span>
+                        </div>
+                    </div>
+                    <p class="text-2xl font-bold text-gray-900 tracking-tight">$27.54</p>
+                    <p class="text-xs text-gray-500 mt-1">Platform average: $32.10</p>
+                </div>
+
+                <div class="bg-white p-4 rounded-card border border-gray-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Active Users</p>
+                        <div class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
+                            <span class="iconify" data-icon="lucide:users" data-width="16"></span>
+                        </div>
+                    </div>
+                    <p class="text-2xl font-bold text-gray-900 tracking-tight">8,432</p>
+                    <p class="text-xs text-gray-500 mt-1">Using this category</p>
+                </div>
+            </div>
+
+            <!-- Main Content Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                <!-- Left Column: Category Details & Settings -->
+                <div class="lg:col-span-1 space-y-6">
+
+                    <!-- Category Info Card -->
+                    <div class="bg-white rounded-card border border-gray-200 shadow-sm overflow-hidden">
+                        <div class="px-5 py-4 border-b border-gray-100">
+                            <h3 class="text-sm font-semibold text-gray-900">Category Details</h3>
+                        </div>
+                        <div class="p-5 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500">Type</span>
+                                <span class="text-sm font-medium text-gray-900 flex items-center gap-1.5">
+                                    <span class="iconify text-red-500" data-icon="lucide:arrow-down-circle" data-width="14"></span>
+                                    Expense
+                                </span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500">Color</span>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-4 h-4 rounded-full bg-orange-500"></span>
+                                    <span class="text-sm font-medium text-gray-900">Orange</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500">Created</span>
+                                <span class="text-sm font-medium text-gray-900">Jan 15, 2024</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500">Last Modified</span>
+                                <span class="text-sm font-medium text-gray-900">Mar 22, 2024</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500">Status</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" value="" class="sr-only peer" checked="">
+                                    <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description Card -->
+                    <div class="bg-white rounded-card border border-gray-200 shadow-sm overflow-hidden">
+                        <div class="px-5 py-4 border-b border-gray-100">
+                            <h3 class="text-sm font-semibold text-gray-900">Description</h3>
+                        </div>
+                        <div class="p-5">
+                            <p class="text-sm text-gray-600 leading-relaxed">
+                                Track all food-related expenses including restaurant dining, grocery shopping, food delivery services, coffee shops, and meal subscriptions. This category helps users monitor their food budget and identify spending patterns.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Keywords/Tags -->
+                    <div class="bg-white rounded-card border border-gray-200 shadow-sm overflow-hidden">
+                        <div class="px-5 py-4 border-b border-gray-100">
+                            <h3 class="text-sm font-semibold text-gray-900">Auto-categorization Keywords</h3>
+                        </div>
+                        <div class="p-5">
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-2.5 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">restaurant</span>
+                                <span class="px-2.5 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">cafe</span>
+                                <span class="px-2.5 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">grocery</span>
+                                <span class="px-2.5 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">doordash</span>
+                                <span class="px-2.5 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">uber eats</span>
+                                <span class="px-2.5 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">grubhub</span>
+                                <span class="px-2.5 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">starbucks</span>
+                                <span class="px-2.5 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">mcdonald's</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Recent Transactions -->
+                <div class="lg:col-span-2 space-y-6">
+
+                    <!-- Recent Transactions -->
+                    <div class="bg-white rounded-card border border-gray-200 shadow-sm overflow-hidden">
+                        <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+                            <h3 class="text-sm font-semibold text-gray-900">Recent Transactions</h3>
+                            <button class="text-sm text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1">
+                                View All
+                                <span class="iconify" data-icon="lucide:arrow-right" data-width="14"></span>
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50 border-b border-gray-100">
+                                    <tr>
+                                        <th class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                                        <th class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                                        <th class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                        <th class="px-5 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100">
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-5 py-4 whitespace-nowrap">
+                                            <div class="flex items-center gap-3">
+                                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah" class="w-8 h-8 rounded-full bg-gray-100 border border-gray-200">
+                                                <span class="text-sm font-medium text-gray-900">Sarah Johnson</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-600">Whole Foods Market</td>
+                                        <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-500">Today, 2:30 PM</td>
+                                        <td class="px-5 py-4 whitespace-nowrap text-right text-sm font-medium text-gray-900">-$124.50</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-5 py-4 whitespace-nowrap">
+                                            <div class="flex items-center gap-3">
+                                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Mike" class="w-8 h-8 rounded-full bg-gray-100 border border-gray-200">
+                                                <span class="text-sm font-medium text-gray-900">Mike Chen</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-600">Chipotle</td>
+                                        <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-500">Today, 12:45 PM</td>
+                                        <td class="px-5 py-4 whitespace-nowrap text-right text-sm font-medium text-gray-900">-$14.25</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-5 py-4 whitespace-nowrap">
+                                            <div class="flex items-center gap-3">
+                                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Emma" class="w-8 h-8 rounded-full bg-gray-100 border border-gray-200">
+                                                <span class="text-sm font-medium text-gray-900">Emma Wilson</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-600">Starbucks</td>
+                                        <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-500">Today, 8:15 AM</td>
+                                        <td class="px-5 py-4 whitespace-nowrap text-right text-sm font-medium text-gray-900">-$6.75</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-5 py-4 whitespace-nowrap">
+                                            <div class="flex items-center gap-3">
+                                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=James" class="w-8 h-8 rounded-full bg-gray-100 border border-gray-200">
+                                                <span class="text-sm font-medium text-gray-900">James Brown</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-600">DoorDash - Thai Basil</td>
+                                        <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-500">Yesterday, 7:30 PM</td>
+                                        <td class="px-5 py-4 whitespace-nowrap text-right text-sm font-medium text-gray-900">-$42.80</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-5 py-4 whitespace-nowrap">
+                                            <div class="flex items-center gap-3">
+                                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Lisa" class="w-8 h-8 rounded-full bg-gray-100 border border-gray-200">
+                                                <span class="text-sm font-medium text-gray-900">Lisa Anderson</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-600">Trader Joe's</td>
+                                        <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-500">Yesterday, 4:15 PM</td>
+                                        <td class="px-5 py-4 whitespace-nowrap text-right text-sm font-medium text-gray-900">-$87.32</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Top Merchants -->
+                    <div class="bg-white rounded-card border border-gray-200 shadow-sm overflow-hidden">
+                        <div class="px-5 py-4 border-b border-gray-100">
+                            <h3 class="text-sm font-semibold text-gray-900">Top Merchants</h3>
+                        </div>
+                        <div class="p-5 space-y-4">
+                            <!-- Merchant 1 -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center text-orange-600 border border-orange-100">
+                                        <span class="iconify" data-icon="lucide:store" data-width="18"></span>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">Whole Foods Market</p>
+                                        <p class="text-xs text-gray-500">4,230 transactions</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm font-semibold text-gray-900">$245,780</p>
+                                    <div class="w-24 h-1.5 bg-gray-100 rounded-full mt-1 overflow-hidden">
+                                        <div class="w-4/5 h-full bg-orange-500 rounded-full"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Merchant 2 -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center text-green-600 border border-green-100">
+                                        <span class="iconify" data-icon="lucide:coffee" data-width="18"></span>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">Starbucks</p>
+                                        <p class="text-xs text-gray-500">8,120 transactions</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm font-semibold text-gray-900">$187,430</p>
+                                    <div class="w-24 h-1.5 bg-gray-100 rounded-full mt-1 overflow-hidden">
+                                        <div class="w-3/5 h-full bg-green-500 rounded-full"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Merchant 3 -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center text-red-600 border border-red-100">
+                                        <span class="iconify" data-icon="lucide:bike" data-width="18"></span>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">DoorDash</p>
+                                        <p class="text-xs text-gray-500">5,890 transactions</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm font-semibold text-gray-900">$156,210</p>
+                                    <div class="w-24 h-1.5 bg-gray-100 rounded-full mt-1 overflow-hidden">
+                                        <div class="w-1/2 h-full bg-red-500 rounded-full"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Merchant 4 -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 border border-blue-100">
+                                        <span class="iconify" data-icon="lucide:utensils-crossed" data-width="18"></span>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">Chipotle</p>
+                                        <p class="text-xs text-gray-500">3,450 transactions</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm font-semibold text-gray-900">$98,340</p>
+                                    <div class="w-24 h-1.5 bg-gray-100 rounded-full mt-1 overflow-hidden">
+                                        <div class="w-1/3 h-full bg-blue-500 rounded-full"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="h-6"></div>
+
+        </div>
+    </main>
+
+    <!-- Edit Drawer Overlay -->
+    <div id="editDrawerOverlay" onclick="toggleEditDrawer()" class="fixed inset-0 bg-gray-900/40 z-[60] hidden backdrop-blur-[2px] transition-opacity"></div>
+
+    <!-- Edit Category Drawer -->
+    <div id="editCategoryDrawer" class="fixed inset-y-0 right-0 z-[70] w-full max-w-md bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+        <!-- Drawer Header -->
+        <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100 bg-white/80 backdrop-blur-sm sticky top-0">
+            <div>
+                <h2 class="text-lg font-bold text-gray-900 tracking-tight">Edit Category</h2>
+                <p class="text-sm text-gray-500">Update category settings.</p>
+            </div>
+            <button onclick="toggleEditDrawer()" class="p-2 -mr-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-btn transition-colors">
+                <span class="iconify" data-icon="lucide:x" data-width="20"></span>
+            </button>
+        </div>
+
+        <!-- Drawer Content -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-6">
+            <!-- Name -->
+            <div class="space-y-2">
+                <label class="text-sm font-medium text-gray-700">Category Name</label>
+                <input type="text" value="Food & Dining" class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all placeholder:text-gray-400">
+            </div>
+
+            <!-- Type -->
+            <div class="space-y-2">
+                <label class="text-sm font-medium text-gray-700">Type</label>
+                <div class="grid grid-cols-2 gap-2 p-1 bg-gray-100 rounded-lg">
+                    <label class="cursor-pointer">
+                        <input type="radio" name="editType" class="peer sr-only" checked="">
+                        <div class="text-center py-1.5 text-sm font-medium text-gray-500 rounded-md peer-checked:bg-white peer-checked:text-emerald-600 peer-checked:shadow-sm transition-all">Expense</div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="editType" class="peer sr-only">
+                        <div class="text-center py-1.5 text-sm font-medium text-gray-500 rounded-md peer-checked:bg-white peer-checked:text-emerald-600 peer-checked:shadow-sm transition-all">Income</div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Color Theme -->
+            <div class="space-y-2">
+                <label class="text-sm font-medium text-gray-700">Color Theme</label>
+                <div class="flex flex-wrap gap-3">
+                    <label class="cursor-pointer relative">
+                        <input type="radio" name="editColor" class="sr-only color-radio text-orange-500" checked="">
+                        <div class="w-6 h-6 rounded-full bg-orange-500 transition-transform"></div>
+                    </label>
+                    <label class="cursor-pointer relative">
+                        <input type="radio" name="editColor" class="sr-only color-radio text-purple-500">
+                        <div class="w-6 h-6 rounded-full bg-purple-500 transition-transform"></div>
+                    </label>
+                    <label class="cursor-pointer relative">
+                        <input type="radio" name="editColor" class="sr-only color-radio text-blue-500">
+                        <div class="w-6 h-6 rounded-full bg-blue-500 transition-transform"></div>
+                    </label>
+                    <label class="cursor-pointer relative">
+                        <input type="radio" name="editColor" class="sr-only color-radio text-red-500">
+                        <div class="w-6 h-6 rounded-full bg-red-500 transition-transform"></div>
+                    </label>
+                    <label class="cursor-pointer relative">
+                        <input type="radio" name="editColor" class="sr-only color-radio text-emerald-500">
+                        <div class="w-6 h-6 rounded-full bg-emerald-500 transition-transform"></div>
+                    </label>
+                    <label class="cursor-pointer relative">
+                        <input type="radio" name="editColor" class="sr-only color-radio text-cyan-500">
+                        <div class="w-6 h-6 rounded-full bg-cyan-500 transition-transform"></div>
+                    </label>
+                    <label class="cursor-pointer relative">
+                        <input type="radio" name="editColor" class="sr-only color-radio text-indigo-500">
+                        <div class="w-6 h-6 rounded-full bg-indigo-500 transition-transform"></div>
+                    </label>
+                    <label class="cursor-pointer relative">
+                        <input type="radio" name="editColor" class="sr-only color-radio text-pink-500">
+                        <div class="w-6 h-6 rounded-full bg-pink-500 transition-transform"></div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Icon -->
+            <div class="space-y-2">
+                <label class="text-sm font-medium text-gray-700">Icon</label>
+                <div class="grid grid-cols-5 gap-3">
+                    <label class="cursor-pointer">
+                        <input type="radio" name="editIcon" class="icon-radio sr-only" checked="">
+                        <div class="aspect-square rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:border-emerald-200 hover:bg-emerald-50 transition-colors">
+                            <span class="iconify" data-icon="lucide:utensils" data-width="20"></span>
+                        </div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="editIcon" class="icon-radio sr-only">
+                        <div class="aspect-square rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:border-emerald-200 hover:bg-emerald-50 transition-colors">
+                            <span class="iconify" data-icon="lucide:shopping-bag" data-width="20"></span>
+                        </div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="editIcon" class="icon-radio sr-only">
+                        <div class="aspect-square rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:border-emerald-200 hover:bg-emerald-50 transition-colors">
+                            <span class="iconify" data-icon="lucide:car-front" data-width="20"></span>
+                        </div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="editIcon" class="icon-radio sr-only">
+                        <div class="aspect-square rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:border-emerald-200 hover:bg-emerald-50 transition-colors">
+                            <span class="iconify" data-icon="lucide:receipt" data-width="20"></span>
+                        </div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="editIcon" class="icon-radio sr-only">
+                        <div class="aspect-square rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:border-emerald-200 hover:bg-emerald-50 transition-colors">
+                            <span class="iconify" data-icon="lucide:tv" data-width="20"></span>
+                        </div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="editIcon" class="icon-radio sr-only">
+                        <div class="aspect-square rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:border-emerald-200 hover:bg-emerald-50 transition-colors">
+                            <span class="iconify" data-icon="lucide:heart-pulse" data-width="20"></span>
+                        </div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="editIcon" class="icon-radio sr-only">
+                        <div class="aspect-square rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:border-emerald-200 hover:bg-emerald-50 transition-colors">
+                            <span class="iconify" data-icon="lucide:plane" data-width="20"></span>
+                        </div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="editIcon" class="icon-radio sr-only">
+                        <div class="aspect-square rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:border-emerald-200 hover:bg-emerald-50 transition-colors">
+                            <span class="iconify" data-icon="lucide:graduation-cap" data-width="20"></span>
+                        </div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="editIcon" class="icon-radio sr-only">
+                        <div class="aspect-square rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:border-emerald-200 hover:bg-emerald-50 transition-colors">
+                            <span class="iconify" data-icon="lucide:trending-up" data-width="20"></span>
+                        </div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="editIcon" class="icon-radio sr-only">
+                        <div class="aspect-square rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:border-emerald-200 hover:bg-emerald-50 transition-colors">
+                            <span class="iconify" data-icon="lucide:smile" data-width="20"></span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="space-y-2">
+                <label class="text-sm font-medium text-gray-700">Description</label>
+                <textarea rows="3" class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all placeholder:text-gray-400 resize-none">Restaurants, groceries, food delivery, and dining expenses.</textarea>
+            </div>
+
+            <!-- Status -->
+            <div class="flex items-center justify-between pt-2">
+                <div>
+                    <p class="text-sm font-medium text-gray-700">Active Status</p>
+                    <p class="text-xs text-gray-500">Enable this category for new transactions.</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" value="" class="sr-only peer" checked="">
+                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                </label>
+            </div>
+        </div>
+
+        <!-- Drawer Footer -->
+        <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex items-center justify-end gap-3">
+            <button onclick="toggleEditDrawer()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors shadow-sm">Cancel</button>
+            <button onclick="toggleEditDrawer()" class="px-4 py-2 text-sm font-medium text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 shadow-sm shadow-emerald-200 transition-all">Save Changes</button>
+        </div>
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+        const editDrawer = document.getElementById('editCategoryDrawer');
+        const editDrawerOverlay = document.getElementById('editDrawerOverlay');
+
+        function toggleSidebar() {
+            const isClosed = sidebar.classList.contains('-translate-x-full');
+            if (isClosed) {
+                sidebar.classList.remove('-translate-x-full');
+                mobileOverlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                mobileOverlay.classList.add('hidden');
+            }
+        }
+
+        function toggleEditDrawer() {
+            const isClosed = editDrawer.classList.contains('translate-x-full');
+            if (isClosed) {
+                editDrawer.classList.remove('translate-x-full');
+                editDrawerOverlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            } else {
+                editDrawer.classList.add('translate-x-full');
+                editDrawerOverlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                if(!sidebar.classList.contains('-translate-x-full')) toggleSidebar();
+                if(!editDrawer.classList.contains('translate-x-full')) toggleEditDrawer();
+            }
+        });
+    </script>
+
+</body></html>
