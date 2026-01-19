@@ -60,6 +60,7 @@ borderRadius: {
 boxShadow: {
 'card': '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05)',
 'subtle': '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
+'modal': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
 }
 }
 }
@@ -108,6 +109,16 @@ border-color: #10B981;
 .form-checkbox:checked::before {
 transform: scale(1);
 }
+/* Modal Animation */
+.modal-enter { opacity: 0; }
+.modal-enter-active { opacity: 1; transition: opacity 200ms ease-out; }
+.modal-exit { opacity: 1; }
+.modal-exit-active { opacity: 0; transition: opacity 150ms ease-in; }
+
+.modal-content-enter { transform: scale(0.95); opacity: 0; }
+.modal-content-enter-active { transform: scale(1); opacity: 1; transition: all 200ms ease-out; }
+.modal-content-exit { transform: scale(1); opacity: 1; }
+.modal-content-exit-active { transform: scale(0.95); opacity: 0; transition: all 150ms ease-in; }
 </style></head>
 <body class="bg-gray-50 min-h-screen w-full font-sans antialiased text-gray-900 flex overflow-hidden">
 
@@ -207,7 +218,7 @@ transform: scale(1);
                         <span class="iconify" data-icon="lucide:download" data-width="16"></span>
                         Export Users
                     </button>
-                    <button class="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white rounded-btn hover:bg-emerald-700 font-medium text-sm transition-all shadow-sm shadow-emerald-200">
+                    <button onclick="openInviteModal()" class="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white rounded-btn hover:bg-emerald-700 font-medium text-sm transition-all shadow-sm shadow-emerald-200">
                         <span class="iconify" data-icon="lucide:plus" data-width="16"></span>
                         Invite User
                     </button>
@@ -574,6 +585,91 @@ transform: scale(1);
         </div>
     </main>
 
+    <!-- Invite User Modal -->
+    <div id="inviteModal" class="fixed inset-0 z-[60] hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <!-- Backdrop -->
+        <div id="inviteModalBackdrop" class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity opacity-0" onclick="closeInviteModal()"></div>
+
+        <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <!-- Modal Panel -->
+                <div id="inviteModalPanel" class="relative transform overflow-hidden rounded-xl bg-white text-left shadow-modal transition-all sm:my-8 sm:w-full sm:max-w-lg opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+
+                    <!-- Header -->
+                    <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100 bg-white">
+                        <div>
+                            <h3 class="text-lg font-semibold leading-6 text-gray-900 tracking-tight" id="modal-title">Invite Users</h3>
+                            <p class="mt-1 text-xs text-gray-500">Send an invitation to a new team member.</p>
+                        </div>
+                        <button onclick="closeInviteModal()" class="text-gray-400 hover:text-gray-500 hover:bg-gray-100 p-2 rounded-full transition-colors focus:outline-none">
+                            <span class="iconify" data-icon="lucide:x" data-width="20"></span>
+                        </button>
+                    </div>
+
+                    <!-- Form Content -->
+                    <div class="px-6 py-6 space-y-5">
+
+                        <!-- Email Field -->
+                        <div>
+                            <label for="email" class="block text-sm font-medium leading-6 text-gray-900 mb-1.5">Email address <span class="text-danger-700">*</span></label>
+                            <div class="relative rounded-md shadow-sm">
+                                <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                    <span class="iconify text-gray-400" data-icon="lucide:mail" data-width="16"></span>
+                                </div>
+                                <input type="email" name="email" id="email" class="block w-full rounded-btn border-0 py-2.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 transition-shadow" placeholder="colleague@company.com" required="">
+                            </div>
+                        </div>
+
+                        <!-- Name Field -->
+                        <div>
+                            <label for="fullname" class="block text-sm font-medium leading-6 text-gray-900 mb-1.5">Full Name <span class="text-gray-400 font-normal">(Optional)</span></label>
+                            <div class="relative rounded-md shadow-sm">
+                                <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                    <span class="iconify text-gray-400" data-icon="lucide:user" data-width="16"></span>
+                                </div>
+                                <input type="text" name="fullname" id="fullname" class="block w-full rounded-btn border-0 py-2.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 transition-shadow" placeholder="John Doe">
+                            </div>
+                        </div>
+
+                        <!-- Role Selection -->
+                        <div>
+                            <label for="role" class="block text-sm font-medium leading-6 text-gray-900 mb-1.5">User Role</label>
+                            <select id="role" name="role" class="form-select block w-full rounded-btn border-0 py-2.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6">
+                                <option value="standard">Standard User</option>
+                                <option value="premium">Premium User</option>
+                                <option value="moderator">Moderator</option>
+                                <option value="admin">Administrator</option>
+                            </select>
+                            <p class="mt-1.5 text-xs text-gray-500">Admins have full access to all settings and user management.</p>
+                        </div>
+
+                        <!-- Personal Message -->
+                        <div>
+                            <label for="message" class="block text-sm font-medium leading-6 text-gray-900 mb-1.5">Personal Message <span class="text-gray-400 font-normal">(Optional)</span></label>
+                            <textarea id="message" name="message" rows="3" class="block w-full rounded-btn border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 resize-none transition-shadow" placeholder="Hey, join us on PennyWise to manage..."></textarea>
+                        </div>
+
+                        <!-- Checkbox -->
+                        <div class="flex items-center gap-3">
+                            <input id="copy" name="copy" type="checkbox" class="form-checkbox h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-600">
+                            <label for="copy" class="text-sm text-gray-700 font-medium select-none cursor-pointer">Send me a copy of this invitation</label>
+                        </div>
+                    </div>
+
+                    <!-- Footer Actions -->
+                    <div class="bg-gray-50 px-6 py-4 flex flex-row-reverse gap-3 border-t border-gray-100 rounded-b-xl">
+                        <button type="button" class="inline-flex w-full justify-center rounded-btn bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 sm:w-auto transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600">
+                            Send Invitation
+                        </button>
+                        <button type="button" class="mt-3 inline-flex w-full justify-center rounded-btn bg-white px-4 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto transition-all" onclick="closeInviteModal()">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const sidebar = document.getElementById('sidebar');
         const mobileOverlay = document.getElementById('mobileOverlay');
@@ -593,8 +689,36 @@ transform: scale(1);
         document.addEventListener('keydown', function(event) {
             if (event.key === "Escape") {
                 if(!sidebar.classList.contains('-translate-x-full')) toggleSidebar();
+                if(!modal.classList.contains('hidden')) closeInviteModal();
             }
         });
+
+        // Modal Logic
+        const modal = document.getElementById('inviteModal');
+        const modalBackdrop = document.getElementById('inviteModalBackdrop');
+        const modalPanel = document.getElementById('inviteModalPanel');
+
+        function openInviteModal() {
+            modal.classList.remove('hidden');
+            // Slight delay to allow display:block to apply before opacity transition
+            setTimeout(() => {
+                modalBackdrop.classList.remove('opacity-0');
+                modalPanel.classList.remove('opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
+                modalPanel.classList.add('opacity-100', 'translate-y-0', 'sm:scale-100');
+            }, 10);
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeInviteModal() {
+            modalBackdrop.classList.add('opacity-0');
+            modalPanel.classList.remove('opacity-100', 'translate-y-0', 'sm:scale-100');
+            modalPanel.classList.add('opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = ''; // Restore scrolling
+            }, 200); // Match transition duration
+        }
     </script>
 
 </body></html>
