@@ -502,71 +502,209 @@ transform: scale(1);
     <!-- Add Transaction Modal -->
     <div id="addTransactionModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 sm:p-6" role="dialog" aria-modal="true">
         <div class="fixed inset-0 bg-black/50 backdrop-blur-[2px] transition-opacity" onclick="closeAddTransactionModal()"></div>
-        <div class="relative w-full max-w-[480px] bg-white rounded-xl shadow-2xl transform transition-all overflow-hidden flex flex-col max-h-[90vh]">
-            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        <div class="relative w-full max-w-[520px] bg-white rounded-xl shadow-2xl transform transition-all flex flex-col max-h-[90vh]">
+
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100">
                 <h2 class="text-lg font-semibold text-gray-900 tracking-tight">Add Transaction</h2>
-                <button type="button" onclick="closeAddTransactionModal()" class="text-gray-400 hover:text-gray-600 focus:outline-none rounded-md p-1 transition-colors">
-                    <span class="iconify" data-icon="lucide:x" data-width="20"></span>
+                <button type="button" onclick="closeAddTransactionModal()" class="text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-200 rounded-lg p-1 transition-colors">
+                    <span class="iconify" data-icon="lucide:x" data-width="20" data-height="20"></span>
                 </button>
             </div>
+
+            <!-- Modal Body (Form) -->
             <div class="p-6 overflow-y-auto">
-                <form class="space-y-5">
-                    <div class="space-y-2">
+                <form id="addTransactionForm" class="space-y-6">
+
+                    <!-- Transaction Type Toggle -->
+                    <div class="space-y-1.5">
                         <label class="block text-sm font-medium text-gray-700">Type</label>
-                        <div class="bg-gray-100 p-1 rounded-lg flex gap-1">
-                            <button type="button" class="flex-1 py-1.5 px-3 text-sm font-medium bg-white text-gray-900 rounded-md shadow-sm">Expense</button>
-                            <button type="button" class="flex-1 py-1.5 px-3 text-sm font-medium text-gray-500 hover:text-gray-700 rounded-md">Income</button>
+                        <div class="grid grid-cols-2 gap-1 bg-gray-100 p-1 rounded-lg">
+                            <!-- Expense (Selected by default) -->
+                            <button type="button" id="expenseBtn" onclick="setTransactionType('expense')" class="flex items-center justify-center gap-2 py-2 px-4 text-sm font-medium bg-white text-red-500 rounded-md shadow-sm ring-1 ring-gray-200 transition-all">
+                                <span class="iconify" data-icon="lucide:arrow-down-circle" data-width="16" data-height="16"></span>
+                                Expense
+                            </button>
+                            <!-- Income (Unselected) -->
+                            <button type="button" id="incomeBtn" onclick="setTransactionType('income')" class="flex items-center justify-center gap-2 py-2 px-4 text-sm font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-200/50 rounded-md transition-all focus:outline-none">
+                                <span class="iconify" data-icon="lucide:arrow-up-circle" data-width="16" data-height="16"></span>
+                                Income
+                            </button>
                         </div>
                     </div>
+
+                    <!-- Amount Input -->
                     <div class="space-y-1.5">
-                        <label class="block text-sm font-medium text-gray-700">Amount *</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <span class="text-gray-400 text-sm font-medium">$</span>
+                        <label for="transactionAmount" class="block text-sm font-medium text-gray-700">Amount <span class="text-red-500">*</span></label>
+                        <div class="relative rounded-lg shadow-sm hover:shadow transition-shadow">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <span class="text-gray-400 text-2xl font-medium">$</span>
                             </div>
-                            <input type="number" class="block w-full pl-7 pr-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" placeholder="0.00" step="0.01">
+                            <input type="number" name="amount" id="transactionAmount" class="block w-full pl-9 pr-4 py-3 text-2xl font-semibold text-gray-900 placeholder:text-gray-300 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all outline-none" placeholder="0.00" step="0.01">
                         </div>
                     </div>
+
+                    <!-- Category Dropdown -->
                     <div class="space-y-1.5">
-                        <label class="block text-sm font-medium text-gray-700">Category *</label>
-                        <select class="w-full bg-white border border-gray-200 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500">
-                            <option value="">Select a category</option>
-                            <option value="food">Food & Dining</option>
-                            <option value="transport">Transportation</option>
-                            <option value="entertainment">Entertainment</option>
-                            <option value="shopping">Shopping</option>
-                            <option value="utilities">Utilities</option>
-                            <option value="income">Income</option>
-                        </select>
+                        <label class="block text-sm font-medium text-gray-700">Category <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <select id="transactionCategory" class="relative w-full bg-white border border-gray-200 rounded-lg py-2.5 pl-3 pr-10 text-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 shadow-sm hover:border-gray-300 transition-all appearance-none">
+                                <option value="">Select a category</option>
+                                <option value="groceries">Groceries</option>
+                                <option value="food">Food & Dining</option>
+                                <option value="transport">Transportation</option>
+                                <option value="entertainment">Entertainment</option>
+                                <option value="shopping">Shopping</option>
+                                <option value="utilities">Utilities</option>
+                                <option value="health">Health & Medical</option>
+                                <option value="income">Income</option>
+                                <option value="freelance">Freelance</option>
+                            </select>
+                            <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                <span class="iconify text-gray-400" data-icon="lucide:chevron-down" data-width="16" data-height="16"></span>
+                            </span>
+                        </div>
                     </div>
+
+                    <!-- Description Input -->
                     <div class="space-y-1.5">
-                        <label class="block text-sm font-medium text-gray-700">Description</label>
-                        <input type="text" class="w-full border border-gray-200 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" placeholder="What was this for?">
+                        <label for="transactionDescription" class="block text-sm font-medium text-gray-700">Description</label>
+                        <div class="relative">
+                            <input type="text" name="description" id="transactionDescription" class="block w-full pl-3 pr-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500/10 focus:border-red-500 placeholder:text-gray-400 transition-all outline-none shadow-sm hover:border-gray-300" placeholder="What was this for?">
+                        </div>
                     </div>
-                    <div class="space-y-1.5">
-                        <label class="block text-sm font-medium text-gray-700">Date</label>
-                        <input type="date" class="w-full border border-gray-200 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500">
+
+                    <!-- Date & Budget Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Date Picker -->
+                        <div class="space-y-1.5">
+                            <label for="transactionDate" class="block text-sm font-medium text-gray-700">Date</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="iconify text-gray-400" data-icon="lucide:calendar" data-width="16" data-height="16"></span>
+                                </div>
+                                <input type="date" name="date" id="transactionDate" class="block w-full pl-10 pr-3 py-2.5 text-sm text-gray-900 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500/10 focus:border-red-500 shadow-sm hover:border-gray-300 transition-all outline-none">
+                            </div>
+                        </div>
+
+                        <!-- Linked Budget -->
+                        <div class="space-y-1.5">
+                            <label class="block text-sm font-medium text-gray-700">Link to Budget <span class="text-gray-400 font-normal">(Optional)</span></label>
+                            <div class="relative">
+                                <select id="transactionBudget" class="relative w-full bg-white border border-gray-200 rounded-lg py-2.5 pl-3 pr-10 text-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500/10 focus:border-red-500 shadow-sm hover:border-gray-300 transition-all appearance-none">
+                                    <option value="">None</option>
+                                    <option value="groceries">Groceries Budget</option>
+                                    <option value="entertainment">Entertainment Budget</option>
+                                    <option value="transport">Transport Budget</option>
+                                </select>
+                                <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                    <span class="iconify text-gray-400" data-icon="lucide:chevron-down" data-width="16" data-height="16"></span>
+                                </span>
+                            </div>
+                        </div>
                     </div>
+
                 </form>
             </div>
-            <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-end gap-3">
-                <button type="button" onclick="closeAddTransactionModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">Cancel</button>
-                <button type="button" onclick="closeAddTransactionModal()" class="px-4 py-2 text-sm font-medium text-white bg-emerald-500 rounded-lg hover:bg-emerald-600">Add Transaction</button>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-end gap-3 rounded-b-xl">
+                <button type="button" onclick="closeAddTransactionModal()" class="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-200 transition-all shadow-sm">
+                    Cancel
+                </button>
+                <button type="button" id="submitTransactionBtn" onclick="submitTransaction()" class="px-4 py-2.5 text-sm font-medium text-white bg-red-500 border border-transparent rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-red-500 shadow-sm transition-all flex items-center gap-2">
+                    <span class="iconify" data-icon="lucide:minus-circle" data-width="18" data-height="18"></span>
+                    Add Expense
+                </button>
             </div>
+
         </div>
     </div>
 
     <script>
+        // Transaction type state
+        let currentTransactionType = 'expense';
+
         // Modal functions
         function openAddTransactionModal() {
             document.getElementById('addTransactionModal').classList.remove('hidden');
             document.getElementById('addTransactionModal').classList.add('flex');
             document.body.style.overflow = 'hidden';
+            // Reset form and set default date
+            resetTransactionForm();
         }
+
         function closeAddTransactionModal() {
             document.getElementById('addTransactionModal').classList.add('hidden');
             document.getElementById('addTransactionModal').classList.remove('flex');
             document.body.style.overflow = '';
+        }
+
+        function setTransactionType(type) {
+            currentTransactionType = type;
+            const expenseBtn = document.getElementById('expenseBtn');
+            const incomeBtn = document.getElementById('incomeBtn');
+            const submitBtn = document.getElementById('submitTransactionBtn');
+            const amountInput = document.getElementById('transactionAmount');
+
+            if (type === 'expense') {
+                // Expense selected
+                expenseBtn.className = 'flex items-center justify-center gap-2 py-2 px-4 text-sm font-medium bg-white text-red-500 rounded-md shadow-sm ring-1 ring-gray-200 transition-all';
+                incomeBtn.className = 'flex items-center justify-center gap-2 py-2 px-4 text-sm font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-200/50 rounded-md transition-all focus:outline-none';
+                submitBtn.className = 'px-4 py-2.5 text-sm font-medium text-white bg-red-500 border border-transparent rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-red-500 shadow-sm transition-all flex items-center gap-2';
+                submitBtn.innerHTML = '<span class="iconify" data-icon="lucide:minus-circle" data-width="18" data-height="18"></span> Add Expense';
+                amountInput.className = 'block w-full pl-9 pr-4 py-3 text-2xl font-semibold text-gray-900 placeholder:text-gray-300 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500/10 focus:border-red-500 transition-all outline-none';
+            } else {
+                // Income selected
+                incomeBtn.className = 'flex items-center justify-center gap-2 py-2 px-4 text-sm font-medium bg-white text-emerald-500 rounded-md shadow-sm ring-1 ring-gray-200 transition-all';
+                expenseBtn.className = 'flex items-center justify-center gap-2 py-2 px-4 text-sm font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-200/50 rounded-md transition-all focus:outline-none';
+                submitBtn.className = 'px-4 py-2.5 text-sm font-medium text-white bg-emerald-500 border border-transparent rounded-lg hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-emerald-500 shadow-sm transition-all flex items-center gap-2';
+                submitBtn.innerHTML = '<span class="iconify" data-icon="lucide:plus-circle" data-width="18" data-height="18"></span> Add Income';
+                amountInput.className = 'block w-full pl-9 pr-4 py-3 text-2xl font-semibold text-gray-900 placeholder:text-gray-300 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all outline-none';
+            }
+        }
+
+        function resetTransactionForm() {
+            // Reset to expense type
+            setTransactionType('expense');
+            // Clear form fields
+            document.getElementById('transactionAmount').value = '';
+            document.getElementById('transactionCategory').value = '';
+            document.getElementById('transactionDescription').value = '';
+            document.getElementById('transactionBudget').value = '';
+            // Set today's date
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('transactionDate').value = today;
+        }
+
+        function submitTransaction() {
+            // Get form values
+            const amount = document.getElementById('transactionAmount').value;
+            const category = document.getElementById('transactionCategory').value;
+            const description = document.getElementById('transactionDescription').value;
+            const date = document.getElementById('transactionDate').value;
+
+            // Basic validation
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+            if (!category) {
+                alert('Please select a category');
+                return;
+            }
+
+            // In a real app, this would send to backend
+            console.log('Transaction submitted:', {
+                type: currentTransactionType,
+                amount: parseFloat(amount),
+                category,
+                description,
+                date
+            });
+
+            // Close modal and show success (in real app would refresh list)
+            closeAddTransactionModal();
         }
 
         document.addEventListener('DOMContentLoaded', () => {
