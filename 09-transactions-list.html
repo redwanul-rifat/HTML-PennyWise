@@ -90,6 +90,22 @@ border-color: #10B981;
 .custom-checkbox:checked::before {
 transform: scale(1);
 }
+/* Input styling for Edit Mode */
+.form-input {
+width: 100%;
+padding: 0.625rem 0.875rem;
+border: 1px solid #E5E7EB;
+border-radius: 8px;
+font-size: 0.875rem;
+color: #111827;
+background-color: #FFFFFF;
+transition: border-color 0.15s, box-shadow 0.15s;
+}
+.form-input:focus {
+outline: none;
+border-color: #10B981;
+box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
 </style></head>
 <body class="bg-gray-50 min-h-screen w-full font-sans antialiased text-gray-900 flex overflow-hidden">
 
@@ -239,8 +255,8 @@ transform: scale(1);
                         <tbody class="divide-y divide-gray-100 bg-white">
                             
                             <!-- Row 1: Grocery (Expense) -->
-                            <tr class="group hover:bg-gray-50 transition-colors cursor-pointer">
-                                <td class="px-6 py-4 whitespace-nowrap">
+                            <tr class="group hover:bg-gray-50 transition-colors cursor-pointer" onclick="openTransactionDetail({type:'expense', amount:'-$124.50', merchant:'Whole Foods Market', category:'Groceries', date:'Oct 24, 2023', time:'4:30 PM', account:'Visa •••• 4242', note:'Weekly stock up for the house party. Includes drinks and snacks.', icon:'lucide:shopping-basket', iconBg:'bg-orange-50 text-orange-600', iconBorder:'border-orange-100', dotColor:'bg-orange-400'})">
+                                <td class="px-6 py-4 whitespace-nowrap" onclick="event.stopPropagation()">
                                     <input type="checkbox" class="custom-checkbox cursor-pointer">
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -266,15 +282,15 @@ transform: scale(1);
                                     -$124.50
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <button class="text-gray-400 hover:text-gray-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button class="text-gray-400 hover:text-gray-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity" onclick="event.stopPropagation()">
                                         <span class="iconify" data-icon="lucide:more-horizontal" data-width="18"></span>
                                     </button>
                                 </td>
                             </tr>
 
                             <!-- Row 2: Salary (Income) -->
-                            <tr class="group hover:bg-gray-50 transition-colors cursor-pointer">
-                                <td class="px-6 py-4 whitespace-nowrap">
+                            <tr class="group hover:bg-gray-50 transition-colors cursor-pointer" onclick="openTransactionDetail({type:'income', amount:'+$3,450.00', merchant:'TechCorp Inc. Payroll', category:'Income', date:'Oct 24, 2023', time:'9:00 AM', account:'Direct Deposit', note:'Monthly salary payment.', icon:'lucide:briefcase', iconBg:'bg-emerald-50 text-emerald-600', iconBorder:'border-emerald-100', dotColor:'bg-emerald-400'})">
+                                <td class="px-6 py-4 whitespace-nowrap" onclick="event.stopPropagation()">
                                     <input type="checkbox" class="custom-checkbox cursor-pointer">
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -300,15 +316,15 @@ transform: scale(1);
                                     +$3,450.00
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <button class="text-gray-400 hover:text-gray-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button class="text-gray-400 hover:text-gray-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity" onclick="event.stopPropagation()">
                                         <span class="iconify" data-icon="lucide:more-horizontal" data-width="18"></span>
                                     </button>
                                 </td>
                             </tr>
 
                             <!-- Row 3: Utilities (Expense) -->
-                            <tr class="group hover:bg-gray-50 transition-colors cursor-pointer">
-                                <td class="px-6 py-4 whitespace-nowrap">
+                            <tr class="group hover:bg-gray-50 transition-colors cursor-pointer" onclick="openTransactionDetail({type:'expense', amount:'-$84.20', merchant:'Electric Utility Co', category:'Utilities', date:'Oct 22, 2023', time:'2:15 PM', account:'Visa •••• 4242', note:'Monthly electricity bill payment.', icon:'lucide:zap', iconBg:'bg-blue-50 text-blue-600', iconBorder:'border-blue-100', dotColor:'bg-blue-400'})">
+                                <td class="px-6 py-4 whitespace-nowrap" onclick="event.stopPropagation()">
                                     <input type="checkbox" class="custom-checkbox cursor-pointer">
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -334,15 +350,15 @@ transform: scale(1);
                                     -$84.20
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <button class="text-gray-400 hover:text-gray-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button class="text-gray-400 hover:text-gray-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity" onclick="event.stopPropagation()">
                                         <span class="iconify" data-icon="lucide:more-horizontal" data-width="18"></span>
                                     </button>
                                 </td>
                             </tr>
 
                              <!-- Row 4: Freelance (Income) -->
-                             <tr class="group hover:bg-gray-50 transition-colors cursor-pointer">
-                                <td class="px-6 py-4 whitespace-nowrap">
+                             <tr class="group hover:bg-gray-50 transition-colors cursor-pointer" onclick="openTransactionDetail({type:'income', amount:'+$850.00', merchant:'Upwork Escrow', category:'Freelance', date:'Oct 20, 2023', time:'11:30 AM', account:'PayPal Transfer', note:'Payment for UI/UX design project - Landing page redesign.', icon:'lucide:laptop-2', iconBg:'bg-purple-50 text-purple-600', iconBorder:'border-purple-100', dotColor:'bg-purple-400'})">
+                                <td class="px-6 py-4 whitespace-nowrap" onclick="event.stopPropagation()">
                                     <input type="checkbox" class="custom-checkbox cursor-pointer">
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -368,15 +384,15 @@ transform: scale(1);
                                     +$850.00
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <button class="text-gray-400 hover:text-gray-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button class="text-gray-400 hover:text-gray-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity" onclick="event.stopPropagation()">
                                         <span class="iconify" data-icon="lucide:more-horizontal" data-width="18"></span>
                                     </button>
                                 </td>
                             </tr>
 
                              <!-- Row 5: Shopping (Expense) -->
-                             <tr class="group hover:bg-gray-50 transition-colors cursor-pointer">
-                                <td class="px-6 py-4 whitespace-nowrap">
+                             <tr class="group hover:bg-gray-50 transition-colors cursor-pointer" onclick="openTransactionDetail({type:'expense', amount:'-$89.90', merchant:'Uniqlo Store', category:'Shopping', date:'Oct 18, 2023', time:'3:45 PM', account:'Mastercard •••• 8821', note:'New winter jacket and basic tees.', icon:'lucide:shopping-bag', iconBg:'bg-indigo-50 text-indigo-600', iconBorder:'border-indigo-100', dotColor:'bg-indigo-400'})">
+                                <td class="px-6 py-4 whitespace-nowrap" onclick="event.stopPropagation()">
                                     <input type="checkbox" class="custom-checkbox cursor-pointer">
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -402,15 +418,15 @@ transform: scale(1);
                                     -$89.90
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <button class="text-gray-400 hover:text-gray-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button class="text-gray-400 hover:text-gray-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity" onclick="event.stopPropagation()">
                                         <span class="iconify" data-icon="lucide:more-horizontal" data-width="18"></span>
                                     </button>
                                 </td>
                             </tr>
                             
                              <!-- Row 6: Subscription (Expense) -->
-                             <tr class="group hover:bg-gray-50 transition-colors cursor-pointer">
-                                <td class="px-6 py-4 whitespace-nowrap">
+                             <tr class="group hover:bg-gray-50 transition-colors cursor-pointer" onclick="openTransactionDetail({type:'expense', amount:'-$9.99', merchant:'Spotify Premium', category:'Entertainment', date:'Oct 15, 2023', time:'12:00 AM', account:'Visa •••• 4242', note:'Monthly music streaming subscription.', icon:'lucide:music', iconBg:'bg-rose-50 text-rose-600', iconBorder:'border-rose-100', dotColor:'bg-rose-400'})">
+                                <td class="px-6 py-4 whitespace-nowrap" onclick="event.stopPropagation()">
                                     <input type="checkbox" class="custom-checkbox cursor-pointer">
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -436,7 +452,7 @@ transform: scale(1);
                                     -$9.99
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <button class="text-gray-400 hover:text-gray-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button class="text-gray-400 hover:text-gray-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity" onclick="event.stopPropagation()">
                                         <span class="iconify" data-icon="lucide:more-horizontal" data-width="18"></span>
                                     </button>
                                 </td>
@@ -621,6 +637,204 @@ transform: scale(1);
         </div>
     </div>
 
+    <!-- Transaction Detail Drawer -->
+    <div id="transactionDetailDrawer" class="fixed inset-0 z-[60] hidden justify-end">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-[2px] transition-opacity duration-300" onclick="closeTransactionDetail()"></div>
+
+        <!-- Drawer Panel -->
+        <div class="relative w-full max-w-md h-full bg-white shadow-[-4px_0_24px_rgba(0,0,0,0.08)] flex flex-col transform transition-transform duration-300 ease-out sm:border-l sm:border-gray-100">
+
+            <!-- Drawer Header -->
+            <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100 bg-white z-10">
+                <h2 class="text-xl font-semibold tracking-tight text-gray-900">Transaction Details</h2>
+                <button onclick="closeTransactionDetail()" class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-2 rounded-lg transition-colors">
+                    <span class="iconify" data-icon="lucide:x" data-width="20"></span>
+                </button>
+            </div>
+
+            <!-- Scrollable Content -->
+            <div class="flex-1 overflow-y-auto">
+
+                <!-- VIEW MODE -->
+                <div id="detailViewMode" class="p-6 space-y-8">
+
+                    <!-- Amount Hero -->
+                    <div class="text-center">
+                        <div id="detailIcon" class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-orange-50 text-orange-600 mb-4 border border-orange-100 shadow-sm">
+                            <span class="iconify" data-icon="lucide:shopping-basket" data-width="32" style="stroke-width: 1.5;"></span>
+                        </div>
+                        <h1 id="detailAmount" class="text-3xl font-semibold tracking-tight text-gray-900">-$124.50</h1>
+                        <div class="mt-2 flex items-center justify-center gap-2">
+                            <span id="detailTypeBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-100">
+                                Expense
+                            </span>
+                            <span id="detailDate" class="text-sm text-gray-500">Oct 24, 2023 at 4:30 PM</span>
+                        </div>
+                    </div>
+
+                    <!-- Details List -->
+                    <div class="bg-gray-50 rounded-xl p-1 border border-gray-100">
+                        <div class="space-y-0.5">
+
+                            <!-- Merchant -->
+                            <div class="flex items-center justify-between p-4 bg-white rounded-[10px] shadow-sm mb-px">
+                                <div class="flex items-center gap-3">
+                                    <div class="p-2 bg-gray-50 rounded-lg text-gray-500">
+                                        <span class="iconify" data-icon="lucide:store" data-width="18"></span>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-500">Merchant</span>
+                                </div>
+                                <span id="detailMerchant" class="text-base font-medium text-gray-900">Whole Foods Market</span>
+                            </div>
+
+                            <!-- Category -->
+                            <div class="flex items-center justify-between p-4 bg-white rounded-[10px] shadow-sm mb-px">
+                                <div class="flex items-center gap-3">
+                                    <div class="p-2 bg-gray-50 rounded-lg text-gray-500">
+                                        <span class="iconify" data-icon="lucide:tag" data-width="18"></span>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-500">Category</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <div id="detailCategoryDot" class="w-2 h-2 rounded-full bg-orange-400"></div>
+                                    <span id="detailCategory" class="text-base font-medium text-gray-900">Groceries</span>
+                                </div>
+                            </div>
+
+                            <!-- Account -->
+                            <div class="flex items-center justify-between p-4 bg-white rounded-[10px] shadow-sm mb-px">
+                                <div class="flex items-center gap-3">
+                                    <div class="p-2 bg-gray-50 rounded-lg text-gray-500">
+                                        <span class="iconify" data-icon="lucide:credit-card" data-width="18"></span>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-500">Account</span>
+                                </div>
+                                <span id="detailAccount" class="text-base font-medium text-gray-900">Visa •••• 4242</span>
+                            </div>
+
+                            <!-- Note -->
+                            <div class="flex flex-col p-4 bg-white rounded-[10px] shadow-sm">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <div class="p-2 bg-gray-50 rounded-lg text-gray-500">
+                                        <span class="iconify" data-icon="lucide:file-text" data-width="18"></span>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-500">Note</span>
+                                </div>
+                                <p id="detailNote" class="text-sm text-gray-700 leading-relaxed pl-11">
+                                    Weekly stock up for the house party. Includes drinks and snacks.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Meta -->
+                    <div id="detailMeta" class="text-xs text-center text-gray-400">
+                        Created on Oct 24, 2023 at 4:32 PM<br>ID: #TRX-8923-231
+                    </div>
+                </div>
+
+                <!-- EDIT MODE (Hidden by default) -->
+                <div id="detailEditMode" class="p-6 space-y-6 hidden">
+                    <div class="space-y-4">
+                        <!-- Amount Input -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Amount</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500">$</span>
+                                </div>
+                                <input type="number" id="editAmount" value="124.50" class="form-input pl-7 text-lg font-semibold" placeholder="0.00">
+                            </div>
+                        </div>
+
+                        <!-- Date & Time -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">Date</label>
+                                <input type="date" id="editDate" value="2023-10-24" class="form-input">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">Time</label>
+                                <input type="time" id="editTime" value="16:30" class="form-input">
+                            </div>
+                        </div>
+
+                        <!-- Merchant -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Merchant</label>
+                            <input type="text" id="editMerchant" value="Whole Foods Market" class="form-input">
+                        </div>
+
+                        <!-- Category -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Category</label>
+                            <select id="editCategory" class="form-input appearance-none pr-10">
+                                <option value="groceries">Groceries</option>
+                                <option value="shopping">Shopping</option>
+                                <option value="utilities">Utilities</option>
+                                <option value="entertainment">Entertainment</option>
+                                <option value="income">Income</option>
+                                <option value="freelance">Freelance</option>
+                            </select>
+                        </div>
+
+                        <!-- Note -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Note</label>
+                            <textarea rows="4" id="editNote" class="form-input resize-none">Weekly stock up for the house party. Includes drinks and snacks.</textarea>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="p-6 border-t border-gray-100 bg-gray-50/50">
+                <!-- View Mode Actions -->
+                <div id="detailViewActions" class="grid grid-cols-2 gap-3">
+                    <button onclick="showDeleteConfirm()" class="flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 font-medium transition-colors bg-white">
+                        <span class="iconify" data-icon="lucide:trash-2" data-width="18"></span>
+                        Delete
+                    </button>
+                    <button onclick="toggleDetailEditMode()" class="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-emerald-600 text-white hover:bg-emerald-500 font-medium shadow-sm transition-all active:scale-[0.98]">
+                        <span class="iconify" data-icon="lucide:pencil" data-width="18"></span>
+                        Edit Transaction
+                    </button>
+                </div>
+
+                <!-- Edit Mode Actions -->
+                <div id="detailEditActions" class="hidden grid grid-cols-2 gap-3">
+                    <button onclick="toggleDetailEditMode()" class="flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 bg-white font-medium transition-colors">
+                        Cancel
+                    </button>
+                    <button onclick="saveDetailChanges()" class="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-emerald-600 text-white hover:bg-emerald-500 font-medium shadow-sm transition-all active:scale-[0.98]">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+
+            <!-- Delete Confirmation Overlay -->
+            <div id="deleteConfirm" class="absolute inset-0 z-20 bg-white/95 backdrop-blur-sm hidden flex-col items-center justify-center p-6 text-center transition-opacity">
+                <div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mb-4">
+                    <span class="iconify" data-icon="lucide:alert-triangle" data-width="32"></span>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Delete Transaction?</h3>
+                <p class="text-gray-500 mb-8 max-w-[260px]">Are you sure you want to delete this transaction? This action cannot be undone.</p>
+
+                <div class="flex flex-col w-full gap-3">
+                    <button onclick="confirmDelete()" class="w-full py-3 rounded-lg bg-red-600 text-white hover:bg-red-700 font-medium shadow-sm">
+                        Yes, Delete It
+                    </button>
+                    <button onclick="hideDeleteConfirm()" class="w-full py-3 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 font-medium">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <script>
         // Transaction type state
         let currentTransactionType = 'expense';
@@ -705,6 +919,105 @@ transform: scale(1);
 
             // Close modal and show success (in real app would refresh list)
             closeAddTransactionModal();
+        }
+
+        // Transaction Detail Drawer functions
+        function openTransactionDetail(data) {
+            const drawer = document.getElementById('transactionDetailDrawer');
+            drawer.classList.remove('hidden');
+            drawer.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+
+            // Populate data
+            document.getElementById('detailAmount').textContent = data.amount;
+            document.getElementById('detailMerchant').textContent = data.merchant;
+            document.getElementById('detailCategory').textContent = data.category;
+            document.getElementById('detailDate').textContent = data.date + ' at ' + (data.time || '4:30 PM');
+            document.getElementById('detailAccount').textContent = data.account || 'Visa •••• 4242';
+            document.getElementById('detailNote').textContent = data.note || 'No note added.';
+
+            // Update icon and colors based on type
+            const iconDiv = document.getElementById('detailIcon');
+            const typeBadge = document.getElementById('detailTypeBadge');
+            const categoryDot = document.getElementById('detailCategoryDot');
+
+            if (data.type === 'income') {
+                iconDiv.className = 'inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 mb-4 border border-emerald-100 shadow-sm';
+                iconDiv.innerHTML = '<span class="iconify" data-icon="' + data.icon + '" data-width="32" style="stroke-width: 1.5;"></span>';
+                typeBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100';
+                typeBadge.textContent = 'Income';
+                categoryDot.className = 'w-2 h-2 rounded-full bg-emerald-400';
+            } else {
+                iconDiv.className = 'inline-flex items-center justify-center w-16 h-16 rounded-2xl ' + data.iconBg + ' mb-4 border ' + data.iconBorder + ' shadow-sm';
+                iconDiv.innerHTML = '<span class="iconify" data-icon="' + data.icon + '" data-width="32" style="stroke-width: 1.5;"></span>';
+                typeBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-100';
+                typeBadge.textContent = 'Expense';
+                categoryDot.className = 'w-2 h-2 rounded-full ' + data.dotColor;
+            }
+
+            // Update meta
+            document.getElementById('detailMeta').innerHTML = 'Created on ' + data.date + ' at 4:32 PM<br>ID: #TRX-' + Math.floor(Math.random() * 9000 + 1000) + '-' + Math.floor(Math.random() * 900 + 100);
+
+            // Populate edit form
+            document.getElementById('editAmount').value = parseFloat(data.amount.replace(/[^0-9.-]/g, ''));
+            document.getElementById('editMerchant').value = data.merchant;
+            document.getElementById('editCategory').value = data.category.toLowerCase();
+            document.getElementById('editNote').value = data.note || '';
+
+            // Reset to view mode
+            resetDetailToViewMode();
+        }
+
+        function closeTransactionDetail() {
+            const drawer = document.getElementById('transactionDetailDrawer');
+            drawer.classList.add('hidden');
+            drawer.classList.remove('flex');
+            document.body.style.overflow = '';
+            hideDeleteConfirm();
+            resetDetailToViewMode();
+        }
+
+        function resetDetailToViewMode() {
+            document.getElementById('detailViewMode').classList.remove('hidden');
+            document.getElementById('detailEditMode').classList.add('hidden');
+            document.getElementById('detailViewActions').classList.remove('hidden');
+            document.getElementById('detailEditActions').classList.add('hidden');
+        }
+
+        function toggleDetailEditMode() {
+            document.getElementById('detailViewMode').classList.toggle('hidden');
+            document.getElementById('detailEditMode').classList.toggle('hidden');
+            document.getElementById('detailViewActions').classList.toggle('hidden');
+            document.getElementById('detailEditActions').classList.toggle('hidden');
+        }
+
+        function saveDetailChanges() {
+            // In a real app, this would save to backend
+            console.log('Saving changes:', {
+                amount: document.getElementById('editAmount').value,
+                merchant: document.getElementById('editMerchant').value,
+                category: document.getElementById('editCategory').value,
+                note: document.getElementById('editNote').value
+            });
+            toggleDetailEditMode();
+        }
+
+        function showDeleteConfirm() {
+            const deleteConfirm = document.getElementById('deleteConfirm');
+            deleteConfirm.classList.remove('hidden');
+            deleteConfirm.classList.add('flex');
+        }
+
+        function hideDeleteConfirm() {
+            const deleteConfirm = document.getElementById('deleteConfirm');
+            deleteConfirm.classList.add('hidden');
+            deleteConfirm.classList.remove('flex');
+        }
+
+        function confirmDelete() {
+            // In a real app, this would delete from backend
+            console.log('Transaction deleted');
+            closeTransactionDetail();
         }
 
         document.addEventListener('DOMContentLoaded', () => {
